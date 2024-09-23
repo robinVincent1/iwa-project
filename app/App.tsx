@@ -1,12 +1,17 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import { Provider } from 'react-redux';
+import {store} from './store';
+import HomeView from './views/home_view';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Test</Text>
-      <StatusBar style="auto" />
-    </View>
+    <div className="App">
+      <Provider store={store}>
+        <HomeView />
+        <StatusBar style="auto" />
+      </Provider>
+    </div>
   );
 }
 
