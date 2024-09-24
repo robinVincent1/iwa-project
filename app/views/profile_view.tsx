@@ -2,12 +2,11 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 
-export default function HomeView() {
-    const testState = useSelector((state: any) => state.testState);
+export default function ProfilView() {
 
     return (
         <View style={styles.container}>
-            <Text>aaaa</Text>
+            <Text>Profil</Text>
             <StatusBar style="auto" />
         </View>
     );
