@@ -6,9 +6,18 @@ export default function HomeView() {
     const testState = useSelector((state: any) => state.testState);
 
     return (
-        <div className="HomeView">
+        <View style={styles.container}>
             <Text>{testState}</Text>
             <StatusBar style="auto" />
-        </div>
+        </View>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});
