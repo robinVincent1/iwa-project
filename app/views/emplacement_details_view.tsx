@@ -5,32 +5,33 @@ import EmplacementDetailsImages from '../components/emplacement_details_images';
 import EmplacementDetailsFacilities from '../components/emplacement_details_facilities';
 import EmplacementDetailsComments from '../components/emplacement_details_comments';
 import EmplacementDetailsDescription from '../components/emplacement_details_description';
+import EmplacementDetailsDisponibilities from '../components/emplacement_details_disponibilities';
 
 export default function EmplacementDetails({ route }) {
     const { marker } = route.params;
+
+    function Separateur() {
+        return (<View
+        style={{
+            borderBottomColor: 'gray',
+            borderBottomWidth: StyleSheet.hairlineWidth,
+            marginHorizontal:30,
+            marginVertical: 20
+        }}
+        />);
+    }
 
     return (
         <ScrollView contentContainerStyle={styles.contentContainer}>
             <EmplacementDetailsImages />
             <EmplacementDetailsDescription marker={marker} />
-            <View
-            style={{
-                borderBottomColor: 'gray',
-                borderBottomWidth: StyleSheet.hairlineWidth,
-                marginHorizontal:30,
-                marginVertical: 20
-            }}
-            />
+            <Separateur />
             <EmplacementDetailsFacilities />
-            <View
-            style={{
-                borderBottomColor: 'gray',
-                borderBottomWidth: StyleSheet.hairlineWidth,
-                marginHorizontal:30,
-                marginVertical: 20
-            }}
-            />
+            <Separateur />
             <EmplacementDetailsComments markers = {marker}/>
+            <Separateur />
+            <EmplacementDetailsDisponibilities />
+            <Separateur />
             <View style={styles.buttonContainer}>
                 <Pressable style={styles.button}>
                     <Text style={styles.text_button}>Réserver</Text>
