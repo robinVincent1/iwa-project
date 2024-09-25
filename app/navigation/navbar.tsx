@@ -5,6 +5,7 @@ import ProfileView from '../views/profile_view';
 import MapView from '../views/map_view';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
+import MapStackNavigator from './stack_navigator'; 
 
 const Tab = createBottomTabNavigator();
 
@@ -24,8 +25,8 @@ export default function Navbar() {
         }}
       />
       <Tab.Screen 
-        name="Map"
-        component={MapView}
+        name="Carte"
+        component={MapStackNavigator}
         options={{
           tabBarLabel: '',
           tabBarIcon: ({ color, size }) => (

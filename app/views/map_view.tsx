@@ -4,6 +4,7 @@ import MapView, { Callout, Marker } from 'react-native-maps';
 import React, { useRef,useState,useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import Autocomplete from 'react-native-autocomplete-input';
+import { useNavigation } from '@react-navigation/native';
 
 const cities = require('../assets/cities.json');
 
@@ -12,6 +13,7 @@ export default function LocationMapView() {
     const mapRef = useRef<any>(); //Changer le type plus tard
     const [query, setQuery] = useState('');
     const [filteredCities, setFilteredCities] = useState([]);
+    const navigation = useNavigation();
 
 
 
@@ -68,9 +70,8 @@ export default function LocationMapView() {
     }
 
     const onCalloutSelected = (marker: any) => {
-        console.log(marker.name);
-    }
-
+        navigation.navigate('EmplacementDetails', { marker });
+    };
     const handleSearch = (text: string) => {
         setQuery(text);
         if (text) {
