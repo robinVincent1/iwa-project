@@ -2,6 +2,7 @@ import { StyleSheet,Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import MapView, { Callout, Marker } from 'react-native-maps'; 
 import React, { useRef } from 'react';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function LocationMapView() {
 
@@ -20,28 +21,33 @@ export default function LocationMapView() {
             longitude: 3.8833,
             latitudeDelta: 0.01,
             longitudeDelta: 0.01,
-            name: "Montpellier 1"
+            name: "Montpellier 1",
+            rating: 4.7
         },
         {
             latitude: 43.3,
             longitude: 3.8833,
             latitudeDelta: 0.01,
             longitudeDelta: 0.01,
-            name: "Montpellier 2"
+            name: "Montpellier 2",
+            rating:0
         },
         {
             latitude: 43.5,
             longitude: 3.8833,
             latitudeDelta: 0.01,
             longitudeDelta: 0.01,
-            name: "Montpellier 3"
+            name: "Montpellier 3",
+            rating:2.3
+
         },
         {
             latitude: 43.7,
             longitude: 3.8833,
             latitudeDelta: 0.01,
             longitudeDelta: 0.01,
-            name: "Montpellier 4"
+            name: "Montpellier 4",
+            rating:3.5
         },
     ]
 
@@ -56,6 +62,25 @@ export default function LocationMapView() {
 
     const onCalloutSelected = (marker: any) => {
         console.log(marker.name);
+    }
+
+    const renderRating = (rating: number) => {
+        const fullStars = Math.floor(rating);
+        const halfStar = rating - fullStars >= 0.5 ? 1 : 0;
+        const emptyStars = 5 - fullStars - halfStar;
+
+        return (
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                {[...Array(fullStars)].map((_, index) => (
+                    <Ionicons key={`full-${index}`} name="star" size={20} color="#FFD700" />
+                ))}
+                {halfStar === 1 && <Ionicons name="star-half" size={20} color="#FFD700" />}
+                {[...Array(emptyStars)].map((_, index) => (
+                    <Ionicons key={`empty-${index}`} name="star-outline" size={20} color="#FFD700" />
+                ))}
+                <Text style={{ marginLeft: 5 }}>({rating.toFixed(1)})</Text>
+            </View>
+        );
     }
 
     return (
@@ -75,6 +100,7 @@ export default function LocationMapView() {
                         <Callout onPress = {() => onCalloutSelected(marker)}>
                             <View>
                                 <Text>{marker.name}</Text>
+                                {renderRating(marker.rating)}
                                 <Text>Cliquez pour réserver !</Text>
                             </View>
                         </Callout>
