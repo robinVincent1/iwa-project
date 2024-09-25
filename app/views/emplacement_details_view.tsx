@@ -4,15 +4,32 @@ import { renderRating } from '../utils/renderRating';
 import EmplacementDetailsImages from '../components/emplacement_details_images';
 import EmplacementDetailsFacilities from '../components/emplacement_details_facilities';
 import EmplacementDetailsComments from '../components/emplacement_details_comments';
+import EmplacementDetailsDescription from '../components/emplacement_details_description';
 
 export default function EmplacementDetails({ route }) {
     const { marker } = route.params;
 
     return (
         <ScrollView contentContainerStyle={styles.contentContainer}>
-            <Text style={styles.title}>{marker.name}</Text>
             <EmplacementDetailsImages />
+            <EmplacementDetailsDescription marker={marker} />
+            <View
+            style={{
+                borderBottomColor: 'gray',
+                borderBottomWidth: StyleSheet.hairlineWidth,
+                marginHorizontal:30,
+                marginVertical: 20
+            }}
+            />
             <EmplacementDetailsFacilities />
+            <View
+            style={{
+                borderBottomColor: 'gray',
+                borderBottomWidth: StyleSheet.hairlineWidth,
+                marginHorizontal:30,
+                marginVertical: 20
+            }}
+            />
             <EmplacementDetailsComments markers = {marker}/>
             <View style={styles.buttonContainer}>
                 <Pressable style={styles.button}>
@@ -29,12 +46,6 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'stretch',
  
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
-        textAlign: 'center',
     },
     buttonContainer: {
         marginTop: 20,

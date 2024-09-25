@@ -12,6 +12,7 @@ interface EmplacementDetailsCommentsProps {
 }
 
 const MAX_COMMENT_LENGTH = 200;
+const COMMENT_NUMBERS = 6
 
 const truncateComment = (comment: string) => {
     if (comment.length <= MAX_COMMENT_LENGTH) return comment;
@@ -21,14 +22,17 @@ const truncateComment = (comment: string) => {
 
 export default function EmplacementDetailsComments({ markers }: EmplacementDetailsCommentsProps) {
 
-    const data = [...new Array(6).keys()];
+    const data = [...new Array(COMMENT_NUMBERS).keys()];
     const width = Dimensions.get("window").width;
     const carouselRef = React.useRef<ICarouselInstance>(null);
     const progress = useSharedValue<number>(0);
 
     return (
         <View>
-            {renderRating(markers.rating)}
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal:10 }}>
+                {renderRating(markers.rating, true)}
+                <Text style={{ marginLeft: 10 }}>223 Commentaires</Text>
+            </View>
             <Carousel
                 ref={carouselRef}
                 width={width}
@@ -48,7 +52,7 @@ export default function EmplacementDetailsComments({ markers }: EmplacementDetai
                                     <Text style={styles.profileName}>Prénom {index}</Text>
                                     <Text style={styles.commentDate}>Date {index}</Text>
                                 </View>
-                                {renderRating(index)}
+                                {renderRating(index, false)}
                             </View>
                         </View>
                         <View style={styles.commentContainer}>

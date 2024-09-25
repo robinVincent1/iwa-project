@@ -131,7 +131,7 @@ export default function LocationMapView() {
                         <Callout onPress = {() => onCalloutSelected(marker)}>
                             <View>
                                 <Text>{marker.name}</Text>
-                                {renderRating(marker.rating)}
+                                {renderRating(marker.rating, true)}
                                 <Text>Cliquez pour réserver !</Text>
                             </View>
                         </Callout>
