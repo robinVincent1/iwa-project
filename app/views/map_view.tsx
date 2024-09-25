@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity } from 'r
 import { StatusBar } from 'expo-status-bar';
 import MapView, { Callout, Marker } from 'react-native-maps'; 
 import React, { useRef,useState,useEffect } from 'react';
-import { Ionicons } from '@expo/vector-icons';
+
 import Autocomplete from 'react-native-autocomplete-input';
 import { useNavigation } from '@react-navigation/native';
 import { renderRating } from '../utils/renderRating';
