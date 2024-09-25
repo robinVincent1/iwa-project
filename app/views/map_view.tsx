@@ -1,12 +1,19 @@
-import { StyleSheet,Text, View } from 'react-native';
+import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import MapView, { Callout, Marker } from 'react-native-maps'; 
-import React, { useRef } from 'react';
+import React, { useRef,useState,useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
+import Autocomplete from 'react-native-autocomplete-input';
+
+const cities = require('../assets/cities.json');
 
 export default function LocationMapView() {
 
     const mapRef = useRef<any>(); //Changer le type plus tard
+    const [query, setQuery] = useState('');
+    const [filteredCities, setFilteredCities] = useState([]);
+
+
 
     const INITIAL_REGION = {
         latitude: 43.6,
@@ -64,6 +71,32 @@ export default function LocationMapView() {
         console.log(marker.name);
     }
 
+    const handleSearch = (text: string) => {
+        setQuery(text);
+        if (text) {
+            const filtered = cities.cities.filter((city: any) =>
+                city.city_code.toLowerCase().startsWith(text.toLowerCase())
+            );
+            setFilteredCities(filtered);
+        } else {
+            setFilteredCities([]);
+        }
+    };
+
+    const handleSelectCity = (city: any) => {
+        if (mapRef.current) {
+            mapRef.current.animateToRegion({
+                latitude: parseFloat(city.latitude),
+                longitude: parseFloat(city.longitude),
+                latitudeDelta: 0.05,
+                longitudeDelta: 0.05,
+            }, 1000); // Ajoutez une durée pour l'animation
+        }
+        setQuery(city.name);
+        setFilteredCities([]);
+    };
+    
+
     const renderRating = (rating: number) => {
         const fullStars = Math.floor(rating);
         const halfStar = rating - fullStars >= 0.5 ? 1 : 0;
@@ -85,6 +118,21 @@ export default function LocationMapView() {
 
     return (
         <View style={styles.container}>
+            <Autocomplete
+            data={filteredCities}
+            defaultValue={query}
+            onChangeText={handleSearch}
+            placeholder="Search for a city"
+            flatListProps={{
+                renderItem: ({ item }) => (
+                    <TouchableOpacity onPress={() => handleSelectCity(item)}>
+                        <Text>{item.city_code}</Text>
+                    </TouchableOpacity>
+                ),
+            }}
+            containerStyle={styles.autocompleteContainer}
+            inputContainerStyle={styles.inputContainer}
+            />
             <MapView
             style={styles.map}
             initialRegion={INITIAL_REGION}
@@ -113,13 +161,24 @@ export default function LocationMapView() {
 
 const styles = StyleSheet.create({
     container: {
-      ...StyleSheet.absoluteFillObject,
-      height: 400,
-      width: 400,
-      justifyContent: 'flex-end',
-      alignItems: 'center',
+        ...StyleSheet.absoluteFillObject,
+        justifyContent: 'flex-end',
+        alignItems: 'center',
     },
     map: {
-      ...StyleSheet.absoluteFillObject,
+        ...StyleSheet.absoluteFillObject,
     },
-   });
+    autocompleteContainer: {
+        position: 'absolute',
+        top: 10,
+        left: 10,
+        right: 10,
+        zIndex: 1,
+    },
+    inputContainer: {
+        borderWidth: 0,
+    },
+    list: {
+        borderWidth: 0,
+    },
+});
