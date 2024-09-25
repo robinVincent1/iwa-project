@@ -10,21 +10,21 @@ const data = [...new Array(6).keys()];
 const width = Dimensions.get("window").width;
 
 export default function EmplacementDetailsImages() {
-  const ref = React.useRef<ICarouselInstance>(null);
+  const carouselRef = React.useRef<ICarouselInstance>(null);
   const progress = useSharedValue<number>(0);
 
   const onPressPagination = (index: number) => {
-    ref.current?.scrollTo({
+    carouselRef.current?.scrollTo({
       count: index - progress.value,
       animated: true,
     });
   };
 
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <View>
+    <View style={{ justifyContent: "center", alignItems: "center" }}>
+      <View style={{ alignItems: "center", height: width / 2 + 20 }}>
         <Carousel
-          ref={ref}
+          ref={carouselRef}
           width={width}
           height={width / 2}
           data={data}
@@ -47,7 +47,7 @@ export default function EmplacementDetailsImages() {
           progress={progress}
           data={data}
           dotStyle={{ backgroundColor: "rgba(0,0,0,0.2)", borderRadius: 50 }}
-          containerStyle={{ gap: 5, marginTop: 10 }}
+          containerStyle={{ gap: 5, marginTop:0}} // Ajustez le marginTop pour coller la pagination au carousel
           onPress={onPressPagination}
         />
       </View>
