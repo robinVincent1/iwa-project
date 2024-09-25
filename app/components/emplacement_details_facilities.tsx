@@ -17,6 +17,10 @@ export default function EmplacementDetailsFacilities() {
                     <Ionicons name="wifi" size={20} color="#FFD700" />
                     <Text>Wi-Fi</Text>
                 </View>
+                <View style={styles.item}>
+                    <Ionicons name="car" size={20} color="#FFD700" />
+                    <Text>Parking</Text>
+                </View>
             </View>
             <View style={styles.column}>
                 <View style={styles.item}>
