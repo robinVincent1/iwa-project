@@ -119,19 +119,19 @@ export default function LocationMapView() {
     return (
         <View style={styles.container}>
             <Autocomplete
-            data={filteredCities}
-            defaultValue={query}
-            onChangeText={handleSearch}
-            placeholder="Search for a city"
-            flatListProps={{
-                renderItem: ({ item }) => (
-                    <TouchableOpacity onPress={() => handleSelectCity(item)}>
-                        <Text>{item.city_code}</Text>
-                    </TouchableOpacity>
-                ),
-            }}
-            containerStyle={styles.autocompleteContainer}
-            inputContainerStyle={styles.inputContainer}
+                data={filteredCities}
+                defaultValue={query}
+                onChangeText={handleSearch}
+                placeholder="Entrez le nom d’une ville"
+                flatListProps={{
+                    renderItem: ({ item }) => (
+                        <TouchableOpacity onPress={() => handleSelectCity(item)}>
+                            <Text style={styles.autocompleteItemText}>{item.city_code}</Text>
+                        </TouchableOpacity>
+                    ),
+                }}
+                containerStyle={styles.autocompleteContainer}
+                inputContainerStyle={styles.inputContainer}
             />
             <MapView
             style={styles.map}
@@ -180,5 +180,9 @@ const styles = StyleSheet.create({
     },
     list: {
         borderWidth: 0,
+    },
+    autocompleteItemText: {
+        fontSize: 18, // Augmentez cette valeur pour rendre le texte plus grand
+        padding: 10, // Ajoutez du padding pour rendre les éléments plus grands
     },
 });
