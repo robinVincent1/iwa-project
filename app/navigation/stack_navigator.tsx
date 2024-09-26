@@ -4,6 +4,7 @@ import LocationMapView from '../views/map_view';
 import EmplacementDetails from '../views/emplacement_details_view'; 
 import Reservation_details from '../views/profil/Reservation_details';
 import Emplacement_details from '../views/profil/Emplacement_details';
+import SettingsView from '../views/profil/settings_view';
 
 
 const Stack = createStackNavigator();
@@ -15,7 +16,7 @@ export default function MapStackNavigator() {
             <Stack.Screen name="EmplacementDetails" component={EmplacementDetails} />
             <Stack.Screen name="Reservation_detail" component={Reservation_details} />
             <Stack.Screen name="Emplacement_detail" component={Emplacement_details} />
-
+            <Stack.Screen name="Settings" component={SettingsView} />
         </Stack.Navigator>
     );
 }
