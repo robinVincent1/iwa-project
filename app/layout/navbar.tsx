@@ -5,7 +5,7 @@ import ProfileView from '../views/profile_view';
 import MapView from '../views/map_view';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import MapStackNavigator from './stack_navigator'; 
+import MapStackNavigator from '../navigation/stack_navigator'; 
 
 const Tab = createBottomTabNavigator();
 
@@ -19,6 +19,7 @@ export default function Navbar() {
         component={HomeView}
         options={{
           tabBarLabel: '',
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home" color={color} size={size} />
           ),
@@ -29,6 +30,7 @@ export default function Navbar() {
         component={MapStackNavigator}
         options={{
           tabBarLabel: '',
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="map" color={color} size={size} />
           ),
@@ -39,6 +41,7 @@ export default function Navbar() {
         component={ProfileView}
         options={{
           tabBarLabel: '',
+          headerShown: false,
           tabBarBadge: profil_notifications,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person" color={color} size={size} />

@@ -1,7 +1,8 @@
 import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import MapView, { Callout, Marker } from 'react-native-maps'; 
-import React, { useRef,useState,useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
+import { Ionicons } from '@expo/vector-icons';
 
 import Autocomplete from 'react-native-autocomplete-input';
 import { useNavigation } from '@react-navigation/native';
@@ -15,8 +16,6 @@ export default function LocationMapView() {
     const [query, setQuery] = useState('');
     const [filteredCities, setFilteredCities] = useState([]);
     const navigation = useNavigation();
-
-
 
     const INITIAL_REGION = {
         latitude: 43.6,
@@ -40,7 +39,7 @@ export default function LocationMapView() {
             latitudeDelta: 0.01,
             longitudeDelta: 0.01,
             name: "Montpellier 2",
-            rating:0
+            rating: 0
         },
         {
             latitude: 43.5,
@@ -48,8 +47,7 @@ export default function LocationMapView() {
             latitudeDelta: 0.01,
             longitudeDelta: 0.01,
             name: "Montpellier 3",
-            rating:2.3
-
+            rating: 2.3
         },
         {
             latitude: 43.7,
@@ -57,7 +55,7 @@ export default function LocationMapView() {
             latitudeDelta: 0.01,
             longitudeDelta: 0.01,
             name: "Montpellier 4",
-            rating:3.5
+            rating: 3.5
         },
     ]
 
@@ -73,6 +71,7 @@ export default function LocationMapView() {
     const onCalloutSelected = (marker: any) => {
         navigation.navigate('EmplacementDetails', { marker });
     };
+
     const handleSearch = (text: string) => {
         setQuery(text);
         if (text) {
@@ -97,29 +96,32 @@ export default function LocationMapView() {
         setQuery(city.name);
         setFilteredCities([]);
     };
-    
 
     return (
         <View style={styles.container}>
-            <Autocomplete
-                data={filteredCities}
-                defaultValue={query}
-                onChangeText={handleSearch}
-                placeholder="Entrez le nom d’une ville"
-                flatListProps={{
-                    renderItem: ({ item }) => (
-                        <TouchableOpacity onPress={() => handleSelectCity(item)}>
-                            <Text style={styles.autocompleteItemText}>{item.city_code}</Text>
-                        </TouchableOpacity>
-                    ),
-                }}
-                containerStyle={styles.autocompleteContainer}
-                inputContainerStyle={styles.inputContainer}
-            />
+            <View style={styles.autocompleteWrapper}>
+                <Ionicons name="search" size={20} color="black" style={styles.searchIcon} />
+                <Autocomplete
+                    data={filteredCities}
+                    defaultValue={query}
+                    onChangeText={handleSearch}
+                    placeholder="Entrez le nom d’une ville"
+                    flatListProps={{
+                        renderItem: ({ item }) => (
+                            <TouchableOpacity onPress={() => handleSelectCity(item)}>
+                                <Text style={styles.autocompleteItemText}>{item.city_code}</Text>
+                            </TouchableOpacity>
+                        ),
+                        
+                    }}
+                    containerStyle={styles.autocompleteContainer}
+                    inputContainerStyle={styles.inputContainer}
+                />
+            </View>
             <MapView
-            style={styles.map}
-            initialRegion={INITIAL_REGION}
-            ref={mapRef}
+                style={styles.map}
+                initialRegion={INITIAL_REGION}
+                ref={mapRef}
             >
                 {markers.map((marker, index) => (
                     <Marker
@@ -128,11 +130,11 @@ export default function LocationMapView() {
                         title={marker.name}
                         onPress={() => onMarkerSelected(marker)}
                     >
-                        <Callout onPress = {() => onCalloutSelected(marker)}>
-                            <View>
-                                <Text>{marker.name}</Text>
+                        <Callout onPress={() => onCalloutSelected(marker)}>
+                            <View style={styles.callout}>
+                                <Text style={styles.calloutText}>{marker.name}</Text>
                                 {renderRating(marker.rating, true)}
-                                <Text>Cliquez pour réserver !</Text>
+                                <Text style={styles.calloutText}>Cliquez pour réserver !</Text>
                             </View>
                         </Callout>
                     </Marker>
@@ -151,18 +153,49 @@ const styles = StyleSheet.create({
     map: {
         ...StyleSheet.absoluteFillObject,
     },
-    autocompleteContainer: {
+    callout: {
+        borderRadius: 10,
+        padding: 10,
+        backgroundColor: 'white',
+        alignItems: 'center',
+        overflow: 'hidden', // Assure que le contenu respecte les bords arrondis
+    },
+    calloutText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    autocompleteWrapper: {
         position: 'absolute',
         top: 10,
         left: 10,
         right: 10,
         zIndex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 10,
+        paddingHorizontal: 10,
+        backgroundColor: 'white', // Ajout d'un fond blanc pour le conteneur
+    },
+    searchIcon: {
+        marginRight: 10,
+    },
+    autocompleteContainer: {
+        flex: 1,
     },
     inputContainer: {
         borderWidth: 0,
     },
     list: {
         borderWidth: 0,
+        borderRadius: 10,
+        position: 'absolute',
+        top: 40, // Ajustez cette valeur en fonction de la hauteur de votre input
+        left: 0,
+        right: 0,
+        zIndex: 1,
+        maxHeight: 200, // Limite la hauteur de la liste pour éviter qu'elle n'agrandisse la vue principale
     },
     autocompleteItemText: {
         fontSize: 18, // Augmentez cette valeur pour rendre le texte plus grand

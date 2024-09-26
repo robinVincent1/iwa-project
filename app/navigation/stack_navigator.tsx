@@ -8,8 +8,8 @@ const Stack = createStackNavigator();
 export default function MapStackNavigator() {
     return (
         <Stack.Navigator initialRouteName="Map">
-            <Stack.Screen name="Map" component={LocationMapView} />
-            <Stack.Screen name="EmplacementDetails" component={EmplacementDetails} />
+            <Stack.Screen name="Map" component={LocationMapView} options={{ headerShown: false }} />
+            <Stack.Screen name="EmplacementDetails" component={EmplacementDetails} options={{ headerShown: false }} />
         </Stack.Navigator>
     );
 }
