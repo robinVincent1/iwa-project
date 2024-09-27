@@ -1,10 +1,9 @@
-import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import MapView, { Callout, Marker } from 'react-native-maps'; 
 import React, { useRef, useState, useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 
-import Autocomplete from 'react-native-autocomplete-input';
 import { useNavigation } from '@react-navigation/native';
 import { renderRating } from '../utils/renderRating';
 
@@ -97,50 +96,64 @@ export default function LocationMapView() {
         setFilteredCities([]);
     };
 
+    const handleOutsidePress = () => {
+        setFilteredCities([]);
+        Keyboard.dismiss();
+    };
+
     return (
-        <View style={styles.container}>
-            <View style={styles.autocompleteWrapper}>
-                <Ionicons name="search" size={20} color="black" style={styles.searchIcon} />
-                <Autocomplete
-                    data={filteredCities}
-                    defaultValue={query}
-                    onChangeText={handleSearch}
-                    placeholder="Entrez le nom d’une ville"
-                    flatListProps={{
-                        renderItem: ({ item }) => (
-                            <TouchableOpacity onPress={() => handleSelectCity(item)}>
-                                <Text style={styles.autocompleteItemText}>{item.city_code}</Text>
-                            </TouchableOpacity>
-                        ),
-                        
-                    }}
-                    containerStyle={styles.autocompleteContainer}
-                    inputContainerStyle={styles.inputContainer}
-                />
+        <TouchableWithoutFeedback onPress={handleOutsidePress}>
+            <View style={styles.container}>
+                <View style={styles.autocompleteWrapper}>
+                    <Ionicons name="search" size={20} color="black" style={styles.searchIcon} />
+                    <TextInput
+                        style={styles.textInput}
+                        value={query}
+                        onChangeText={handleSearch}
+                        placeholder="Entrez le nom d’une ville"
+                    />
+                </View>
+                <MapView
+                    style={styles.map}
+                    initialRegion={INITIAL_REGION}
+                    ref={mapRef}
+                >
+                    {markers.map((marker, index) => (
+                        <Marker
+                            key={index}
+                            coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
+                            title={marker.name}
+                            onPress={() => onMarkerSelected(marker)}
+                        >
+                            <Callout onPress={() => onCalloutSelected(marker)}>
+                                <View style={styles.callout}>
+                                    <Text style={styles.calloutText}>{marker.name}</Text>
+                                    {renderRating(marker.rating, true)}
+                                    <Text style={styles.calloutText}>Cliquez pour réserver !</Text>
+                                </View>
+                            </Callout>
+                        </Marker>
+                    ))}
+                </MapView>
+                {filteredCities.length > 0 && (
+                    <View style={styles.suggestionsContainer}>
+                        <FlatList
+                            data={filteredCities}
+                            renderItem={({ item }) => (
+                                <TouchableOpacity onPress={() => handleSelectCity(item)}>
+                                    <View style={styles.itemContainer}>
+                                        <Ionicons name="compass" size={20} color="black" />
+                                        <Text style={styles.autocompleteItemText}>{item.city_code}</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            )}
+                            keyExtractor={(item) => item.city_code}
+                            style={styles.list}
+                        />
+                    </View>
+                )}
             </View>
-            <MapView
-                style={styles.map}
-                initialRegion={INITIAL_REGION}
-                ref={mapRef}
-            >
-                {markers.map((marker, index) => (
-                    <Marker
-                        key={index}
-                        coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
-                        title={marker.name}
-                        onPress={() => onMarkerSelected(marker)}
-                    >
-                        <Callout onPress={() => onCalloutSelected(marker)}>
-                            <View style={styles.callout}>
-                                <Text style={styles.calloutText}>{marker.name}</Text>
-                                {renderRating(marker.rating, true)}
-                                <Text style={styles.calloutText}>Cliquez pour réserver !</Text>
-                            </View>
-                        </Callout>
-                    </Marker>
-                ))}
-            </MapView>
-        </View>
+        </TouchableWithoutFeedback>
     );
 }
 
@@ -177,28 +190,39 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         paddingHorizontal: 10,
         backgroundColor: 'white', // Ajout d'un fond blanc pour le conteneur
+        height: 50, // Fixe la hauteur de la vue de l'autocomplete
     },
     searchIcon: {
         marginRight: 10,
     },
-    autocompleteContainer: {
+    textInput: {
         flex: 1,
-    },
-    inputContainer: {
+        height: '100%',
         borderWidth: 0,
+    },
+    suggestionsContainer: {
+        position: 'absolute',
+        top: 60, // Ajustez cette valeur en fonction de la hauteur de votre input
+        left: 10,
+        right: 10,
+        zIndex: 2, // Assurez-vous que la liste est au-dessus de l'autocompleteWrapper
+        maxHeight: 200, // Limite la hauteur de la liste pour éviter qu'elle n'agrandisse la vue principale
+        backgroundColor: 'white',
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 10,
     },
     list: {
         borderWidth: 0,
         borderRadius: 10,
-        position: 'absolute',
-        top: 40, // Ajustez cette valeur en fonction de la hauteur de votre input
-        left: 0,
-        right: 0,
-        zIndex: 1,
-        maxHeight: 200, // Limite la hauteur de la liste pour éviter qu'elle n'agrandisse la vue principale
+    },
+    itemContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 10, // Ajoutez du padding pour rendre les éléments plus grands
     },
     autocompleteItemText: {
         fontSize: 18, // Augmentez cette valeur pour rendre le texte plus grand
-        padding: 10, // Ajoutez du padding pour rendre les éléments plus grands
+        marginLeft: 10, // Ajoutez une marge à gauche pour séparer l'icône du texte
     },
 });

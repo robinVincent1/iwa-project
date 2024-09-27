@@ -1,16 +1,23 @@
-
-import { Provider, useSelector } from 'react-redux';
+// src/components/Navbar.tsx
+import React from 'react';
+import { useSelector } from 'react-redux';
 import HomeView from '../views/home_view';
 import ProfileView from '../views/profile_view';
 import MapView from '../views/map_view';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import MapStackNavigator from '../navigation/stack_navigator'; 
+import { RootState } from '../store';
 
 const Tab = createBottomTabNavigator();
 
 export default function Navbar() {
-  const profil_notifications = useSelector((state: any) => state.profil_notifications);
+  const profil_notifications = useSelector((state: RootState) => state.profil.profil_notifications);
+  const navBarVisible = useSelector((state: RootState) => state.navBar.visible);
+
+  if (!navBarVisible) {
+    return null;
+  }
 
   return (
     <Tab.Navigator>

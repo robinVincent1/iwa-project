@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { Provider, useSelector } from 'react-redux';
-import { store } from './store/store';
+import { store } from './store';
 import { NavigationContainer } from '@react-navigation/native';
 import Navbar from './layout/navbar';
 import { createStackNavigator } from '@react-navigation/stack';
