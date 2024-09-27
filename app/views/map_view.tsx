@@ -1,11 +1,13 @@
-import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import MapView, { Callout, Marker } from 'react-native-maps'; 
 import React, { useRef, useState, useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-
+import * as Location from 'expo-location';
 import { useNavigation } from '@react-navigation/native';
 import { renderRating } from '../utils/renderRating';
+import { useDispatch } from 'react-redux';
+import { showNavBar, hideNavBar } from '../store/navbarSlice';
 
 const cities = require('../assets/cities.json');
 
@@ -15,6 +17,7 @@ export default function LocationMapView() {
     const [query, setQuery] = useState('');
     const [filteredCities, setFilteredCities] = useState([]);
     const navigation = useNavigation();
+    const dispatch = useDispatch();
 
     const INITIAL_REGION = {
         latitude: 43.6,
@@ -57,6 +60,24 @@ export default function LocationMapView() {
             rating: 3.5
         },
     ]
+
+    useEffect(() => {
+        (async () => {
+            let { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                Alert.alert('Permission to access location was denied');
+                return;
+            }
+
+            let location = await Location.getCurrentPositionAsync({});
+            mapRef.current.animateToRegion({
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude,
+                latitudeDelta: 0.05,
+                longitudeDelta: 0.05,
+            }, 1000);
+        })();
+    }, []);
 
     const onMarkerSelected = (marker: any) => {
         mapRef.current.animateToRegion({
@@ -101,6 +122,14 @@ export default function LocationMapView() {
         Keyboard.dismiss();
     };
 
+    const handleFocus = () => {
+        dispatch(hideNavBar());
+    };
+
+    const handleBlur = () => {
+        dispatch(showNavBar());
+    };
+
     return (
         <TouchableWithoutFeedback onPress={handleOutsidePress}>
             <View style={styles.container}>
@@ -111,12 +140,15 @@ export default function LocationMapView() {
                         value={query}
                         onChangeText={handleSearch}
                         placeholder="Entrez le nom d’une ville"
+                        onFocus={handleFocus}
+                        onBlur={handleBlur}
                     />
                 </View>
                 <MapView
                     style={styles.map}
                     initialRegion={INITIAL_REGION}
                     ref={mapRef}
+                    showsUserLocation={true} // Affiche le point bleu de localisation
                 >
                     {markers.map((marker, index) => (
                         <Marker
