@@ -20,7 +20,7 @@ export default function EmplacementDetailsDescription({ marker }: EmplacementDet
                 <Text style={styles.address}>Nom de la commune , France</Text>
             </View>
             <TouchableOpacity onPress={toggleFavorite} style={styles.iconContainer}>
-                <Ionicons name={isFavorite ? "heart" : "heart-outline"} size={24} color="#FF0000" />
+                <Ionicons name={isFavorite ? "heart" : "heart-outline"} size={32} color="#FF0000" />
             </TouchableOpacity>
         </View>
     );

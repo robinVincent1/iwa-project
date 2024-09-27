@@ -13,11 +13,6 @@ const Tab = createBottomTabNavigator();
 
 export default function Navbar() {
   const profil_notifications = useSelector((state: RootState) => state.profil.profil_notifications);
-  const navBarVisible = useSelector((state: RootState) => state.navBar.visible);
-
-  if (!navBarVisible) {
-    return null;
-  }
 
   return (
     <Tab.Navigator>

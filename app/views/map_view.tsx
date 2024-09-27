@@ -7,7 +7,7 @@ import * as Location from 'expo-location';
 import { useNavigation } from '@react-navigation/native';
 import { renderRating } from '../utils/renderRating';
 import { useDispatch } from 'react-redux';
-import { showNavBar, hideNavBar } from '../store/navbarSlice';
+import Slider from '@react-native-community/slider';
 
 const cities = require('../assets/cities.json');
 
@@ -16,6 +16,10 @@ export default function LocationMapView() {
     const mapRef = useRef<any>(); //Changer le type plus tard
     const [query, setQuery] = useState('');
     const [filteredCities, setFilteredCities] = useState([]);
+    const [locationGranted, setLocationGranted] = useState(false);
+    const [radius, setRadius] = useState(10); // Rayon en kilomètres
+    const [userLocation, setUserLocation] = useState(null);
+    const [showSlider, setShowSlider] = useState(false); // État pour contrôler la visibilité du slider
     const navigation = useNavigation();
     const dispatch = useDispatch();
 
@@ -68,8 +72,10 @@ export default function LocationMapView() {
                 Alert.alert('Permission to access location was denied');
                 return;
             }
+            setLocationGranted(true);
 
             let location = await Location.getCurrentPositionAsync({});
+            setUserLocation(location.coords);
             mapRef.current.animateToRegion({
                 latitude: location.coords.latitude,
                 longitude: location.coords.longitude,
@@ -123,11 +129,52 @@ export default function LocationMapView() {
     };
 
     const handleFocus = () => {
-        dispatch(hideNavBar());
+        setShowSlider(false); // Ferme le slider lorsque le TextInput est focalisé
     };
 
-    const handleBlur = () => {
-        dispatch(showNavBar());
+
+    const centerUserLocation = async () => {
+        if (locationGranted) {
+            let location = await Location.getCurrentPositionAsync({});
+            mapRef.current.animateToRegion({
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude,
+                latitudeDelta: 0.05,
+                longitudeDelta: 0.05,
+            }, 1000);
+        } else {
+            Alert.alert('Location permission not granted');
+        }
+    };
+
+    const filterMarkersByRadius = () => {
+        if (!userLocation) return markers;
+        return markers.filter(marker => {
+            const distance = getDistanceFromLatLonInKm(
+                userLocation.latitude,
+                userLocation.longitude,
+                marker.latitude,
+                marker.longitude
+            );
+            return distance <= radius;
+        });
+    };
+
+    const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
+        const R = 6371; // Rayon de la Terre en km
+        const dLat = deg2rad(lat2 - lat1);
+        const dLon = deg2rad(lon2 - lon1);
+        const a = 
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const d = R * c; // Distance en km
+        return d;
+    };
+
+    const deg2rad = (deg) => {
+        return deg * (Math.PI / 180);
     };
 
     return (
@@ -141,16 +188,28 @@ export default function LocationMapView() {
                         onChangeText={handleSearch}
                         placeholder="Entrez le nom d’une ville"
                         onFocus={handleFocus}
-                        onBlur={handleBlur}
                     />
                 </View>
+                {showSlider && (
+                    <View style={styles.sliderContainer}>
+                        <Text>Rayon: {radius} km</Text>
+                        <Slider
+                            style={styles.slider}
+                            minimumValue={1}
+                            maximumValue={500} //A modifier
+                            step={1}
+                            value={radius}
+                            onValueChange={setRadius}
+                        />
+                    </View>
+                )}
                 <MapView
                     style={styles.map}
                     initialRegion={INITIAL_REGION}
                     ref={mapRef}
                     showsUserLocation={true} // Affiche le point bleu de localisation
                 >
-                    {markers.map((marker, index) => (
+                    {filterMarkersByRadius().map((marker, index) => (
                         <Marker
                             key={index}
                             coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
@@ -184,6 +243,12 @@ export default function LocationMapView() {
                         />
                     </View>
                 )}
+                <TouchableOpacity style={styles.locationButton} onPress={centerUserLocation}>
+                    <Ionicons name="locate" size={24} color="white" />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.sliderToggleButton} onPress={() => setShowSlider(!showSlider)}>
+                    <Ionicons name="options" size={24} color="white" />
+                </TouchableOpacity>
             </View>
         </TouchableWithoutFeedback>
     );
@@ -256,5 +321,43 @@ const styles = StyleSheet.create({
     autocompleteItemText: {
         fontSize: 18, // Augmentez cette valeur pour rendre le texte plus grand
         marginLeft: 10, // Ajoutez une marge à gauche pour séparer l'icône du texte
+    },
+    locationButton: {
+        position: 'absolute',
+        bottom: 20,
+        left: 20,
+        backgroundColor: '#007AFF',
+        borderRadius: 50,
+        width: 50,
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 3,
+    },
+    sliderToggleButton: {
+        position: 'absolute',
+        bottom: 80, // Positionné au-dessus du bouton de localisation
+        left: 20,
+        backgroundColor: '#007AFF',
+        borderRadius: 50,
+        width: 50,
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 3,
+    },
+    sliderContainer: {
+        position: 'absolute',
+        top: 70, // Positionné en dessous du TextInput
+        left: 10,
+        right: 10,
+        backgroundColor: 'white',
+        padding: 10,
+        borderRadius: 10,
+        zIndex: 3,
+    },
+    slider: {
+        width: '100%',
+        height: 40,
     },
 });
