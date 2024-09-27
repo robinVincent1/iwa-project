@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, Modal, TouchableWithoutFeedback } from 'react-native';
 import React, { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
@@ -102,46 +102,50 @@ export default function EmplacementDetailsDisponibilities() {
                 animationType="slide"
                 onRequestClose={toggleCalendar}
             >
-                <View style={styles.modalContainer}>
-                    <View style={styles.calendarContainer}>
-                        <Calendar
-                            minDate={today}
-                            markingType={'period'}
-                            markedDates={markedDates}
-                            disableArrowLeft={currentMonth <= today.slice(0, 7)}
-                            onDayPress={onDayPress}
-                            onMonthChange={(month) => {
-                                setCurrentMonth(month.dateString.slice(0, 7));
-                            }}
-                            theme={{
-                                backgroundColor: '#ffffff',
-                                calendarBackground: '#ffffff',
-                                textSectionTitleColor: '#b6c1cd',
-                                textSectionTitleDisabledColor: '#d9e1e8',
-                                selectedDayBackgroundColor: '#00adf5',
-                                selectedDayTextColor: '#ffffff',
-                                todayTextColor: '#00adf5',
-                                dayTextColor: '#2d4150',
-                                textDisabledColor: '#d9e1e8',
-                                dotColor: '#00adf5',
-                                selectedDotColor: '#ffffff',
-                                arrowColor: 'black',
-                                disabledArrowColor: '#d9e1e8',
-                                monthTextColor: 'black', // Couleur du mois en noir
-                                indicatorColor: 'black',
-                                textDayFontFamily: 'monospace',
-                                textMonthFontFamily: 'monospace',
-                                textDayHeaderFontFamily: 'monospace',
-                                textDayFontWeight: '300',
-                                textMonthFontWeight: 'bold',
-                                textDayHeaderFontWeight: '300',
-                                textDayFontSize: 16,
-                                textMonthFontSize: 16,
-                                textDayHeaderFontSize: 16
-                            }}
-                        />
+                <TouchableWithoutFeedback onPress={toggleCalendar}>
+                    <View style={styles.modalContainer}>
+                        <TouchableWithoutFeedback>
+                            <View style={styles.calendarContainer}>
+                                <Calendar
+                                    minDate={today}
+                                    markingType={'period'}
+                                    markedDates={markedDates}
+                                    disableArrowLeft={currentMonth <= today.slice(0, 7)}
+                                    onDayPress={onDayPress}
+                                    onMonthChange={(month) => {
+                                        setCurrentMonth(month.dateString.slice(0, 7));
+                                    }}
+                                    theme={{
+                                        backgroundColor: '#ffffff',
+                                        calendarBackground: '#ffffff',
+                                        textSectionTitleColor: '#b6c1cd',
+                                        textSectionTitleDisabledColor: '#d9e1e8',
+                                        selectedDayBackgroundColor: '#00adf5',
+                                        selectedDayTextColor: '#ffffff',
+                                        todayTextColor: '#00adf5',
+                                        dayTextColor: '#2d4150',
+                                        textDisabledColor: '#d9e1e8',
+                                        dotColor: '#00adf5',
+                                        selectedDotColor: '#ffffff',
+                                        arrowColor: 'black',
+                                        disabledArrowColor: '#d9e1e8',
+                                        monthTextColor: 'black', // Couleur du mois en noir
+                                        indicatorColor: 'black',
+                                        textDayFontFamily: 'monospace',
+                                        textMonthFontFamily: 'monospace',
+                                        textDayHeaderFontFamily: 'monospace',
+                                        textDayFontWeight: '300',
+                                        textMonthFontWeight: 'bold',
+                                        textDayHeaderFontWeight: '300',
+                                        textDayFontSize: 16,
+                                        textMonthFontSize: 16,
+                                        textDayHeaderFontSize: 16
+                                    }}
+                                />
+                            </View>
+                        </TouchableWithoutFeedback>
                     </View>
-                </View>
+                </TouchableWithoutFeedback>
             </Modal>
         </View>
     );
