@@ -6,6 +6,7 @@ import EmplacementDetailsFacilities from '../components/emplacement_details_faci
 import EmplacementDetailsComments from '../components/emplacement_details_comments';
 import EmplacementDetailsDescription from '../components/emplacement_details_description';
 import EmplacementDetailsDisponibilities from '../components/emplacement_details_disponibilities';
+import EmplacementDetailsReport from '../components/emplacement_details_report';
 
 export default function EmplacementDetails({ route }) {
     const { marker } = route.params;
@@ -32,6 +33,7 @@ export default function EmplacementDetails({ route }) {
             <Separateur />
             <EmplacementDetailsDisponibilities />
             <Separateur />
+            <EmplacementDetailsReport />
             <View style={styles.buttonContainer}>
                 <Pressable style={styles.button}>
                     <Text style={styles.text_button}>Réserver</Text>
