@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Image, StyleSheet } from 'react-native';
 
 export default function Header() {
   return (
     <View style={styles.headerContainer}>
-      <Text style={styles.headerText}>Nom de l'App</Text>
+      <Image source={require('../assets/header_logo.jpeg')} style={styles.logo} />
     </View>
   );
 };
@@ -19,8 +19,10 @@ const styles = StyleSheet.create({
     paddingLeft: 10, // Ajouter un padding à gauche
     paddingBottom: 10, // Ajouter un padding en bas
   },
-  headerText: {
-    fontSize: 20,
-    fontWeight: 'bold',
+  logo: {
+    width: 120, // Ajustez la largeur selon vos besoins
+    height: 120, // Ajustez la hauteur selon vos besoins
+    resizeMode: 'contain', // Pour s'assurer que l'image est contenue dans les dimensions spécifiées
+    marginBottom: -40, // Ajustez cette valeur pour descendre le logo
   },
 });
