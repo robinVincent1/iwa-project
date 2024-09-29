@@ -1,5 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect } from "react";
+import { MaterialIcons } from "@expo/vector-icons";
 import {
   StyleSheet,
   Text,
@@ -33,6 +34,7 @@ export type Emplacement = {
   equipement: string;
   tarif: number;
   disponible: boolean;
+  moyenneAvis: number;
 };
 
 export type Reservation = {
@@ -42,6 +44,14 @@ export type Reservation = {
   statut: string;
   message_voyageur: string;
   emplacement: Emplacement;
+};
+
+export type Avis = {
+  id_avis: string;
+  id_emplacement: string;
+  note: number;
+  commentaire: string;
+  date_avis: string;
 };
 
 export default function ProfilView() {
@@ -66,8 +76,13 @@ export default function ProfilView() {
   useEffect(() => {
     loadUser();
     loadEmplacements();
-    loadReservations();
   }, []);
+
+  useEffect(() => {
+    if (emplacements.length > 0) {
+      loadReservations(emplacements);
+    }
+  }, [emplacements]);
 
   const loadUser = async () => {
     setUserInfo(fakeUser);
@@ -82,6 +97,7 @@ export default function ProfilView() {
         equipement: "Chaises longues",
         tarif: 50,
         disponible: true,
+        moyenneAvis: 0,
       },
       {
         id_emplacement: "2",
@@ -90,11 +106,48 @@ export default function ProfilView() {
         equipement: "Tentes",
         tarif: 30,
         disponible: false,
+        moyenneAvis: 0,
       },
     ];
+
+    const fakeAvis: Avis[] = [
+      {
+        id_avis: "1",
+        id_emplacement: "1",
+        note: 4,
+        commentaire: "Super séjour!",
+        date_avis: "2024-09-01",
+      },
+      {
+        id_avis: "2",
+        id_emplacement: "1",
+        note: 5,
+        commentaire: "Incroyable!",
+        date_avis: "2024-09-02",
+      },
+      {
+        id_avis: "3",
+        id_emplacement: "2",
+        note: 3,
+        commentaire: "Pas mal.",
+        date_avis: "2024-09-03",
+      },
+    ];
+
     setEmplacements(fakeEmplacements);
 
-    loadReservations(fakeEmplacements);
+    // Calculer la moyenne des avis
+    const emplacementsAvecMoyenne = fakeEmplacements.map((emplacement) => {
+      const avisPourEmplacement = fakeAvis.filter(
+        (avis) => avis.id_emplacement === emplacement.id_emplacement
+      );
+      const moyenne =
+        avisPourEmplacement.reduce((sum, avis) => sum + avis.note, 0) /
+        (avisPourEmplacement.length || 1);
+      return { ...emplacement, moyenneAvis: moyenne };
+    });
+
+    setEmplacements(emplacementsAvecMoyenne);
   };
 
   const loadReservations = async (loadedEmplacements: Emplacement[]) => {
@@ -210,6 +263,46 @@ export default function ProfilView() {
     navigation.navigate("Settings");
   };
 
+  const StarRating = ({ rating }) => {
+    const fullStars = Math.floor(rating); // Étoiles pleines
+    const hasHalfStar = rating % 1 !== 0; // Vérifie s'il y a une demi-étoile
+
+    return (
+      <View style={styles.container2}>
+        {Array.from({ length: 5 }, (_, index) => {
+          if (index < fullStars) {
+            return (
+              <MaterialIcons
+                key={index}
+                name="star"
+                size={24}
+                color="#FFD700"
+              />
+            );
+          } else if (index === fullStars && hasHalfStar) {
+            return (
+              <MaterialIcons
+                key={index}
+                name="star-half"
+                size={24}
+                color="#FFD700"
+              />
+            );
+          } else {
+            return (
+              <MaterialIcons
+                key={index}
+                name="star-border"
+                size={24}
+                color="#C0C0C0"
+              />
+            );
+          }
+        })}
+      </View>
+    );
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -317,7 +410,10 @@ export default function ProfilView() {
               onPress={() => navigateToEmplacementDetails(emplacement)}
             >
               <View style={styles.card}>
-                <Text style={styles.cardTitle}>{emplacement.localisation}</Text>
+                <Text style={styles.cardTitle}>
+                  {emplacement.localisation}{" "}
+                  <StarRating rating={emplacement.moyenneAvis} />
+                </Text>
                 <Text style={styles.cardText}>
                   Caractéristiques: {emplacement.caracteristique}
                 </Text>
@@ -350,30 +446,30 @@ export default function ProfilView() {
               key={reservation.id_reservation}
               onPress={() => navigateToReservationDetails(reservation)}
             >
-              <View style={styles.card}>
-                <Text style={styles.cardTitle}>
-                  {" "}
-                  {reservation.emplacement.localisation}:
-                </Text>
-                <Text style={styles.cardTitle}>
-                  {reservation.date_debut} / {reservation.date_fin}
-                </Text>
-                <Text style={styles.cardText}>
-                  Statut: {reservation.statut}
-                </Text>
-                <Text style={styles.cardText}>
-                  Message: {reservation.message_voyageur}
-                </Text>
-                <Text style={styles.cardText}>
-                  Caractéristique: {reservation.emplacement.caracteristique}
-                </Text>
-                <Text style={styles.cardText}>
-                  Équipement: {reservation.emplacement.equipement}
-                </Text>
-                <Text style={styles.cardText}>
-                  Tarif: {reservation.emplacement.tarif} €
-                </Text>
-              </View>
+<View style={styles.card}>
+  <Text style={styles.cardTitle}>
+    {reservation.emplacement.localisation}   <StarRating rating={reservation.emplacement.moyenneAvis} /> 
+  </Text>
+  <Text style={styles.cardText}>
+    {reservation.date_debut} / {reservation.date_fin}
+  </Text>
+  <Text style={styles.cardText}>
+    Statut: {reservation.statut}
+  </Text>
+  <Text style={styles.cardText}>
+    Message: {reservation.message_voyageur}
+  </Text>
+  <Text style={styles.cardText}>
+    Caractéristique: {reservation.emplacement.caracteristique}
+  </Text>
+  <Text style={styles.cardText}>
+    Équipement: {reservation.emplacement.equipement}
+  </Text>
+  <Text style={styles.cardText}>
+    Tarif: {reservation.emplacement.tarif} €
+  </Text>
+</View>
+
             </TouchableOpacity>
           ))}
         </View>
@@ -384,6 +480,25 @@ export default function ProfilView() {
 }
 
 const styles = StyleSheet.create({
+  starRatingContainer: {
+    flexDirection: "row", // Pour afficher les étoiles en ligne
+    alignItems: "center", // Pour aligner verticalement au centre
+  },
+  cardRatingContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+
+  container2: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  ratingText: {
+    marginLeft: 8,
+    fontSize: 16,
+    color: "#333",
+  },
   container: {
     flex: 1,
     backgroundColor: "#f5f5f5",
@@ -438,6 +553,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     elevation: 3,
   },
+  
   sectionTitle: {
     fontSize: 20,
     fontWeight: "bold",
@@ -496,7 +612,7 @@ const styles = StyleSheet.create({
   },
   sectionHeader: {
     flexDirection: "row",
-    justifyContent: "space-between", 
+    justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 10,
   },
