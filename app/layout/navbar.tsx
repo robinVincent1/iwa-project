@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeView from "../views/home_view";
-import ProfileView from "../views/profile_view";
+import ProfileView from "../views/profil/profile_view";
 import MapStackNavigator from "../navigation/stack_navigator";
 import Login from "../views/login_register/login_view";
 import { View, TouchableOpacity, Text } from "react-native";
