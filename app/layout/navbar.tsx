@@ -26,7 +26,7 @@ export default function Navbar() {
         }}
       />
       <Tab.Screen  
-        name="Carte"
+        name="Map_Stack"
         component={MapStackNavigator}
         options={{
           tabBarLabel: '',
@@ -37,7 +37,7 @@ export default function Navbar() {
         }}
         />
       <Tab.Screen 
-        name="Profile"
+        name="Profile_Stack"
         component={ProfileStackNavigator}
         options={{
           tabBarLabel: '',

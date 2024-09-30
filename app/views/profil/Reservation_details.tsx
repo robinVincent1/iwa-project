@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, Keyboard, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { Rating } from '@kolking/react-native-rating';
 
 export default function Reservation_details({ route, navigation }) {
   const { reservation } = route.params;
@@ -10,6 +11,11 @@ export default function Reservation_details({ route, navigation }) {
 
   const [showReviewForm, setShowReviewForm] = useState(false); // État pour gérer l'affichage du formulaire
   const [review, setReview] = useState({ note: '', commentaire: '' }); // État pour gérer l'avis
+  const [rating, setRating] = useState(0);
+
+  useEffect(() => {
+    setRating(parseFloat(review.note) || 0);
+  }, [review.note]);
 
   const handleCancel = () => {
     Alert.alert('Confirmation', 'Êtes-vous sûr de vouloir annuler cette réservation ?', [
@@ -17,6 +23,15 @@ export default function Reservation_details({ route, navigation }) {
       { text: 'Confirmer', onPress: () => { /* Logique pour annuler la réservation */ } },
     ]);
   };
+
+  const handleChangeRating = useCallback(
+    (value: number) => {
+      const roundedValue = Math.round(value);
+      setRating(roundedValue);
+      setReview((prevReview) => ({ ...prevReview, note: roundedValue.toString() }));
+    },
+    []
+  );
 
   const handleGiveReview = () => {
     setShowReviewForm(true); // Afficher le formulaire d'avis
@@ -71,17 +86,9 @@ export default function Reservation_details({ route, navigation }) {
           {showReviewForm && (
             <View style={styles.reviewForm}>
               <Text style={styles.formTitle}>Donner un avis</Text>
-
-              <TextInput
-                style={styles.input}
-                placeholder="Note (sur 5)"
-                keyboardType="numeric"
-                value={review.note}
-                onChangeText={(text) => setReview({ ...review, note: text })}
-                returnKeyType="done"
-                onSubmitEditing={Keyboard.dismiss}
-              />
-
+              <View style={styles.ratingContainer}>
+                <Rating size={40} rating={rating} onChange={handleChangeRating} />
+              </View>
               <TextInput
                 style={styles.input}
                 placeholder="Commentaire"
@@ -178,6 +185,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
     color: '#333',
+  },
+  ratingContainer: {
+    paddingBottom: 15,
   },
   input: {
     borderWidth: 1,
