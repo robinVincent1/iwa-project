@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useDispatch, useSelector } from 'react-redux'; // Importer useDispatch et useSelector
+import { logout } from '../../store/profilSlice';
 
 const SettingsView = () => {
+  const dispatch = useDispatch(); // Initialiser le dispatcher
+  const isLoggedIn = useSelector(state => state.profil.isLoggedIn); // Sélectionner l'état de connexion
   const [isDeletePending, setIsDeletePending] = useState(false); // État pour gérer si la demande de suppression est en attente
 
   const handleDeleteProfile = () => {
@@ -27,6 +31,18 @@ const SettingsView = () => {
     Alert.alert('Langue', 'Fonctionnalité non implémentée.');
   };
 
+  const handleLogout = () => {
+    Alert.alert('Déconnexion', 'Êtes-vous sûr de vouloir vous déconnecter ?', [
+      { text: 'Annuler', style: 'cancel' },
+      {
+        text: 'Déconnexion',
+        onPress: () => {
+          dispatch(logout()); // Déclencher l'action de déconnexion
+        },
+      },
+    ]);
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Réglages</Text>
@@ -48,6 +64,14 @@ const SettingsView = () => {
             <Ionicons name="trash" size={20} color="#fff" />
           </TouchableOpacity>
         )}
+
+        {isLoggedIn && ( // Afficher le bouton de déconnexion si l'utilisateur est connecté
+          <TouchableOpacity style={[styles.button, styles.logoutButton]} onPress={handleLogout}>
+            <Text style={styles.buttonText}>Se déconnecter</Text>
+            <Ionicons name="log-out" size={20} color="#fff" />
+          </TouchableOpacity>
+        )}
+        
       </View>
     </View>
   );
@@ -87,6 +111,9 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     backgroundColor: '#f44336', // Couleur rouge pour le bouton de suppression
+  },
+  logoutButton: {
+    backgroundColor: '#2196F3', // Couleur bleue pour le bouton de déconnexion
   },
 });
 
