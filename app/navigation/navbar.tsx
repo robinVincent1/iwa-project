@@ -1,21 +1,60 @@
-import { Provider, useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { Ionicons } from "@expo/vector-icons";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeView from "../views/home_view";
 import ProfileView from "../views/profile_view";
-import MapView from "../views/map_view";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Ionicons } from "@expo/vector-icons";
 import MapStackNavigator from "./stack_navigator";
 import Login from "../views/login_register/login_view";
+import { View, TouchableOpacity, Text } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 const Tab = createBottomTabNavigator();
+
+// Actions de connexion et de déconnexion
+export const login = () => {
+  return {
+    type: "LOGIN",
+  };
+};
+
+export const logout = () => {
+  return {
+    type: "LOGOUT",
+  };
+};
 
 export default function Navbar() {
   const profil_notifications = useSelector(
     (state: any) => state.profil_notifications
   );
+  const isAuthenticated = useSelector((state: any) => state.isAuthenticated); // Accès à l'état d'authentification
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
+
+  const handleAuthButton = () => {
+    if (isAuthenticated) {
+      dispatch(logout()); // Déconnexion
+    } else {
+      navigation.navigate("Login"); // Rediriger vers la page de connexion
+    }
+  };
+
+  const renderHeaderRight = () => (
+    <View style={{ marginRight: 10 }}>
+      <TouchableOpacity onPress={handleAuthButton}>
+        <Text style={{ color: "#007bff", fontWeight: "bold" }}>
+          <Ionicons name="log-in"  size={30} />
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
 
   return (
-    <Tab.Navigator>
+    <Tab.Navigator
+      screenOptions={{
+        headerRight: renderHeaderRight, // Bouton de connexion/déconnexion dans l'entête
+      }}
+    >
       <Tab.Screen
         name="Home"
         component={HomeView}
@@ -42,16 +81,6 @@ export default function Navbar() {
         options={{
           tabBarLabel: "",
           tabBarBadge: profil_notifications,
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person" color={color} size={size} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Login"
-        component={Login}
-        options={{
-          tabBarLabel: "",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person" color={color} size={size} />
           ),
