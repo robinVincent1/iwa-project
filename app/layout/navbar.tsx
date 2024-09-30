@@ -3,7 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeView from "../views/home_view";
 import ProfileView from "../views/profile_view";
-import MapStackNavigator from "./stack_navigator";
+import MapStackNavigator from "../navigation/stack_navigator";
 import Login from "../views/login_register/login_view";
 import { View, TouchableOpacity, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
@@ -35,7 +35,7 @@ export default function Navbar() {
     if (isAuthenticated) {
       dispatch(logout()); // Déconnexion
     } else {
-      navigation.navigate("Login"); // Rediriger vers la page de connexion
+      navigation.navigate("Login" as never); // Rediriger vers la page de connexion
     }
   };
 
