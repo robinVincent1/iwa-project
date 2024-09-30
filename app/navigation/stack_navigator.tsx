@@ -14,13 +14,13 @@ const Stack = createStackNavigator();
 export default function MapStackNavigator() {
     return (
         <Stack.Navigator initialRouteName="Map">
-            <Stack.Screen name="Map" component={LocationMapView} />
-            <Stack.Screen name="EmplacementDetails" component={EmplacementDetails} />
-            <Stack.Screen name="Login"  component={Login} />
-            <Stack.Screen name="Register" component={Register} />
-            <Stack.Screen name="Reservation_detail" component={Reservation_details} />
-            <Stack.Screen name="Emplacement_detail" component={Emplacement_details} />
-            <Stack.Screen name="Settings" component={SettingsView} />
+            <Stack.Screen name="Map" component={LocationMapView} options={{ headerShown: false }}/>
+            <Stack.Screen name="EmplacementDetails" component={EmplacementDetails} options={{ headerShown: false }}/>
+            <Stack.Screen name="Login"  component={Login} options={{ headerShown: false }} />
+            <Stack.Screen name="Register" component={Register} options={{ headerShown: false }}/>
+            <Stack.Screen name="Reservation_detail" component={Reservation_details} options={{ headerShown: false }} />
+            <Stack.Screen name="Emplacement_detail" component={Emplacement_details} options={{ headerShown: false }} />
+            <Stack.Screen name="Settings" component={SettingsView} options={{ headerShown: false }}/>
         </Stack.Navigator>
     );
 }
