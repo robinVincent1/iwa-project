@@ -5,7 +5,7 @@ import ProfileView from '../views/profil/profile_view';
 import MapView from '../views/map_view';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import MapStackNavigator from '../navigation/stack_navigator'; 
+import {MapStackNavigator,ProfileStackNavigator} from '../navigation/stack_navigator'; 
 
 const Tab = createBottomTabNavigator();
 
@@ -38,7 +38,7 @@ export default function Navbar() {
         />
       <Tab.Screen 
         name="Profile"
-        component={ProfileView}
+        component={ProfileStackNavigator}
         options={{
           tabBarLabel: '',
           tabBarBadge: profil_notifications,
