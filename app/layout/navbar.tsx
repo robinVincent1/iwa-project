@@ -5,7 +5,8 @@ import MapView from '../views/map_view';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 
-import MapStackNavigator from '../navigation/stack_navigator';
+import {MapStackNavigator} from '../navigation/stack_navigator';
+import {ProfileStackNavigator} from '../navigation/stack_navigator';
 import { useNavigation } from '@react-navigation/native';
 
 const Tab = createBottomTabNavigator();
