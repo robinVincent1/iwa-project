@@ -34,12 +34,15 @@ export default function HomepageArticles() {
     };
 
     return (
-        <FlatList
-            data={articles}
-            renderItem={renderItem}
-            keyExtractor={item => item.id}
-            contentContainerStyle={styles.container}
-        />
+        <View>
+            <Text style={styles.title}>Articles & Blogs</Text>
+            <FlatList
+                data={articles}
+                renderItem={renderItem}
+                keyExtractor={item => item.id}
+                contentContainerStyle={styles.container}
+            />
+        </View>
     );
 }
 
@@ -70,5 +73,11 @@ const styles = StyleSheet.create({
     articleExcerpt: {
         fontSize: 14,
         color: '#666',
-    },
+    },  
+    title: {
+        fontSize: 24, // Augmente la taille du texte
+        fontWeight: 'bold', // Met le texte en gras
+        alignSelf: 'flex-start', // Aligne le texte à gauche
+        marginLeft: 10, // Ajoute une marge à gauche pour coller le titre sur la gauche
+      },
 });
