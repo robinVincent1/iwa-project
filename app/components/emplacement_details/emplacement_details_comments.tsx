@@ -1,6 +1,6 @@
 import { Text, View, StyleSheet, Dimensions, Image, ScrollView } from 'react-native';
 import React from 'react';
-import { renderRating } from '../utils/renderRating';
+import { renderRating } from '../../utils/renderRating';
 import { useSharedValue } from "react-native-reanimated";
 import Carousel, {
     ICarouselInstance,

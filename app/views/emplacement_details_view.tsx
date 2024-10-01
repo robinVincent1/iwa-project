@@ -1,11 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
 import { renderRating } from '../utils/renderRating';
-import EmplacementDetailsImages from '../components/emplacement_details_images';
-import EmplacementDetailsFacilities from '../components/emplacement_details_facilities';
-import EmplacementDetailsComments from '../components/emplacement_details_comments';
-import EmplacementDetailsDescription from '../components/emplacement_details_description';
-import EmplacementDetailsDisponibilities from '../components/emplacement_details_disponibilities';
+import EmplacementDetailsImages from '../components/emplacement_details/emplacement_details_images';
+import EmplacementDetailsFacilities from '../components/emplacement_details/emplacement_details_facilities';
+import EmplacementDetailsComments from '../components/emplacement_details/emplacement_details_comments';
+import EmplacementDetailsDescription from '../components/emplacement_details/emplacement_details_description';
+import EmplacementDetailsDisponibilities from '../components/emplacement_details/emplacement_details_disponibilities';
 
 export default function EmplacementDetails({ route }) {
     const { marker } = route.params;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator,TransitionPresets } from '@react-navigation/stack';
 import LocationMapView from '../views/map_view';
 import EmplacementDetails from '../views/emplacement_details_view'; 
 import Login from '../views/login_register/login_view';
@@ -14,8 +14,8 @@ const Stack = createStackNavigator();
 
 export function MapStackNavigator() {
     return (
-        <Stack.Navigator initialRouteName="Map">
-            <Stack.Screen name="Map" component={LocationMapView} options={{ headerShown: false }}/>
+        <Stack.Navigator initialRouteName="Map" >
+            <Stack.Screen name="Map" component={LocationMapView} options={{ headerShown: false , animationEnabled:true}}/>
             <Stack.Screen name="EmplacementDetails" component={EmplacementDetails} options={{ headerShown: false }}/>
             <Stack.Screen name="Login"  component={Login} options={{ headerShown: false }} />
             <Stack.Screen name="Register" component={Register} options={{ headerShown: false }}/>
