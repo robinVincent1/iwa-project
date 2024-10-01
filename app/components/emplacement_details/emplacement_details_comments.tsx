@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, Dimensions, Image, ScrollView } from 'react-native';
+import { Text, View, StyleSheet, Dimensions, Image, ScrollView, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { renderRating } from '../../utils/renderRating';
 import { useSharedValue } from "react-native-reanimated";
@@ -6,13 +6,14 @@ import Carousel, {
     ICarouselInstance,
     Pagination,
 } from "react-native-reanimated-carousel";
+import { Ionicons } from '@expo/vector-icons';
 
 interface EmplacementDetailsCommentsProps {
     markers: any //A changer
 }
 
 const MAX_COMMENT_LENGTH = 200;
-const COMMENT_NUMBERS = 6
+const COMMENT_NUMBERS = 6;
 
 const truncateComment = (comment: string) => {
     if (comment.length <= MAX_COMMENT_LENGTH) return comment;
@@ -22,14 +23,19 @@ const truncateComment = (comment: string) => {
 
 export default function EmplacementDetailsComments({ markers }: EmplacementDetailsCommentsProps) {
 
-    const data = [...new Array(COMMENT_NUMBERS).keys()];
+    const data = [...new Array(COMMENT_NUMBERS).keys(), 'arrow']; // Ajouter un élément 'arrow' à la fin
     const width = Dimensions.get("window").width;
     const carouselRef = React.useRef<ICarouselInstance>(null);
     const progress = useSharedValue<number>(0);
 
+    const handleArrowPress = () => {
+        console.log('Flèche cliquée');
+        // Ajoutez ici la logique de navigation ou d'action lorsque la flèche est cliquée
+    };
+
     return (
         <View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal:10 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 10 }}>
                 {renderRating(markers.rating, true)}
                 <Text style={{ marginLeft: 10 }}>223 Commentaires</Text>
             </View>
@@ -38,31 +44,41 @@ export default function EmplacementDetailsComments({ markers }: EmplacementDetai
                 width={width}
                 height={width / 2}
                 data={data}
+                loop={false}
                 onProgressChange={(offsetProgress: number, absoluteProgress: number) => {
                     progress.value = absoluteProgress;
                 }}
-                renderItem={({ index }) => (
-                    <View style={styles.itemContainer}>
-                        <View style={styles.profileContainer}>
-                            <View style={styles.profileImagePlaceholder}>
-                                {/* Placeholder pour l'image de profil */}
+                renderItem={({ index, item }) => (
+                    item === 'arrow' ? (
+                        <TouchableOpacity style={styles.arrowContainer} onPress={handleArrowPress}>
+                            <View style={styles.arrowCircle}>
+                                <Ionicons name="arrow-forward" size={30} color="black" />
                             </View>
-                            <View style={styles.profileTextContainer}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                    <Text style={styles.profileName}>Prénom {index}</Text>
-                                    <Text style={styles.commentDate}>Date {index}</Text>
+                            <Text style={styles.arrowText}>Cliquez pour voir tous les avis</Text>
+                        </TouchableOpacity>
+                    ) : (
+                        <View style={styles.itemContainer}>
+                            <View style={styles.profileContainer}>
+                                <View style={styles.profileImagePlaceholder}>
+                                    {/* Placeholder pour l'image de profil */}
                                 </View>
-                                {renderRating(index, false)}
+                                <View style={styles.profileTextContainer}>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                        <Text style={styles.profileName}>Prénom {index}</Text>
+                                        <Text style={styles.commentDate}>Date {index}</Text>
+                                    </View>
+                                    {renderRating(index, false)}
+                                </View>
+                            </View>
+                            <View style={styles.commentContainer}>
+                                <ScrollView>
+                                    <Text style={styles.commentText}>
+                                        {truncateComment("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.")}
+                                    </Text>
+                                </ScrollView>
                             </View>
                         </View>
-                        <View style={styles.commentContainer}>
-                            <ScrollView>
-                                <Text style={styles.commentText}>
-                                    {truncateComment("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.")}
-                                </Text>
-                            </ScrollView>
-                        </View>
-                    </View>
+                    )
                 )}
             />
         </View>
@@ -115,5 +131,26 @@ const styles = StyleSheet.create({
     commentText: {
         fontSize: 15,
         textAlign: 'justify', // Justifie le texte du commentaire
+    },
+    arrowContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginHorizontal: 10,
+        padding: 10,
+    },
+    arrowCircle: {
+        width: 60,
+        height: 60,
+        borderRadius: 30, // Faire un cercle
+        backgroundColor: '#ccc',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 10, // Espace entre le cercle et le texte
+    },
+    arrowText: {
+        fontSize: 14,
+        color: '#666',
+        textAlign: 'center',
     },
 });
