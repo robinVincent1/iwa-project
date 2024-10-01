@@ -9,12 +9,13 @@ import { renderRating } from '../utils/renderRating';
 import { useDispatch } from 'react-redux';
 import Slider from '@react-native-community/slider';
 import map_view_styles from './map_view_style';
+import {useRoute} from '@react-navigation/native';
 
 const cities = require('../assets/cities.json');
 
-export default function LocationMapView() {
-
+export default function LocationMapView({route}) {
     const mapRef = useRef<any>(); //Changer le type plus tard
+    const textInputRef = useRef(null);
     const [query, setQuery] = useState('');
     const [filteredCities, setFilteredCities] = useState([]);
     const [locationGranted, setLocationGranted] = useState(false);
@@ -25,6 +26,13 @@ export default function LocationMapView() {
     const [isZoomedIn, setIsZoomedIn] = useState(false); // État pour contrôler le niveau de zoom
     const navigation = useNavigation();
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        const { fromHomepageSearch = false } = route.params || {};
+        if (fromHomepageSearch && textInputRef.current) {
+            textInputRef.current.focus();
+        }
+    }, [route.params]);
 
     const INITIAL_REGION = {
         latitude: 43.6,
@@ -220,6 +228,7 @@ export default function LocationMapView() {
                     <TextInput
                         style={map_view_styles.textInput}
                         value={query}
+                        ref={textInputRef}
                         onChangeText={handleSearch}
                         placeholder="Entrez le nom d’une ville"
                         onFocus={handleFocus}
