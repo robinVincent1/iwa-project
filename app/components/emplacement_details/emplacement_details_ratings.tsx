@@ -7,6 +7,7 @@ import Carousel, {
     Pagination,
 } from "react-native-reanimated-carousel";
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 interface EmplacementDetailsCommentsProps {
     markers: any //A changer
@@ -21,15 +22,17 @@ const truncateComment = (comment: string) => {
     return truncated.substring(0, truncated.lastIndexOf(" ")) + "...";
 };
 
-export default function EmplacementDetailsComments({ markers }: EmplacementDetailsCommentsProps) {
+export default function     EmplacementDetailsRatings({ markers }: EmplacementDetailsCommentsProps) {
 
     const data = [...new Array(COMMENT_NUMBERS).keys(), 'arrow']; // Ajouter un élément 'arrow' à la fin
     const width = Dimensions.get("window").width;
     const carouselRef = React.useRef<ICarouselInstance>(null);
     const progress = useSharedValue<number>(0);
+    const navigation = useNavigation();
 
     const handleArrowPress = () => {
         console.log('Flèche cliquée');
+        navigation.navigate('EmplacementDetailsAllRatings');
         // Ajoutez ici la logique de navigation ou d'action lorsque la flèche est cliquée
     };
 

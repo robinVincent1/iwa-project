@@ -1,24 +1,36 @@
 import React from 'react';
-import { createStackNavigator,TransitionPresets } from '@react-navigation/stack';
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import LocationMapView from '../views/map_view';
-import EmplacementDetails from '../views/emplacement_details_view'; 
+import EmplacementDetails from '../views/emplacement_details/emplacement_details_view'; 
 import Login from '../views/login_register/login_view';
 import Register from '../views/login_register/register_view';
 import Reservation_details from '../views/profil/Reservation_details';
 import Emplacement_details from '../views/profil/Emplacement_details';
 import SettingsView from '../views/profil/settings_view';
 import ProfileView from '../views/profil/profile_view';
-
+import EmplacementDetailsAllRatings from '../views/emplacement_details/emplacement_details_all_ratings';
 
 const Stack = createStackNavigator();
+const EmplacementDetailsStack = createStackNavigator();
+
+function EmplacementDetailsStackNavigator({ route }) {
+    const { marker } = route.params;
+    return (
+        <EmplacementDetailsStack.Navigator initialRouteName="EmplacementDetailsMain">
+            <EmplacementDetailsStack.Screen name="EmplacementDetailsMain" component={EmplacementDetails} initialParams={{ marker }} options={{ headerShown: false }} />
+            <EmplacementDetailsStack.Screen name="EmplacementDetailsAllRatings" component={EmplacementDetailsAllRatings} options={{ headerShown: false }} />
+        </EmplacementDetailsStack.Navigator>
+    );
+}
+
 
 export function MapStackNavigator() {
     return (
-        <Stack.Navigator initialRouteName="Map" >
-            <Stack.Screen name="Map" component={LocationMapView} options={{ headerShown: false , animationEnabled:true}}/>
-            <Stack.Screen name="EmplacementDetails" component={EmplacementDetails} options={{ headerShown: false }}/>
-            <Stack.Screen name="Login"  component={Login} options={{ headerShown: false }} />
-            <Stack.Screen name="Register" component={Register} options={{ headerShown: false }}/>
+        <Stack.Navigator initialRouteName="Map">
+            <Stack.Screen name="Map" component={LocationMapView} options={{ headerShown: false }} />
+            <Stack.Screen name="EmplacementDetails" component={EmplacementDetailsStackNavigator} options={{ headerShown: false }} />
+            <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+            <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
         </Stack.Navigator>
     );
 }
