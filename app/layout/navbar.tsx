@@ -5,7 +5,7 @@ import MapView from '../views/map_view';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 
-import {MapStackNavigator} from '../navigation/stack_navigator';
+import {HomeStackNavigator, MapStackNavigator} from '../navigation/stack_navigator';
 import {ProfileStackNavigator} from '../navigation/stack_navigator';
 import { useNavigation } from '@react-navigation/native';
 
@@ -20,7 +20,7 @@ export default function Navbar() {
     <Tab.Navigator>
       <Tab.Screen 
         name="Home" 
-        component={HomeView}
+        component={HomeStackNavigator}
         options={{
           tabBarLabel: '',
           tabBarIcon: ({ color, size }) => (

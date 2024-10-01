@@ -1,36 +1,41 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
-
 const articles = [
     {
-        id: '1',
-        title: 'Article 1',
-        excerpt: 'Ceci est un extrait de l\'article 1.',
-        imageUrl: 'https://via.placeholder.com/150',
+        id_article: '1',
+        titre: 'Article 1',
+        extrait_description: 'Ceci est un extrait de l\'article 1.',
+        description: 'Voici la description complète de l\'article 1. Il parle de divers sujets intéressants.',
+        date: '28/09/2024',
+        image: 'https://via.placeholder.com/150',
     },
     {
-        id: '2',
-        title: 'Article 2',
-        excerpt: 'Ceci est un extrait de l\'article 2.',
-        imageUrl: 'https://via.placeholder.com/150',
+        id_article: '2',
+        titre: 'Article 2',
+        extrait_description: 'Ceci est un extrait de l\'article 2.',
+        description: 'La description complète de l\'article 2 contient des informations détaillées.',
+        date: '29/09/2024',
+        image: 'https://via.placeholder.com/150',
     },
     // Ajoutez plus d'articles ici
 ];
+import React from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 export default function HomepageArticles() {
+    const navigation = useNavigation();
+
     const renderItem = ({ item }) => (
         <TouchableOpacity style={styles.articleContainer} onPress={() => handleArticlePress(item)}>
-            <Image source={{ uri: item.imageUrl }} style={styles.articleImage} />
+            <Image source={{ uri: item.image }} style={styles.articleImage} />
             <View style={styles.articleContent}>
-                <Text style={styles.articleTitle}>{item.title}</Text>
-                <Text style={styles.articleExcerpt}>{item.excerpt}</Text>
+                <Text style={styles.articleTitle}>{item.titre}</Text>
+                <Text style={styles.articleExcerpt}>{item.extrait_description}</Text>
             </View>
         </TouchableOpacity>
     );
 
     const handleArticlePress = (article) => {
-        // Logique de navigation ou d'action lorsque l'article est cliqué
-        console.log('Article cliqué:', article);
+        navigation.navigate('ArticleDetails', { article });
     };
 
     return (
@@ -39,7 +44,7 @@ export default function HomepageArticles() {
             <FlatList
                 data={articles}
                 renderItem={renderItem}
-                keyExtractor={item => item.id}
+                keyExtractor={item => item.id_article}
                 contentContainerStyle={styles.container}
             />
         </View>
@@ -73,11 +78,11 @@ const styles = StyleSheet.create({
     articleExcerpt: {
         fontSize: 14,
         color: '#666',
-    },  
+    },
     title: {
-        fontSize: 24, // Augmente la taille du texte
-        fontWeight: 'bold', // Met le texte en gras
-        alignSelf: 'flex-start', // Aligne le texte à gauche
-        marginLeft: 10, // Ajoute une marge à gauche pour coller le titre sur la gauche
-      },
+        fontSize: 24,
+        fontWeight: 'bold',
+        alignSelf: 'flex-start',
+        marginLeft: 10,
+    },
 });
