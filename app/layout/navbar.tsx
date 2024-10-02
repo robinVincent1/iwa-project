@@ -19,7 +19,7 @@ export default function Navbar() {
   return (
     <Tab.Navigator>
       <Tab.Screen 
-        name="Home" 
+        name="Home_Stack" 
         component={HomeStackNavigator}
         options={{
           tabBarLabel: '',
