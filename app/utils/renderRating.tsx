@@ -19,11 +19,6 @@ export const renderRating = (rating: number, showAverage: boolean = true) => {
 
     return (
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            {showAverage && (
-                <Text style={{ marginRight: 5, fontSize: 16, fontWeight: 'bold' }}>
-                    {roundedRating.toFixed(1)}
-                </Text>
-            )}
             {[...Array(fullStars)].map((_, index) => (
                 <Ionicons key={`full-${index}`} name="star" size={18} color="#FFD700" />
             ))}
