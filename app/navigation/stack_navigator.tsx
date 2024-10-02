@@ -19,10 +19,10 @@ const Stack = createStackNavigator();
 const EmplacementDetailsStack = createStackNavigator();
 
 function EmplacementDetailsStackNavigator({ route }) {
-    const { marker } = route.params;
+    const { emplacement } = route.params;
     return (
         <EmplacementDetailsStack.Navigator initialRouteName="EmplacementDetailsMain">
-            <EmplacementDetailsStack.Screen name="EmplacementDetailsMain" component={EmplacementDetails} initialParams={{ marker }} options={{ headerShown: false }} />
+            <EmplacementDetailsStack.Screen name="EmplacementDetailsMain" component={EmplacementDetails} initialParams={{ emplacement }} options={{ headerShown: false }} />
             <EmplacementDetailsStack.Screen name="EmplacementDetailsAllRatings" component={EmplacementDetailsAllRatings} options={{ headerShown: false }} />
         </EmplacementDetailsStack.Navigator>
     );
