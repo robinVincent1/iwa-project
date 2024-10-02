@@ -12,8 +12,10 @@ export default function HomepageFavorites() {
     const [favorites, setFavorites] = useState(data.slice(0, -1).map(() => true)); // Initialiser tous les éléments comme favoris
 
     const handleArrowPress = () => {
-       // navigation.navigate('AnotherPage'); // Remplacez 'AnotherPage' par le nom de la page vers laquelle vous voulez naviguer
-    };
+      const favoriteItems = data.slice(0, -1); // Exclure l'élément 'arrow'
+      navigation.navigate('FavoritesPage', { favoritesData: favoriteItems });
+  };
+  
 
     const toggleFavorite = (index) => {
         setFavorites((prevFavorites) => {

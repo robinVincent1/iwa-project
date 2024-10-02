@@ -1,66 +1,67 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
+import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
-export default function ArticleDetails({ route }) {
-  const { article } = route.params;
+export default function ArticlesPage({ route, navigation }) {
+    const { articlesData } = route.params; // Récupérer les articles passés en paramètre
 
-  return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>{article.titre}</Text>
+    const renderItem = ({ item }) => (
+        <TouchableOpacity style={styles.articleContainer} onPress={() => handleArticlePress(item)}>
+            <Image source={{ uri: item.image }} style={styles.articleImage} />
+            <View style={styles.articleContent}>
+                <Text style={styles.articleTitle}>{item.titre}</Text>
+                <Text style={styles.articleExcerpt}>{item.extrait_description}</Text>
+            </View>
+        </TouchableOpacity>
+    );
 
-      <Image source={{ uri: article.image }} style={styles.image} />
+    const handleArticlePress = (article) => {
+        navigation.navigate('ArticleDetails', { article });
+    };
 
-      <Text style={styles.date}>Publié le {article.date}</Text>
-
-      <Text style={styles.description}>{article.description}</Text>
-    </ScrollView>
-  );
+    return (
+        <View style={styles.container}>
+            <Text style={styles.title}>Tous les Articles</Text>
+            <FlatList
+                data={articlesData}
+                renderItem={renderItem}
+                keyExtractor={item => item.id_article}
+            />
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    backgroundColor: '#f9f9f9',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  image: {
-    width: '100%',
-    height: 200,
-    borderRadius: 8,
-    marginBottom: 20,
-  },
-  date: {
-    fontSize: 16,
-    color: '#999',
-    textAlign: 'right',
-    marginBottom: 20,
-  },
-  excerptTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 10,
-  },
-  excerpt: {
-    fontSize: 16,
-    color: '#555',
-    marginBottom: 20,
-  },
-  descriptionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 10,
-  },
-  description: {
-    fontSize: 16,
-    color: '#555',
-    lineHeight: 22,
-  },
+    container: {
+        flex: 1,
+        padding: 20,
+    },
+    articleContainer: {
+        flexDirection: 'row',
+        marginBottom: 20,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 10,
+        overflow: 'hidden',
+    },
+    articleImage: {
+        width: 100,
+        height: 100,
+    },
+    articleContent: {
+        flex: 1,
+        padding: 10,
+    },
+    articleTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    articleExcerpt: {
+        fontSize: 14,
+        color: '#666',
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 20,
+    },
 });

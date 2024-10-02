@@ -9,8 +9,10 @@ import Emplacement_details from '../views/profil/Emplacement_details';
 import SettingsView from '../views/profil/settings_view';
 import ProfileView from '../views/profil/profile_view';
 import EmplacementDetailsAllRatings from '../views/emplacement_details/emplacement_details_all_ratings';
-import ArticleDetails from '../views/article_view';
+import ArticleDetails from '../views/article_details_view';
 import HomeView from '../views/home_view';
+import FavoritesPage from '../views/favorite_view';
+import ArticlesPage from '../views/article_view';
 
 
 const Stack = createStackNavigator();
@@ -45,7 +47,6 @@ export function ProfileStackNavigator() {
             <Stack.Screen name="Reservation_detail" component={Reservation_details} options={{ headerShown: false }} />
             <Stack.Screen name="Emplacement_detail" component={Emplacement_details} options={{ headerShown: false }} />
             <Stack.Screen name="Settings" component={SettingsView} options={{ headerShown: false }} />
-            <Stack.Screen name="article" component={ArticleDetails} options={{ headerShown: false }}/>
         </Stack.Navigator>
     );
 }
@@ -55,6 +56,8 @@ export function HomeStackNavigator() {
         <Stack.Navigator initialRouteName="Home">
             <Stack.Screen name="Home" component={HomeView}  options={{ headerShown: false }} />
             <Stack.Screen name="ArticleDetails" component={ArticleDetails} options={{ headerShown: false }}/>
+            <Stack.Screen name="FavoritesPage" component={FavoritesPage} options={{ headerShown: false }} />
+            <Stack.Screen name="ArticlesPage" component={ArticlesPage} options={{ headerShown: false }} />
         </Stack.Navigator>
     );
 }

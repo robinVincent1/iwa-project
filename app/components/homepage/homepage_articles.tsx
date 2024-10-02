@@ -1,3 +1,8 @@
+import React from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
+
 const articles = [
     {
         id_article: '1',
@@ -17,9 +22,6 @@ const articles = [
     },
     // Ajoutez plus d'articles ici
 ];
-import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 
 export default function HomepageArticles() {
     const navigation = useNavigation();
@@ -38,22 +40,35 @@ export default function HomepageArticles() {
         navigation.navigate('ArticleDetails', { article });
     };
 
+    const handleSeeAllPress = () => {
+        navigation.navigate('ArticlesPage', { articlesData: articles });
+    };
+
     return (
-        <View>
+        <View style={styles.container}>
             <Text style={styles.title}>Articles & Blogs</Text>
             <FlatList
-                data={articles}
+                data={articles.slice(0, 2)} // Affichez seulement les 2 premiers articles ici
                 renderItem={renderItem}
                 keyExtractor={item => item.id_article}
-                contentContainerStyle={styles.container}
+                contentContainerStyle={styles.flatListContainer} // Appliquez un style pour le padding
             />
+            <TouchableOpacity style={styles.seeAllButton} onPress={handleSeeAllPress}>
+                <View style={styles.arrowCircle}>
+                    <Ionicons name="arrow-down" size={30} color="black" />
+                </View>
+                <Text style={styles.arrowText}>Consulter tous les articles</Text>
+            </TouchableOpacity>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        padding: 20,
+        paddingHorizontal: 10, // Ajoute du padding horizontal pour tout le conteneur
+    },
+    flatListContainer: {
+        paddingBottom: 20, // Ajoute du padding au bas de la liste
     },
     articleContainer: {
         flexDirection: 'row',
@@ -62,6 +77,7 @@ const styles = StyleSheet.create({
         borderColor: '#ccc',
         borderRadius: 10,
         overflow: 'hidden',
+        padding: 10, // Ajoute du padding autour du contenu de l'article
     },
     articleImage: {
         width: 100,
@@ -69,7 +85,7 @@ const styles = StyleSheet.create({
     },
     articleContent: {
         flex: 1,
-        padding: 10,
+        paddingLeft: 10,
     },
     articleTitle: {
         fontSize: 18,
@@ -82,7 +98,23 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 24,
         fontWeight: 'bold',
-        alignSelf: 'flex-start',
-        marginLeft: 10,
+        marginBottom: 10,
+    },
+    seeAllButton: {
+        alignItems: 'center',
+        marginTop: 20,
+    },
+    arrowCircle: {
+        width: 60,
+        height: 60,
+        borderRadius: 30,
+        backgroundColor: '#ccc',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 10, // Espace entre le cercle et le texte
+    },
+    arrowText: {
+        fontSize: 14,
+        color: '#666',
     },
 });
