@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
-export default function Emplacement_details({ route, navigation }) {
+export default function Emplacement_details({ route }) {
   const { emplacement } = route.params;
+  const navigation = useNavigation();
 
   const [isEditing, setIsEditing] = useState(false);
   const [localisation, setLocalisation] = useState(emplacement.localisation);
@@ -51,7 +53,12 @@ export default function Emplacement_details({ route, navigation }) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>{isEditing ? 'Modifier Emplacement' : 'Détails de l\'Emplacement'}</Text>
+      <View style={styles.header}>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <Ionicons name="arrow-back" size={24} color="black" />
+        </TouchableOpacity>
+        <Text style={styles.title}>{isEditing ? 'Modifier Emplacement' : 'Détails de l\'Emplacement'}</Text>
+      </View>
 
       {isEditing ? (
         <>
@@ -164,9 +171,18 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 26,
     fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
     color: '#333',
+    flex: 1,
+    textAlign: 'center',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+    paddingTop: 40, // Ajustez cette valeur pour rapprocher l'en-tête du haut de la page
+  },
+  backButton: {
+    marginRight: 10,
   },
   input: {
     borderWidth: 1,

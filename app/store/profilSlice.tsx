@@ -7,7 +7,7 @@ interface ProfilState {
 
 const initialState: ProfilState = {
     profil_notifications: 78,
-    isLoggedIn: false, // État initial pour isLoggedIn
+    isLoggedIn: true, // État initial pour isLoggedIn
 };
 
 const profilSlice = createSlice({

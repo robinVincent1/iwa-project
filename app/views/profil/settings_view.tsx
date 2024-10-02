@@ -3,11 +3,13 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux'; // Importer useDispatch et useSelector
 import { logout } from '../../store/profilSlice';
+import { useNavigation } from '@react-navigation/native';
 
 const SettingsView = () => {
   const dispatch = useDispatch(); // Initialiser le dispatcher
   const isLoggedIn = useSelector(state => state.profil.isLoggedIn); // Sélectionner l'état de connexion
   const [isDeletePending, setIsDeletePending] = useState(false); // État pour gérer si la demande de suppression est en attente
+  const navigation = useNavigation();
 
   const handleDeleteProfile = () => {
     Alert.alert('Confirmation', 'Êtes-vous sûr de vouloir supprimer votre profil ?', [
@@ -45,7 +47,12 @@ const SettingsView = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Réglages</Text>
+      <View style={styles.header}>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <Ionicons name="arrow-back" size={24} color="black" />
+        </TouchableOpacity>
+        <Text style={styles.title}>Réglages</Text>
+      </View>
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={changeLanguage}>
@@ -83,11 +90,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
     padding: 20,
   },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+    paddingTop: 40, // Ajustez cette valeur pour rapprocher l'en-tête du haut de la page
+  },
+  backButton: {
+    marginRight: 10,
+  },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
     textAlign: 'center',
+    flex: 1,
   },
   buttonContainer: {
     width: '100%',

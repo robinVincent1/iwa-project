@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 import { renderRating } from '../../utils/renderRating';
 
 const reviews = [
@@ -13,6 +14,7 @@ const reviews = [
 export default function EmplacementDetailsAllRatings() {
     const [search, setSearch] = useState('');
     const [filter, setFilter] = useState('all');
+    const navigation = useNavigation();
 
     const filteredReviews = reviews.filter(review => {
         if (filter === 'all') return true;
@@ -44,7 +46,12 @@ export default function EmplacementDetailsAllRatings() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Tous les avis</Text>
+            <View style={styles.header}>
+                <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+                    <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+                <Text style={styles.title}>Tous les avis</Text>
+            </View>
             <ScrollView 
                 horizontal 
                 style={styles.filterContainer} 
@@ -124,6 +131,14 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
+    },
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    backButton: {
+        marginRight: 10,
     },
     title: {
         fontSize: 24,

@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function ArticlesPage({ route, navigation }) {
     const { articlesData } = route.params; // Récupérer les articles passés en paramètre
@@ -20,7 +21,12 @@ export default function ArticlesPage({ route, navigation }) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Tous les Articles</Text>
+            <View style={styles.header}>
+                <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+                    <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+                <Text style={styles.title}>Tous les Articles</Text>
+            </View>
             <FlatList
                 data={articlesData}
                 renderItem={renderItem}
@@ -34,6 +40,20 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
+    },
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    backButton: {
+        marginRight: 10,
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        flex: 1,
+        textAlign: 'center',
     },
     articleContainer: {
         flexDirection: 'row',
@@ -58,10 +78,5 @@ const styles = StyleSheet.create({
     articleExcerpt: {
         fontSize: 14,
         color: '#666',
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
     },
 });

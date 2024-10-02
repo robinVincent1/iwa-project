@@ -11,8 +11,8 @@ import ProfileView from '../views/profil/profile_view';
 import EmplacementDetailsAllRatings from '../views/emplacement_details/emplacement_details_all_ratings';
 import ArticleDetails from '../views/article_details_view';
 import HomeView from '../views/home_view';
-import FavoritesPage from '../views/favorite_view';
-import ArticlesPage from '../views/article_view';
+import FavoritesPage from '../views/all_favorite_view';
+import ArticlesPage from '../views/all_article_view';
 import { useSelector } from 'react-redux';
 
 

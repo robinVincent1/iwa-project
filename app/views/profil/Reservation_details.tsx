@@ -51,7 +51,12 @@ export default function Reservation_details({ route, navigation }) {
     >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.container}>
-          <Text style={styles.title}>Détails de la Réservation</Text>
+          <View style={styles.header}>
+            <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+              <Ionicons name="arrow-back" size={24} color="black" />
+            </TouchableOpacity>
+            <Text style={styles.title}>Détails de la Réservation</Text>
+          </View>
 
           <View style={styles.detailRow}>
             <Text style={styles.label}>Date:</Text>
@@ -125,12 +130,21 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     elevation: 3,
   },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+    paddingTop: 40, // Ajustez cette valeur pour rapprocher l'en-tête du haut de la page
+  },
+  backButton: {
+    marginRight: 10,
+  },
   title: {
     fontSize: 26,
     fontWeight: 'bold',
-    marginBottom: 20,
     textAlign: 'center',
     color: '#333',
+    flex: 1,
   },
   detailRow: {
     flexDirection: 'row',

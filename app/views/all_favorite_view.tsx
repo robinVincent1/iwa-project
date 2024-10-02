@@ -1,8 +1,11 @@
 import React from 'react';
 import { View, Text, FlatList, ImageBackground, StyleSheet, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 export default function FavoritesPage({ route }) {
     const { favoritesData } = route.params; // Récupérer les favoris passés en paramètre
+    const navigation = useNavigation();
 
     const renderItem = ({ item }) => (
         <View style={styles.favoriteItem}>
@@ -17,7 +20,12 @@ export default function FavoritesPage({ route }) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Tous mes favoris</Text>
+            <View style={styles.header}>
+                <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+                    <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+                <Text style={styles.title}>Tous mes favoris</Text>
+            </View>
             <FlatList
                 data={favoritesData}
                 renderItem={renderItem}
@@ -31,6 +39,15 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
+        paddingTop: 40, // Réduire le padding en haut pour rapprocher l'en-tête du haut de la page
+    },
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    backButton: {
+        marginRight: 10,
     },
     favoriteItem: {
         marginBottom: 20,
@@ -55,6 +72,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 20,
+        textAlign: 'center',
+        flex: 1,
     },
 });

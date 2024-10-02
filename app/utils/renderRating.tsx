@@ -9,6 +9,8 @@ import { Ionicons } from '@expo/vector-icons';
  * @param {boolean} [showAverage=true] - A flag to indicate whether to display the average rating value.
  *                                        Defaults to true.
  */
+
+
 export const renderRating = (rating: number, showAverage: boolean = true) => {
     const roundedRating = Math.round(rating * 2) / 2;
     const fullStars = Math.floor(roundedRating);
