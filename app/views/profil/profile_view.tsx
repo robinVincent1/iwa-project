@@ -14,6 +14,8 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+
 
 // Définition des types User, Emplacement et Réservation
 export type User = {
@@ -305,15 +307,15 @@ export default function ProfilView() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <TouchableOpacity
-          onPress={navigateToSettings}
-          style={styles.settingsButton}
-        >
-          <Ionicons name="settings" size={24} color="#6200EE" />
-        </TouchableOpacity>
-      </View>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.headerContainer}>
+          <TouchableOpacity
+            onPress={navigateToSettings}
+            style={styles.settingsButton}
+          >
+            <Ionicons name="settings" size={24} color="#6200EE" />
+          </TouchableOpacity>
+        </View>
         <View style={styles.profileImageContainer}>
           {renderProfileImage()}
           {isEditing && (
@@ -326,11 +328,13 @@ export default function ProfilView() {
         <View style={styles.infoContainer}>
           <View style={styles.header}>
             <Text style={styles.title}>Profil</Text>
-            {isEditing ? null : (
-              <TouchableOpacity onPress={() => setIsEditing(true)}>
-                <Ionicons name="pencil" size={24} color="#6200EE" />
-              </TouchableOpacity>
-            )}
+            <TouchableOpacity onPress={() => setIsEditing(!isEditing)}>
+              {isEditing ? (
+                <MaterialCommunityIcons name="pencil-off" size={24} color="#6200EE" />
+              ) : (
+                <MaterialCommunityIcons name="pencil" size={24} color="#6200EE" />
+              )}
+            </TouchableOpacity>
           </View>
 
           {isEditing ? (
