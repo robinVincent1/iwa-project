@@ -13,6 +13,7 @@ import ArticleDetails from '../views/article_details_view';
 import HomeView from '../views/home_view';
 import FavoritesPage from '../views/favorite_view';
 import ArticlesPage from '../views/article_view';
+import { useSelector } from 'react-redux';
 
 
 const Stack = createStackNavigator();
@@ -34,18 +35,19 @@ export function MapStackNavigator() {
         <Stack.Navigator initialRouteName="Map">
             <Stack.Screen name="Map" component={LocationMapView} options={{ headerShown: false }} />
             <Stack.Screen name="EmplacementDetails" component={EmplacementDetailsStackNavigator} options={{ headerShown: false }} />
-            <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-            <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
         </Stack.Navigator>
     );
 }
 
 export function ProfileStackNavigator() {
+    const isLoggedIn = useSelector((state: any) => state.profil.isLoggedIn); 
     return (
-        <Stack.Navigator initialRouteName="Profile">
+        <Stack.Navigator initialRouteName={isLoggedIn ? "Profile" : "Login"}>
             <Stack.Screen name="Profile" component={ProfileView} options={{ headerShown: false }} />
             <Stack.Screen name="Reservation_detail" component={Reservation_details} options={{ headerShown: false }} />
             <Stack.Screen name="Emplacement_detail" component={Emplacement_details} options={{ headerShown: false }} />
+            <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+            <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
             <Stack.Screen name="Settings" component={SettingsView} options={{ headerShown: false }} />
         </Stack.Navigator>
     );

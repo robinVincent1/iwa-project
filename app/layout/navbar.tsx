@@ -51,15 +51,6 @@ export default function Navbar() {
           ),
           headerShown: false,
         }}
-        listeners={({ navigation }) => ({
-          tabPress: (e) => {
-            // Empêche l'utilisateur de naviguer vers la page de profil s'il n'est pas connecté
-            if (!isLoggedIn) {
-              e.preventDefault();  // Empêche la navigation
-              navigation.navigate('Login');  // Redirige vers la page de connexion
-            }
-          },
-        })}
       />
     </Tab.Navigator>
   );
