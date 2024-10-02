@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+
 import { useNavigation } from '@react-navigation/native';
 import { renderRating } from '../../utils/renderRating';
 
 const reviews = [
-    { id: '1', user: 'User1', rating: 5, comment: 'Excellent!' },
-    { id: '2', user: 'User2', rating: 4, comment: 'Very good' },
-    { id: '3', user: 'User3', rating: 3, comment: 'Average' },
+    { id: '1', user: 'User1', rating: 5, comment: 'Excellent!', date: '2023-09-01' },
+    { id: '2', user: 'User2', rating: 4, comment: 'Very good', date: '2023-08-25' },
+    { id: '3', user: 'User3', rating: 3, comment: 'Average', date: '2023-08-20' },
     // Ajoutez plus d'avis ici
 ];
 
@@ -16,15 +17,19 @@ export default function EmplacementDetailsAllRatings() {
     const [filter, setFilter] = useState('all');
     const navigation = useNavigation();
 
-    const filteredReviews = reviews.filter(review => {
-        if (filter === 'all') return true;
-        if (filter === 'recent') return true; // Placeholder logic for recent
-        if (filter === 'oldest') return true; // Placeholder logic for oldest
-        if (filter === 'best') return true; // Placeholder logic for best
-        if (filter === 'worst') return true; // Placeholder logic for worst
-        return review.rating === parseInt(filter);
-    }).filter(review => review.comment.toLowerCase().includes(search.toLowerCase()));
+    // Filtrage des avis en fonction des critères sélectionnés
+    const filteredReviews = reviews
+        .filter(review => {
+            if (filter === 'all') return true;
+            if (filter === 'recent') return true; // Placeholder pour les avis les plus récents
+            if (filter === 'oldest') return true; // Placeholder pour les plus anciens
+            if (filter === 'best') return review.rating === 5;
+            if (filter === 'worst') return review.rating === 1;
+            return review.rating === parseInt(filter);
+        })
+        .filter(review => review.comment.toLowerCase().includes(search.toLowerCase()));
 
+    // Rendu des étoiles pour chaque note
     const renderStars = (filledStars) => {
         const stars = [];
         for (let i = 0; i < 5; i++) {
@@ -46,12 +51,19 @@ export default function EmplacementDetailsAllRatings() {
 
     return (
         <View style={styles.container}>
-            <View style={styles.header}>
-                <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-                    <Ionicons name="arrow-back" size={24} color="black" />
-                </TouchableOpacity>
-                <Text style={styles.title}>Tous les avis</Text>
-            </View>
+
+            <Text style={styles.title}>Tous les avis</Text>
+
+            {/* Barre de recherche */}
+            <TextInput
+                style={styles.searchInput}
+                placeholder="Rechercher dans les avis..."
+                value={search}
+                onChangeText={setSearch}
+            />
+
+            {/* Filtres horizontaux */}
+
             <ScrollView 
                 horizontal 
                 style={styles.filterContainer} 
@@ -73,32 +85,16 @@ export default function EmplacementDetailsAllRatings() {
                 <TouchableOpacity onPress={() => setFilter('worst')} style={styles.filterButton}>
                     <Text>Les pires</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => setFilter('5')} style={styles.filterButton}>
-                    <View style={styles.starWrapper}>
-                        <View style={styles.starContainer}>{renderStars(5)}</View>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => setFilter('4')} style={styles.filterButton}>
-                    <View style={styles.starWrapper}>
-                        <View style={styles.starContainer}>{renderStars(4)}</View>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => setFilter('3')} style={styles.filterButton}>
-                    <View style={styles.starWrapper}>
-                        <View style={styles.starContainer}>{renderStars(3)}</View>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => setFilter('2')} style={styles.filterButton}>
-                    <View style={styles.starWrapper}>
-                        <View style={styles.starContainer}>{renderStars(2)}</View>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => setFilter('1')} style={styles.filterButton}>
-                    <View style={styles.starWrapper}>
-                        <View style={styles.starContainer}>{renderStars(1)}</View>
-                    </View>
-                </TouchableOpacity>
+                {[5, 4, 3, 2, 1].map(stars => (
+                    <TouchableOpacity key={stars} onPress={() => setFilter(stars.toString())} style={styles.filterButton}>
+                        <View style={styles.starWrapper}>
+                            <View style={styles.starContainer}>{renderStars(stars)}</View>
+                        </View>
+                    </TouchableOpacity>
+                ))}
             </ScrollView>
+
+            {/* Liste des avis */}
             <FlatList
                 data={filteredReviews}
                 keyExtractor={item => item.id}
@@ -111,7 +107,7 @@ export default function EmplacementDetailsAllRatings() {
                             <View style={styles.profileTextContainer}>
                                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                     <Text style={styles.profileName}>{item.user}</Text>
-                                    <Text style={styles.commentDate}>Date</Text>
+                                    <Text style={styles.commentDate}>{item.date}</Text>
                                 </View>
                                 {renderRating(item.rating, false)}
                             </View>
@@ -151,11 +147,12 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         marginBottom: 10,
         paddingHorizontal: 10,
+        borderRadius: 5,
     },
     filterContainer: {
         flexDirection: 'row',
         marginBottom: 10,
-        maxHeight: 60, // Limite la hauteur de la ScrollView
+        maxHeight: 60, 
     },
     scrollViewContent: {
         alignItems: 'center',
@@ -163,6 +160,10 @@ const styles = StyleSheet.create({
     filterButton: {
         alignItems: 'center',
         marginRight: 10,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        backgroundColor: '#f0f0f0',
+        borderRadius: 10,
     },
     starWrapper: {
         backgroundColor: '#f0f0f0',
@@ -190,14 +191,14 @@ const styles = StyleSheet.create({
     itemContainer: {
         flex: 1,
         justifyContent: "center",
-        overflow: 'hidden', // Pour s'assurer que le contenu respecte les bords arrondis
+        overflow: 'hidden', 
         padding: 10,
-        position: 'relative', // Pour positionner les éléments enfants
+        position: 'relative', 
     },
     profileContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        position: 'absolute', // Position absolue pour placer en haut à gauche
+        position: 'absolute',
         top: 10,
         left: 10,
     },
@@ -220,7 +221,7 @@ const styles = StyleSheet.create({
         marginLeft: 10,
     },
     commentContainer: {
-        marginTop: 60, // Pour laisser de la place au profil
+        marginTop: 60, 
     },
     commentText: {
         fontSize: 14,

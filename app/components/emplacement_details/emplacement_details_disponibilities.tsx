@@ -3,32 +3,26 @@ import React, { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 
+// Configuration des locales pour le calendrier
 LocaleConfig.locales['fr'] = {
     monthNames: [
-      'Janvier',
-      'Février',
-      'Mars',
-      'Avril',
-      'Mai',
-      'Juin',
-      'Juillet',
-      'Août',
-      'Septembre',
-      'Octobre',
-      'Novembre',
-      'Décembre'
+        'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 
+        'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 
+        'Novembre', 'Décembre'
     ],
-    monthNamesShort: ['Janv.', 'Févr.', 'Mars', 'Avril', 'Mai', 'Juin', 'Juil.', 'Août', 'Sept.', 'Oct.', 'Nov.', 'Déc.'],
-    dayNames: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
+    monthNamesShort: ['Janv.', 'Févr.', 'Mars', 'Avril', 'Mai', 
+        'Juin', 'Juil.', 'Août', 'Sept.', 'Oct.', 'Nov.', 'Déc.'],
+    dayNames: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 
+        'Jeudi', 'Vendredi', 'Samedi'],
     dayNamesShort: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'],
     today: "Aujourd'hui"
-  };
-  
+};
+
 LocaleConfig.defaultLocale = 'fr';
 
 export default function EmplacementDetailsDisponibilities() {
     const [isCalendarVisible, setCalendarVisible] = useState(false);
-    const [currentMonth, setCurrentMonth] = useState(new Date().toISOString().split('T')[0].slice(0, 7)); // Format YYYY-MM
+    const [currentMonth, setCurrentMonth] = useState(new Date().toISOString().slice(0, 7)); // Format YYYY-MM
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const [markedDates, setMarkedDates] = useState({});

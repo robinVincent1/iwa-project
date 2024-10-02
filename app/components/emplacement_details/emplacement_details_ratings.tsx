@@ -1,20 +1,25 @@
-import { Text, View, StyleSheet, Dimensions, Image, ScrollView, TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { renderRating } from '../../utils/renderRating';
 import { useSharedValue } from "react-native-reanimated";
-import Carousel, {
-    ICarouselInstance,
-    Pagination,
-} from "react-native-reanimated-carousel";
+import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
-interface EmplacementDetailsCommentsProps {
-    markers: any //A changer
+interface Avis {
+    id_avis: string;
+    note: number;
+    commentaire: string;
+    date_avis: string;
+    prenom_utilisateur: string;
+}
+
+interface EmplacementDetailsRatingsProps {
+    avis: Avis[]; // Liste des avis
+    rating: number; // Note moyenne de l'emplacement
 }
 
 const MAX_COMMENT_LENGTH = 200;
-const COMMENT_NUMBERS = 6;
 
 const truncateComment = (comment: string) => {
     if (comment.length <= MAX_COMMENT_LENGTH) return comment;
@@ -22,29 +27,26 @@ const truncateComment = (comment: string) => {
     return truncated.substring(0, truncated.lastIndexOf(" ")) + "...";
 };
 
-export default function     EmplacementDetailsRatings({ markers }: EmplacementDetailsCommentsProps) {
-
-    const data = [...new Array(COMMENT_NUMBERS).keys(), 'arrow']; // Ajouter un élément 'arrow' à la fin
+export default function EmplacementDetailsRatings({ avis, rating }: EmplacementDetailsRatingsProps) {
+    const data = [...avis, 'arrow']; // Ajouter un élément 'arrow' à la fin pour voir plus d'avis
     const width = Dimensions.get("window").width;
     const carouselRef = React.useRef<ICarouselInstance>(null);
     const progress = useSharedValue<number>(0);
     const navigation = useNavigation();
 
     const handleArrowPress = () => {
-        console.log('Flèche cliquée');
         navigation.navigate('EmplacementDetailsAllRatings');
-        // Ajoutez ici la logique de navigation ou d'action lorsque la flèche est cliquée
     };
 
     return (
-        <View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 10 }}>
-                {renderRating(markers.rating, true)}
-                <Text style={{ marginLeft: 10 }}>223 Commentaires</Text>
+        <View style={styles.container}>
+            <View style={styles.header}>
+                {renderRating(rating, true)}
+                <Text style={styles.commentsText}>{avis.length} Commentaires</Text>
             </View>
             <Carousel
                 ref={carouselRef}
-                width={width}
+                width={width} // Assurez-vous que la largeur s'adapte à l'écran
                 height={width / 2}
                 data={data}
                 loop={false}
@@ -55,28 +57,26 @@ export default function     EmplacementDetailsRatings({ markers }: EmplacementDe
                     item === 'arrow' ? (
                         <TouchableOpacity style={styles.arrowContainer} onPress={handleArrowPress}>
                             <View style={styles.arrowCircle}>
-                                <Ionicons name="arrow-forward" size={30} color="black" />
+                                <Ionicons name="arrow-forward" size={30} color="#fff" />
                             </View>
-                            <Text style={styles.arrowText}>Cliquez pour voir tous les avis</Text>
+                            <Text style={styles.arrowText}>Voir tous les avis</Text>
                         </TouchableOpacity>
                     ) : (
                         <View style={styles.itemContainer}>
                             <View style={styles.profileContainer}>
-                                <View style={styles.profileImagePlaceholder}>
-                                    {/* Placeholder pour l'image de profil */}
-                                </View>
+                                <View style={styles.profileImagePlaceholder} />
                                 <View style={styles.profileTextContainer}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <Text style={styles.profileName}>Prénom {index}</Text>
-                                        <Text style={styles.commentDate}>Date {index}</Text>
+                                    <View style={styles.userInfo}>
+                                        <Text style={styles.profileName}>{item.prenom_utilisateur}</Text>
+                                        <Text style={styles.commentDate}>{item.date_avis}</Text>
                                     </View>
-                                    {renderRating(index, false)}
+                                    {renderRating(item.note, false)}
                                 </View>
                             </View>
                             <View style={styles.commentContainer}>
                                 <ScrollView>
                                     <Text style={styles.commentText}>
-                                        {truncateComment("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.")}
+                                        {truncateComment(item.commentaire)}
                                     </Text>
                                 </ScrollView>
                             </View>
@@ -89,71 +89,88 @@ export default function     EmplacementDetailsRatings({ markers }: EmplacementDe
 }
 
 const styles = StyleSheet.create({
+    container: {
+        paddingVertical: 10,
+    },
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginHorizontal: 15,
+        marginBottom: 10,
+    },
+    commentsText: {
+        marginLeft: 10,
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#333',
+    },
     itemContainer: {
-        flex: 1,
         borderWidth: 1,
-        justifyContent: "center",
-        borderRadius: 15, // Bords arrondis
-        marginHorizontal: 10, // Ne pas prendre toute la largeur
-        overflow: 'hidden', // Pour s'assurer que le contenu respecte les bords arrondis
+        borderColor: '#ddd',
+        borderRadius: 15,
+        marginHorizontal: 10,
         padding: 10,
-        position: 'relative', // Pour positionner les éléments enfants
+        backgroundColor: '#f9f9f9',
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
+        elevation: 3,
+        maxWidth: '100%', // Limiter la largeur à l'écran
+        width: '80%', // Assurez-vous que les avis occupent toute la largeur disponible
+        alignSelf: 'center', // Centrer l'élément
     },
     profileContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        position: 'absolute', // Position absolue pour placer en haut à gauche
-        top: 10,
-        left: 10,
     },
     profileImagePlaceholder: {
-        width: 50,
-        height: 50,
-        borderRadius: 25, // Rond
-        backgroundColor: '#ccc', // Couleur de fond pour le placeholder
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        backgroundColor: '#ccc',
         marginRight: 10,
     },
     profileTextContainer: {
-        flexDirection: 'column', // Aligner le prénom et la note verticalement
+        flexDirection: 'column',
+    },
+    userInfo: {
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     profileName: {
-        fontSize: 18,
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginRight: 10,
     },
     commentDate: {
-        marginLeft: 30, // Décale un peu plus la date sur la droite
-        fontSize: 14,
+        fontSize: 12,
         color: '#888',
-        fontStyle: 'italic', // Met en italique
     },
     commentContainer: {
-        marginTop: 60, // Espace entre le profil et le commentaire
-        borderRadius: 10,
-        padding: 10,
-        maxHeight: 100, // Limite la hauteur du conteneur
+        marginTop: 10,
     },
     commentText: {
-        fontSize: 15,
-        textAlign: 'justify', // Justifie le texte du commentaire
+        fontSize: 14,
+        color: '#333',
+        textAlign: 'justify',
     },
     arrowContainer: {
-        flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        marginHorizontal: 10,
-        padding: 10,
+        paddingVertical: 20,
     },
     arrowCircle: {
-        width: 60,
-        height: 60,
-        borderRadius: 30, // Faire un cercle
-        backgroundColor: '#ccc',
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        backgroundColor: '#007bff',
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 10, // Espace entre le cercle et le texte
     },
     arrowText: {
+        marginTop: 10,
         fontSize: 14,
-        color: '#666',
-        textAlign: 'center',
+        color: '#007bff',
+        fontWeight: 'bold',
     },
 });
