@@ -15,6 +15,7 @@ import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { renderRating } from "../../utils/renderRating";
 
 
 // Définition des types User, Emplacement et Réservation
@@ -265,45 +266,6 @@ export default function ProfilView() {
     navigation.navigate("Settings");
   };
 
-  const StarRating = ({ rating }) => {
-    const fullStars = Math.floor(rating); // Étoiles pleines
-    const hasHalfStar = rating % 1 !== 0; // Vérifie s'il y a une demi-étoile
-
-    return (
-      <View style={styles.container2}>
-        {Array.from({ length: 5 }, (_, index) => {
-          if (index < fullStars) {
-            return (
-              <MaterialIcons
-                key={index}
-                name="star"
-                size={24}
-                color="#FFD700"
-              />
-            );
-          } else if (index === fullStars && hasHalfStar) {
-            return (
-              <MaterialIcons
-                key={index}
-                name="star-half"
-                size={24}
-                color="#FFD700"
-              />
-            );
-          } else {
-            return (
-              <MaterialIcons
-                key={index}
-                name="star-border"
-                size={24}
-                color="#C0C0C0"
-              />
-            );
-          }
-        })}
-      </View>
-    );
-  };
 
   return (
     <View style={styles.container}>
@@ -416,7 +378,7 @@ export default function ProfilView() {
               <View style={styles.card}>
                 <Text style={styles.cardTitle}>
                   {emplacement.localisation}{" "}
-                  <StarRating rating={emplacement.moyenneAvis} />
+                  {renderRating(emplacement.moyenneAvis,false)}
                 </Text>
                 <Text style={styles.cardText}>
                   Caractéristiques: {emplacement.caracteristique}
@@ -452,7 +414,7 @@ export default function ProfilView() {
             >
 <View style={styles.card}>
   <Text style={styles.cardTitle}>
-    {reservation.emplacement.localisation}   <StarRating rating={reservation.emplacement.moyenneAvis} /> 
+    {reservation.emplacement.localisation}   {renderRating(reservation.emplacement.moyenneAvis,false)}
   </Text>
   <Text style={styles.cardText}>
     {reservation.date_debut} / {reservation.date_fin}
