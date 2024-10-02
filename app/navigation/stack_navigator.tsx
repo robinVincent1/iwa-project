@@ -14,6 +14,7 @@ import HomeView from '../views/home_view';
 import FavoritesPage from '../views/all_favorite_view';
 import ArticlesPage from '../views/all_article_view';
 import { useSelector } from 'react-redux';
+import AddEmplacement from '../views/profil/add_emplacement_view';
 
 
 const Stack = createStackNavigator();
@@ -46,6 +47,7 @@ export function ProfileStackNavigator() {
             <Stack.Screen name="Profile" component={ProfileView} options={{ headerShown: false }} />
             <Stack.Screen name="Reservation_detail" component={Reservation_details} options={{ headerShown: false }} />
             <Stack.Screen name="Emplacement_detail" component={Emplacement_details} options={{ headerShown: false }} />
+            <Stack.Screen name="Add_emplacement" component={AddEmplacement} options={{ headerShown: false }} />
             <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
             <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
             <Stack.Screen name="Settings" component={SettingsView} options={{ headerShown: false }} />

@@ -175,6 +175,11 @@ export default function ProfilView() {
     setReservations(fakeReservations);
   };
 
+  const handleAddEmplacement = () => {
+    navigation.navigate("Add_emplacement");
+    // Logique pour ajouter un emplacement
+  }
+
   const saveUser = async () => {
     Alert.alert("Succès", "Informations sauvegardées avec succès.");
     setIsEditing(false);
@@ -378,7 +383,7 @@ export default function ProfilView() {
               <View style={styles.card}>
                 <Text style={styles.cardTitle}>
                   {emplacement.localisation}{" "}
-                  {renderRating(emplacement.moyenneAvis,false)}
+                  {renderRating(emplacement.moyenneAvis, false)}
                 </Text>
                 <Text style={styles.cardText}>
                   Caractéristiques: {emplacement.caracteristique}
@@ -395,6 +400,9 @@ export default function ProfilView() {
               </View>
             </TouchableOpacity>
           ))}
+          <TouchableOpacity style={styles.addButton} onPress={handleAddEmplacement}>
+            <Ionicons name="add-circle" size={40} color="#6200EE" />
+          </TouchableOpacity>
         </View>
 
         <View style={styles.reservationContainer}>
@@ -575,6 +583,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 20,
     paddingHorizontal: 10,
+  },
+  addButton: {
+    alignItems: 'center',
+    marginTop: 20,
   },
   sectionHeader: {
     flexDirection: "row",
