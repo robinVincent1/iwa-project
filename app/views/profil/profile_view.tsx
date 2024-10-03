@@ -14,9 +14,8 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { renderRating } from "../../utils/renderRating";
-
 
 // Définition des types User, Emplacement et Réservation
 export type User = {
@@ -34,10 +33,19 @@ export type Emplacement = {
   id_emplacement: string;
   localisation: string;
   caracteristique: string;
-  equipement: string;
+  equipement: string[];
   tarif: number;
   disponible: boolean;
   moyenneAvis: number;
+  photos: string[]; // Liste d'URLs de photos
+  coordonnees: {
+    latitude: number;
+    longitude: number;
+    latitudeDelta: number;
+    longitudeDelta: number;
+    name: string;
+    rating: number;
+  };
 };
 
 export type Reservation = {
@@ -96,23 +104,46 @@ export default function ProfilView() {
     const fakeEmplacements: Emplacement[] = [
       {
         id_emplacement: "1",
-        localisation: "Plage",
-        caracteristique: "Vue sur la mer",
-        equipement: "Chaises longues",
+        localisation: "Montpellier",
+        caracteristique: "Proche du centre-ville",
+        equipement: ["Wi-Fi", "Piscine"],
         tarif: 50,
         disponible: true,
-        moyenneAvis: 0,
+        moyenneAvis: 4.7,
+        photos: [
+          "https://example.com/photo1.jpg",
+          "https://example.com/photo2.jpg",
+        ],
+        coordonnees: {
+          latitude: 43.6,
+          longitude: 3.8833,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+          name: "Montpellier Centre",
+          rating: 4.7,
+        },
       },
       {
         id_emplacement: "2",
-        localisation: "Montagne",
-        caracteristique: "Randonnée",
-        equipement: "Tentes",
-        tarif: 30,
+        localisation: "Montpellier",
+        caracteristique: "Proche des plages",
+        equipement: ["Parking", "Animaux acceptés"],
+        tarif: 80,
         disponible: false,
-        moyenneAvis: 0,
-      },
-    ];
+        moyenneAvis: 3.8,
+        photos: [
+          "https://example.com/photo3.jpg",
+          "https://example.com/photo4.jpg",
+        ],
+        coordonnees: {
+          latitude: 43.58,
+          longitude: 3.9,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+          name: "Montpellier Plages",
+          rating: 3.8,
+        },
+      }]
 
     const fakeAvis: Avis[] = [
       {
@@ -272,7 +303,6 @@ export default function ProfilView() {
     navigation.navigate("Settings");
   };
 
-
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -281,7 +311,8 @@ export default function ProfilView() {
             onPress={navigateToSettings}
             style={styles.settingsButton}
           >
-            <Ionicons name="settings" size={24} color="#6200EE" />
+            <Ionicons name="settings" size={24} color="#37474F" />
+            {/* Couleur du bouton réglages */}
           </TouchableOpacity>
         </View>
         <View style={styles.profileImageContainer}>
@@ -296,11 +327,22 @@ export default function ProfilView() {
         <View style={styles.infoContainer}>
           <View style={styles.header}>
             <Text style={styles.title}>Profil</Text>
-            <TouchableOpacity onPress={() => setIsEditing(!isEditing)}>
+            <TouchableOpacity
+              style={styles.editProfileButton}
+              onPress={() => setIsEditing(!isEditing)}
+            >
               {isEditing ? (
-                <MaterialCommunityIcons name="pencil-off" size={24} color="#6200EE" />
+                <MaterialCommunityIcons
+                  name="pencil-off"
+                  size={24}
+                  color="#00796B"
+                />
               ) : (
-                <MaterialCommunityIcons name="pencil" size={24} color="#6200EE" />
+                <MaterialCommunityIcons
+                  name="pencil"
+                  size={24}
+                  color="#00796B"
+                />
               )}
             </TouchableOpacity>
           </View>
@@ -372,7 +414,7 @@ export default function ProfilView() {
             <Ionicons
               name="home"
               size={20}
-              color="#6200EE"
+              color="#37474F"
               style={styles.iconRight}
             />
           </View>
@@ -412,7 +454,7 @@ export default function ProfilView() {
             <Ionicons
               name="calendar"
               size={20}
-              color="#6200EE"
+              color="#37474F"
               style={styles.iconRight}
             />
           </View>
@@ -421,30 +463,30 @@ export default function ProfilView() {
               key={reservation.id_reservation}
               onPress={() => navigateToReservationDetails(reservation)}
             >
-<View style={styles.card}>
-  <Text style={styles.cardTitle}>
-    {reservation.emplacement.localisation}   {renderRating(reservation.emplacement.moyenneAvis,false)}
-  </Text>
-  <Text style={styles.cardText}>
-    {reservation.date_debut} / {reservation.date_fin}
-  </Text>
-  <Text style={styles.cardText}>
-    Statut: {reservation.statut}
-  </Text>
-  <Text style={styles.cardText}>
-    Message: {reservation.message_voyageur}
-  </Text>
-  <Text style={styles.cardText}>
-    Caractéristique: {reservation.emplacement.caracteristique}
-  </Text>
-  <Text style={styles.cardText}>
-    Équipement: {reservation.emplacement.equipement}
-  </Text>
-  <Text style={styles.cardText}>
-    Tarif: {reservation.emplacement.tarif} €
-  </Text>
-</View>
-
+              <View style={styles.card}>
+                <Text style={styles.cardTitle}>
+                  {reservation.emplacement.localisation}{" "}
+                  {renderRating(reservation.emplacement.moyenneAvis, false)}
+                </Text>
+                <Text style={styles.cardText}>
+                  {reservation.date_debut} / {reservation.date_fin}
+                </Text>
+                <Text style={styles.cardText}>
+                  Statut: {reservation.statut}
+                </Text>
+                <Text style={styles.cardText}>
+                  Message: {reservation.message_voyageur}
+                </Text>
+                <Text style={styles.cardText}>
+                  Caractéristique: {reservation.emplacement.caracteristique}
+                </Text>
+                <Text style={styles.cardText}>
+                  Équipement: {reservation.emplacement.equipement}
+                </Text>
+                <Text style={styles.cardText}>
+                  Tarif: {reservation.emplacement.tarif} €
+                </Text>
+              </View>
             </TouchableOpacity>
           ))}
         </View>
@@ -453,137 +495,118 @@ export default function ProfilView() {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
-  starRatingContainer: {
-    flexDirection: "row", // Pour afficher les étoiles en ligne
-    alignItems: "center", // Pour aligner verticalement au centre
-  },
-  cardRatingContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-
-  container2: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  ratingText: {
-    marginLeft: 8,
-    fontSize: 16,
-    color: "#333",
-  },
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#E0F2F1", // Vert doux pour l'arrière-plan
   },
   scrollContainer: {
     padding: 20,
+  },
+  headerContainer: {
+    flexDirection: "row",
+    justifyContent: "flex-end", // Pour que le bouton réglages soit à droite
+    alignItems: "center",
+    marginBottom: 20,
+    paddingHorizontal: 10,
+  },
+  settingsButton: {
+    padding: 10,
+    borderRadius: 10,
   },
   profileImageContainer: {
     alignItems: "center",
     marginBottom: 20,
   },
   profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    borderWidth: 2,
+    borderColor: "#FF0000",
   },
   defaultImageContainer: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: "#6200EE",
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: "#00796B", 
     justifyContent: "center",
     alignItems: "center",
   },
   initials: {
     color: "#fff",
-    fontSize: 36,
+    fontSize: 40,
     fontWeight: "bold",
   },
   infoContainer: {
     backgroundColor: "#fff",
-    borderRadius: 10,
+    borderRadius: 12,
     padding: 20,
     marginBottom: 20,
-    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
   },
+  header: {
+    flexDirection: "row", // Ajoute cette ligne pour que les éléments soient en ligne
+    justifyContent: "space-between", // Cela maintiendra le texte et le bouton d'édition aux extrémités
+    alignItems: "center", // Pour centrer verticalement
+  },  
   title: {
-    fontSize: 24,
+    fontSize: 26,
+    fontWeight: "600",
+    color: "#37474F", // Gris foncé
+    justifyContent: "space-between",
+  },
+  input: {
+    height: 44,
+    borderColor: "#B0BEC5", // Gris doux
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginVertical: 8,
+    fontSize: 16,
+  },
+  button: {
+    padding: 12,
+    backgroundColor: "#37474F", // Vert montagne élégant
+    borderRadius: 8,
+    alignItems: "center",
+    marginTop: 10,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "500",
+  },
+  infoText: {
+    fontSize: 16,
+    color: "#546E7A", // Gris bleuté pour le texte d'information
+    marginVertical: 4,
+  },
+  infoValue: {
     fontWeight: "bold",
-  },
-  emplacementContainer: {
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    padding: 20,
-    marginBottom: 20,
-    elevation: 3,
-  },
-  reservationContainer: {
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    padding: 20,
-    marginBottom: 20,
-    elevation: 3,
-  },
-  
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 10,
+    color: "#37474F", // Gris foncé pour la valeur d'information
   },
   card: {
-    backgroundColor: "#f9f9f9",
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 10,
-    elevation: 2,
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 15,
+    marginBottom: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
   },
   cardTitle: {
     fontSize: 18,
     fontWeight: "bold",
+    color: "#37474F", // Gris foncé pour le titre de la carte
   },
   cardText: {
-    fontSize: 16,
-  },
-  button: {
-    marginTop: 10,
-    padding: 10,
-    backgroundColor: "#6200EE",
-    borderRadius: 8,
-  },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "bold",
-  },
-  input: {
-    height: 40,
-    borderColor: "#ccc",
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    marginVertical: 5,
-  },
-  infoText: {
-    fontSize: 16,
-    marginVertical: 5,
-  },
-  infoValue: {
-    fontWeight: "bold",
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  headerContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 20,
-    paddingHorizontal: 10,
+    fontSize: 14,
+    color: "#546E7A", // Gris bleuté pour le texte de la carte
   },
   addButton: {
     alignItems: 'center',
@@ -595,12 +618,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10,
   },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#388E3C", // Vert montagne pour le titre de section
+  },
   iconRight: {
     marginLeft: 10,
   },
-  settingsButton: {
-    position: "absolute",
-    right: 20,
-    top: 10,
+  editProfileButton: {
+    padding: 10,
   },
 });
