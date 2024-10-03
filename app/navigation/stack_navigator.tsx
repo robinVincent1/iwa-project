@@ -5,7 +5,7 @@ import EmplacementDetails from '../views/emplacement_details/emplacement_details
 import Login from '../views/login_register/login_view';
 import Register from '../views/login_register/register_view';
 import Reservation_details from '../views/profil/Reservation_details';
-import Emplacement_details from '../views/profil/Emplacement_details';
+import ProfilEmplacementDetails from '../views/profil/profil_emplacement_details/profil_emplacement_details_view';
 import SettingsView from '../views/profil/settings_view';
 import ProfileView from '../views/profil/profile_view';
 import EmplacementDetailsAllRatings from '../views/emplacement_details/emplacement_details_all_ratings';
@@ -15,6 +15,8 @@ import FavoritesPage from '../views/all_favorite_view';
 import ArticlesPage from '../views/all_article_view';
 import { useSelector } from 'react-redux';
 import AddEmplacement from '../views/profil/add_emplacement_view';
+import AllEmplacementReservation from '../views/profil/profil_emplacement_details/all_emplacement_reservations_view';
+import EmplacementReservationDetails from '../views/profil/profil_emplacement_details/emplacement_reservation_details_view';
 
 
 const Stack = createStackNavigator();
@@ -29,7 +31,6 @@ function EmplacementDetailsStackNavigator({ route }) {
         </EmplacementDetailsStack.Navigator>
     );
 }
-
 
 export function MapStackNavigator() {
     return (
@@ -46,7 +47,7 @@ export function ProfileStackNavigator() {
         <Stack.Navigator initialRouteName={isLoggedIn ? "Profile" : "Login"}>
             <Stack.Screen name="Profile" component={ProfileView} options={{ headerShown: false }} />
             <Stack.Screen name="Reservation_detail" component={Reservation_details} options={{ headerShown: false }} />
-            <Stack.Screen name="Emplacement_detail" component={Emplacement_details} options={{ headerShown: false }} />
+            <Stack.Screen name="Emplacement_detail" component={ProfilEmplacementDetailsStackNavigator} options={{ headerShown: false }} />
             <Stack.Screen name="Add_emplacement" component={AddEmplacement} options={{ headerShown: false }} />
             <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
             <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
@@ -62,6 +63,26 @@ export function HomeStackNavigator() {
             <Stack.Screen name="ArticleDetails" component={ArticleDetails} options={{ headerShown: false }}/>
             <Stack.Screen name="FavoritesPage" component={FavoritesPage} options={{ headerShown: false }} />
             <Stack.Screen name="ArticlesPage" component={ArticlesPage} options={{ headerShown: false }} />
+        </Stack.Navigator>
+    );
+}
+
+export function ProfilEmplacementDetailsStackNavigator({ route }) {
+    const { emplacement } = route.params;
+    return(
+        <Stack.Navigator initialRouteName="ProfilEmplacementDetails">
+            <Stack.Screen name="ProfilEmplacementDetails" component={ProfilEmplacementDetails} initialParams={{ emplacement }} options={{ headerShown: false }} />
+            <Stack.Screen name="AllEmplacementReservation" component={AllEmplacementReservation} options={{ headerShown: false }} />
+            <Stack.Screen name="EmplacementReservationDetails" component={EmplacementReservationDetails} options={{ headerShown: false }} />
+        </Stack.Navigator>
+    )
+}
+
+export function AllEmplacementReservationStackNavigator() {
+    return (
+        <Stack.Navigator initialRouteName="AllEmplacementReservation">
+            <Stack.Screen name="AllEmplacementReservation" component={AllEmplacementReservation} options={{ headerShown: false }} />
+            <Stack.Screen name="EmplacementReservationDetails" component={EmplacementReservationDetails} options={{ headerShown: false }} />
         </Stack.Navigator>
     );
 }

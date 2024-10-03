@@ -1,18 +1,11 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  TextInput,
-  Alert,
-  ScrollView,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert, ScrollView } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import EmplacementReservationCell from '../../../components/reservation/emplacement_reservation_cell';
 
-export default function EmplacementDetails({ route }) {
+export default function ProfilEmplacementDetails({ route }) {
   const { emplacement } = route.params;
   const navigation = useNavigation();
 
@@ -235,16 +228,7 @@ export default function EmplacementDetails({ route }) {
       <View style={styles.reservationsContainer}>
         <Text style={styles.sectionTitle}>Réservations</Text>
         {reservations.map((reservation) => (
-          <View key={reservation.id} style={styles.reservationCard}>
-            <Text style={styles.reservationDate}>{reservation.date}</Text>
-            <Text style={styles.reservationStatus}>
-              Statut:{" "}
-              <Text style={styles.statusText}>{reservation.statut}</Text>
-            </Text>
-            <Text style={styles.reservationMessage}>
-              Message: {reservation.message_voyageur}
-            </Text>
-          </View>
+          <EmplacementReservationCell reservation={reservation} key={reservation.id} />
         ))}
       </View>
     </ScrollView>
@@ -327,6 +311,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   infoText: {
+    color: 'gray',
     fontSize: 16,
     marginBottom: 5,
   },
