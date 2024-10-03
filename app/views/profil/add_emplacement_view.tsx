@@ -3,6 +3,9 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-nati
 import { Ionicons } from '@expo/vector-icons';
 import AddEmplacementMap from '../../components/add_emplacement/add_emplacement_map';
 import AddEmplacementFacilities from '../../components/add_emplacement/add_emplacement_facilities';
+import AddEmplacementDescription from '../../components/add_emplacement/add_emplacement_description';
+import AddEmplacementPrice from '../../components/add_emplacement/add_emplacement_price';
+import AddEmplacementAddPhoto from '../../components/add_emplacement/add_emplacement_add_photo';
 
 export default function AddEmplacement({ navigation }) {
     return (
@@ -19,6 +22,12 @@ export default function AddEmplacement({ navigation }) {
             <View style={styles.facilitiesContainer}>
                 <AddEmplacementFacilities />
             </View> 
+            <AddEmplacementDescription />
+            <AddEmplacementAddPhoto />
+            <AddEmplacementPrice />
+            <TouchableOpacity style={styles.addButton} onPress={() => {/* Ajouter la logique pour ajouter l'emplacement */}}>
+                <Text style={styles.addButtonText}>Ajouter l'emplacement</Text>
+            </TouchableOpacity>
         </ScrollView>
     );
 }
@@ -44,5 +53,17 @@ const styles = StyleSheet.create({
     },
     facilitiesContainer: {
         marginTop: 20,
+    },
+    addButton: {
+        backgroundColor: '#007BFF',
+        padding: 15,
+        borderRadius: 5,
+        alignItems: 'center',
+        marginTop: 20,
+    },
+    addButtonText: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold',
     },
 });
