@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import EmplacementReservationCell from '../../../components/reservation/emplacement_reservation_cell';
+
+import { couleur } from "../../color";
+
 
 export default function ProfilEmplacementDetails({ route }) {
   const { emplacement } = route.params;
@@ -238,7 +242,7 @@ export default function ProfilEmplacementDetails({ route }) {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: "#E0F2F1", // Arrière-plan doux
+    backgroundColor: couleur, // Arrière-plan doux
     padding: 20,
   },
   header: {
@@ -324,7 +328,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: "600",
-    color: "#00796B",
+    color: "#37474F",
     marginBottom: 10,
   },
   reviewCard: {

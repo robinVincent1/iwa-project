@@ -1,0 +1,1 @@
+export const couleur = "#92B474"

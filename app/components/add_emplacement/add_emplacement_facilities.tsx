@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { RadioButton, List } from 'react-native-paper';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
@@ -30,21 +30,15 @@ export default function AddEmplacementFacilities() {
         <ScrollView contentContainerStyle={styles.container}>
             <Text style={styles.title}>Sélectionner les équipements</Text>
             <View style={styles.headerRow}>
-                <View style={styles.headerItem}>
-                    <Ionicons name="checkmark" size={24} color="green" />
-                </View>
-                <View style={styles.headerItem}>
-                    <Ionicons name="close" size={24} color="red" />
-                </View>
             </View>
             {Object.keys(iconMap).map((facility) => (
                 <View key={facility} style={styles.item}>
                     {iconMap[facility] === 'campfire' ? (
-                        <MaterialCommunityIcons name="campfire" size={24} color="black" />
+                        <MaterialCommunityIcons name="campfire" size={24} color="#6D4C41" />
                     ) : iconMap[facility] === 'trash' ? (
-                        <Ionicons name="trash" size={24} color="black" />
+                        <Ionicons name="trash" size={24} color="#B0BEC5" />
                     ) : (
-                        <List.Icon icon={iconMap[facility]} />
+                        <List.Icon icon={iconMap[facility]} color="#00796B" />
                     )}
                     <Text style={styles.text}>{facility}</Text>
                     <View style={styles.radioContainer}>
@@ -53,6 +47,7 @@ export default function AddEmplacementFacilities() {
                                 value="oui"
                                 status={selectedFacilities[facility] === 'oui' ? 'checked' : 'unchecked'}
                                 onPress={() => handleSelection(facility, 'oui')}
+                                color="#007BFF"
                             />
                         </View>
                         <View style={styles.radioItem}>
@@ -60,6 +55,7 @@ export default function AddEmplacementFacilities() {
                                 value="non"
                                 status={selectedFacilities[facility] === 'non' ? 'checked' : 'unchecked'}
                                 onPress={() => handleSelection(facility, 'non')}
+                                color="#007BFF"
                             />
                         </View>
                     </View>
@@ -72,11 +68,13 @@ export default function AddEmplacementFacilities() {
 const styles = StyleSheet.create({
     container: {
         padding: 20,
+        backgroundColor: '#F9F9F9',
     },
     title: {
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 20,
+        color: '#00796B',
     },
     headerRow: {
         flexDirection: 'row',
@@ -87,20 +85,29 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginLeft: 30,
-    },
-    headerText: {
-        marginLeft: 5,
-        fontSize: 16,
-        fontWeight: 'bold',
+        padding: 10,
+        borderRadius: 5,
+        backgroundColor: '#E0E0E0', // Couleur de fond pour le bouton
+        elevation: 2, // Ombre pour un effet 3D
     },
     item: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 10,
+        marginBottom: 15,
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        borderRadius: 8,
+        backgroundColor: '#FFFFFF',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 3.84,
+        elevation: 1,
     },
     text: {
         flex: 1,
         fontSize: 16,
+        color: '#424242',
     },
     radioContainer: {
         flexDirection: 'row',
