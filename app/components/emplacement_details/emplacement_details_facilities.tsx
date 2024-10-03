@@ -27,7 +27,7 @@ export default function EmplacementDetailsFacilities({ equipment }) {
             <View style={styles.column}>
                 {column1.map((equip, index) => (
                     <View style={styles.item} key={index}>
-                        <Ionicons name={iconMap[equip] || 'help-circle'} size={20} color="#FFD700" />
+                        <Ionicons name={iconMap[equip] || 'help-circle'} size={20} color="#4B8B3B" />
                         <Text style={styles.itemText}>{equip}</Text>
                     </View>
                 ))}
@@ -37,7 +37,7 @@ export default function EmplacementDetailsFacilities({ equipment }) {
             <View style={styles.column}>
                 {column2.map((equip, index) => (
                     <View style={styles.item} key={index}>
-                        <Ionicons name={iconMap[equip] || 'help-circle'} size={20} color="#FFD700" />
+                        <Ionicons name={iconMap[equip] || 'help-circle'} size={20} color="#4B8B3B" />
                         <Text style={styles.itemText}>{equip}</Text>
                     </View>
                 ))}
@@ -50,18 +50,34 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        padding: 10,
+        padding: 15,
+        backgroundColor: '#F5F5F5', // Arrière-plan naturel
+        borderRadius: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
     },
     column: {
         flex: 1,
+        paddingHorizontal: 10, // Espacement pour aérer les colonnes
     },
     item: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 10,
+        marginBottom: 12,
+        backgroundColor: '#FFFFFF',
+        padding: 10,
+        borderRadius: 8,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
     },
     itemText: {
-        marginLeft: 5,
+        marginLeft: 8,
         fontSize: 16,
+        color: '#4B4B4B', // Texte subtil et naturel
+        fontWeight: '500',
     },
 });

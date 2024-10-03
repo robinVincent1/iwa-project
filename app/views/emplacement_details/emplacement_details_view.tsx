@@ -14,6 +14,7 @@ import EmplacementDetailsRatings from "../../components/emplacement_details/empl
 import EmplacementDetailsDescription from "../../components/emplacement_details/emplacement_details_description";
 import EmplacementReservation from "../emplacement_reservation_view"; // Import du composant de réservation
 import Reservation from "react-native-calendars/src/agenda/reservation-list/reservation";
+import { couleur } from "../../color";
 
 export type Avis = {
   id_avis: string;
@@ -87,7 +88,6 @@ export default function EmplacementDetails({ route }) {
       {/* Description de l'emplacement */}
       <EmplacementDetailsDescription emplacement={emplacement} />
 
-      <Separateur />
 
       {/* Équipements */}
       <View style={styles.facilitiesContainer}>
@@ -95,39 +95,33 @@ export default function EmplacementDetails({ route }) {
         <EmplacementDetailsFacilities equipment={emplacement.equipement} />
       </View>
 
-      <Separateur />
-
       {/* Évaluations */}
       <View style={styles.ratingsContainer}>
-        <Text style={styles.sectionTitle}>Évaluations</Text>
+      <Text style={styles.sectionTitle2}>Évaluations</Text>
         <EmplacementDetailsRatings avis={avis} rating={emplacement.moyenneAvis} />
       </View>
 
-      <Separateur />
-
       {/* Calendrier de réservation */}
       <View style={styles.reservationContainer}>
-        <Text style={styles.sectionTitle}>Réservez cet emplacement</Text>
         {/* Intégration du composant de calendrier ici */}
         <EmplacementReservation reservations={reservations} />
-      </View>
-
-      {/* Bouton de réservation */}
-      <View style={styles.buttonContainer}>
-        <Pressable style={styles.button}>
-          <Text style={styles.text_button}>Confirmer la réservation</Text>
-        </Pressable>
       </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  sectionTitle2: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginLeft: 20,
+  },
   contentContainer: {
     flexGrow: 1,
     alignItems: "center",
     paddingBottom: 20,
     paddingHorizontal: 10, // Ajout d'un peu de padding horizontal
+    backgroundColor: couleur
   },
   separateur: {
     borderBottomColor: "gray",
@@ -143,10 +137,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 8,
+    marginTop: 10,
   },
   ratingsContainer: {
     width: "95%",
-    marginBottom: 15,
+    marginRight: 40,
   },
   reservationContainer: {
     width: "95%",

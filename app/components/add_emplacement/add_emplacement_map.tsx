@@ -1,4 +1,4 @@
-import { View, StyleSheet, PermissionsAndroid, Platform, Button, Text } from 'react-native';
+import { View, StyleSheet, Button, Text } from 'react-native';
 import React, { useRef, useEffect, useState } from 'react';
 import MapView, { Marker } from "react-native-maps";
 import * as Location from 'expo-location';
@@ -54,7 +54,7 @@ export default function AddEmplacementMap() {
         <View style={styles.container}>
             <View style={styles.card}>
                 <View style={styles.titleContainer}>
-                    <Ionicons name="location-outline" size={24} color="black" />
+                    <Ionicons name="location-outline" size={24} color="#00796B" />
                     <Text style={styles.title}>Sélectionner un emplacement</Text>
                 </View>
                 <View style={styles.mapContainer}>
@@ -62,7 +62,7 @@ export default function AddEmplacementMap() {
                         style={styles.map}
                         ref={mapRef}
                         showsUserLocation={true}
-                        onRegionChange={handleRegionChange} // Utilisation de onRegionChange pour mise à jour en temps réel
+                        onRegionChange={handleRegionChange}
                         initialRegion={{
                             latitude: markerPosition.latitude,
                             longitude: markerPosition.longitude,
@@ -81,6 +81,7 @@ export default function AddEmplacementMap() {
                     <Button
                         title={isPositionFixed ? "Modifier la position" : "Fixer la position"}
                         onPress={handleFixPosition}
+                        color="#007BFF" // Couleur du bouton
                     />
                 </View>
             </View>
@@ -90,13 +91,13 @@ export default function AddEmplacementMap() {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1, // Marge autour du conteneur
+        flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
     },
     card: {
         width: '100%',
-        backgroundColor: '#fff',
+        backgroundColor: '#FFFFFF', // Couleur de fond pour la carte
         borderRadius: 10,
         padding: 15,
         shadowColor: '#000',
@@ -113,18 +114,19 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 18,
         fontWeight: 'bold',
+        color: '#00796B', // Couleur du texte pour le titre
         marginLeft: 10,
     },
     mapContainer: {
-        height: 300, // Hauteur fixe pour le conteneur de la carte
-        borderRadius: 10, // Coins arrondis pour le conteneur
-        overflow: 'hidden', // Pour s'assurer que la carte ne dépasse pas du conteneur
-        backgroundColor: '#f0f0f0', // Ajout d'un fond pour visualiser le conteneur
+        height: 300,
+        borderRadius: 10,
+        overflow: 'hidden',
+        backgroundColor: '#F0F4F8', // Couleur de fond douce pour le conteneur de la carte
     },
     map: {
         flex: 1,
     },
     buttonContainer: {
-        marginTop: 10, // Marge en haut pour séparer le bouton de la carte
+        marginTop: 10,
     },
 });

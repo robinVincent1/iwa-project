@@ -16,6 +16,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { renderRating } from "../../utils/renderRating";
+import { couleur } from "../../color";
 
 // Définition des types User, Emplacement et Réservation
 export type User = {
@@ -444,9 +445,10 @@ export default function ProfilView() {
             </TouchableOpacity>
           ))}
           <TouchableOpacity style={styles.addButton} onPress={handleAddEmplacement}>
-            <Ionicons name="add-circle" size={40} color="#6200EE" />
+            <Ionicons name="add-circle" size={40} color="#00796B" />
           </TouchableOpacity>
         </View>
+
 
         <View style={styles.reservationContainer}>
           <View style={styles.sectionHeader}>
@@ -498,7 +500,7 @@ export default function ProfilView() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#E0F2F1", // Vert doux pour l'arrière-plan
+    backgroundColor: couleur, // Vert doux pour l'arrière-plan
   },
   scrollContainer: {
     padding: 20,
@@ -610,7 +612,7 @@ const styles = StyleSheet.create({
   },
   addButton: {
     alignItems: 'center',
-    marginTop: 20,
+    marginBottom: 20,
   },
   sectionHeader: {
     flexDirection: "row",
@@ -621,7 +623,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#388E3C", // Vert montagne pour le titre de section
+    color: "#37474F",
   },
   iconRight: {
     marginLeft: 10,

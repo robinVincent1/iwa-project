@@ -11,6 +11,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { couleur } from "../../color";
 
 export default function EmplacementDetails({ route }) {
   const { emplacement } = route.params;
@@ -254,7 +255,7 @@ export default function EmplacementDetails({ route }) {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: "#E0F2F1", // Arrière-plan doux
+    backgroundColor: couleur, // Arrière-plan doux
     padding: 20,
   },
   header: {
@@ -339,7 +340,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: "600",
-    color: "#00796B",
+    color: "#37474F",
     marginBottom: 10,
   },
   reviewCard: {

@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useDispatch, useSelector } from 'react-redux'; // Importer useDispatch et useSelector
+import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../store/profilSlice';
 import { useNavigation } from '@react-navigation/native';
+import { couleur } from '../../color';
 
 const SettingsView = () => {
-  const dispatch = useDispatch(); // Initialiser le dispatcher
-  const isLoggedIn = useSelector(state => state.profil.isLoggedIn); // Sélectionner l'état de connexion
-  const [isDeletePending, setIsDeletePending] = useState(false); // État pour gérer si la demande de suppression est en attente
+  const dispatch = useDispatch();
+  const isLoggedIn = useSelector(state => state.profil.isLoggedIn);
+  const [isDeletePending, setIsDeletePending] = useState(false);
   const navigation = useNavigation();
 
   const handleDeleteProfile = () => {
@@ -17,19 +18,18 @@ const SettingsView = () => {
       {
         text: 'Supprimer',
         onPress: () => {
-          setIsDeletePending(true); // Mettre à jour l'état pour indiquer que la demande est en attente
+          setIsDeletePending(true);
         },
       },
     ]);
   };
 
   const handleCancelDelete = () => {
-    setIsDeletePending(false); // Annuler la demande de suppression
+    setIsDeletePending(false);
     Alert.alert('Annulation', 'Votre demande de suppression a été annulée.');
   };
 
   const changeLanguage = () => {
-    // Logique pour changer la langue
     Alert.alert('Langue', 'Fonctionnalité non implémentée.');
   };
 
@@ -39,7 +39,7 @@ const SettingsView = () => {
       {
         text: 'Déconnexion',
         onPress: () => {
-          dispatch(logout()); // Déclencher l'action de déconnexion
+          dispatch(logout());
         },
       },
     ]);
@@ -49,7 +49,7 @@ const SettingsView = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color="black" />
+          <Ionicons name="arrow-back" size={24} color="#333" />
         </TouchableOpacity>
         <Text style={styles.title}>Réglages</Text>
       </View>
@@ -72,7 +72,7 @@ const SettingsView = () => {
           </TouchableOpacity>
         )}
 
-        {isLoggedIn && ( // Afficher le bouton de déconnexion si l'utilisateur est connecté
+        {isLoggedIn && (
           <TouchableOpacity style={[styles.button, styles.logoutButton]} onPress={handleLogout}>
             <Text style={styles.buttonText}>Se déconnecter</Text>
             <Ionicons name="log-out" size={20} color="#fff" />
@@ -87,14 +87,14 @@ const SettingsView = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: couleur,
     padding: 20,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
-    paddingTop: 40, // Ajustez cette valeur pour rapprocher l'en-tête du haut de la page
+    paddingTop: 40,
   },
   backButton: {
     marginRight: 10,
@@ -104,13 +104,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     flex: 1,
+    color: '#333', // Couleur sombre pour le titre
   },
   buttonContainer: {
     width: '100%',
     alignItems: 'center',
   },
   button: {
-    backgroundColor: '#6200EE',
+    backgroundColor: '#6c757d', // Couleur grise pour les boutons
     borderRadius: 8,
     padding: 15,
     width: '100%',
@@ -126,10 +127,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   deleteButton: {
-    backgroundColor: '#f44336', // Couleur rouge pour le bouton de suppression
+    backgroundColor: '#dc3545', // Couleur rouge sobre pour le bouton de suppression
   },
   logoutButton: {
-    backgroundColor: '#2196F3', // Couleur bleue pour le bouton de déconnexion
+    backgroundColor: '#007bff', // Couleur bleue sobre pour le bouton de déconnexion
   },
 });
 
