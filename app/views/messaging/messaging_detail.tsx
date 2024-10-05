@@ -3,161 +3,151 @@ import {
   View,
   Text,
   TextInput,
-  TouchableOpacity,
+  Button,
   FlatList,
+  TouchableOpacity,
   StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
+  Image,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigation } from "@react-navigation/native";``
+import { sendMessage } from "../../store/messagesSlice";
 
-export default function MessageDetail({ route }: any) {
+export default function MessagesDetail({ route }: any) {
+  const { conversationId } = route.params;
+  const conversation = useSelector((state: any) =>
+    state.messages.conversations.find((conv: any) => conv.id === conversationId)
+  );
+  const dispatch = useDispatch();
   const navigation = useNavigation();
-  const { conversationId, name, firstName, messages } = route.params;
-  const [newMessage, setNewMessage] = useState("");
+  const [message, setMessage] = useState("");
 
-  const sendMessage = () => {
-    if (newMessage.trim()) {
-      const newMessageData = {
-        id: Date.now().toString(),
-        sender: "Me",
-        text: newMessage,
-        timestamp: new Date().toLocaleTimeString(),
-      };
-      messages.push(newMessageData);
-      setNewMessage("");
+  const handleSendMessage = () => {
+    if (message.trim()) {
+      dispatch(
+        sendMessage({
+          conversationId,
+          text: message,
+          timestamp: new Date().toISOString(),
+        })
+      );
+      setMessage("");
     }
   };
 
-  const renderMessageItem = ({ item }: any) => (
-    <View
-      style={[
-        styles.messageItem,
-        item.sender === "Me" ? styles.myMessage : styles.otherMessage,
-      ]}
-    >
-      <Text style={styles.messageText}>{item.text}</Text>
-      <Text style={styles.timestamp}>{item.timestamp}</Text>
-    </View>
-  );
-
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-    >
-      {/* Header with back button, contact name, and details button */}
+    <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color="black" />
+          <Text style={styles.backButton}>←</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>{`${firstName} ${name}`}</Text>
+        <Text style={styles.contactName}>
+          {`${conversation.contactFirstName} ${conversation.contactName}`}
+        </Text>
         <TouchableOpacity
           onPress={() =>
-            navigation.navigate("ContactDetail", { name, firstName })
+            navigation.navigate("ContactDetail", {
+              name: conversation.contactName,
+              firstName: conversation.contactFirstName,
+              avatar: conversation.contactAvatar,
+            })
           }
         >
-          <Ionicons name="information-circle-outline" size={24} color="black" />
+          <Text style={styles.detailsButton}>Details</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Messages */}
       <FlatList
-        data={messages}
-        renderItem={renderMessageItem}
+        data={conversation.messages}
         keyExtractor={(item) => item.id}
-        style={styles.messagesList}
-        inverted
+        renderItem={({ item }) => (
+          <View
+            style={[
+              styles.messageBubble,
+              item.isSentByUser ? styles.sentMessage : styles.receivedMessage,
+            ]}
+          >
+            <Text style={styles.messageText}>{item.text}</Text>
+            <Text style={styles.timestamp}>
+              {new Date(item.timestamp).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </Text>
+          </View>
+        )}
       />
 
-      {/* Input for new message */}
       <View style={styles.inputContainer}>
         <TextInput
-          style={styles.textInput}
-          value={newMessage}
-          onChangeText={setNewMessage}
+          style={styles.input}
           placeholder="Type a message"
+          value={message}
+          onChangeText={setMessage}
         />
-        <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
-          <Text style={styles.sendButtonText}>Send</Text>
-        </TouchableOpacity>
+        <Button title="Send" onPress={handleSendMessage} />
       </View>
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f0f0f0",
+    justifyContent: "space-between",
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 10,
-    paddingVertical: 15,
-    backgroundColor: "#fff",
+    padding: 10,
+    backgroundColor: "#f9f9f9",
     borderBottomWidth: 1,
-    borderColor: "#ddd",
+    borderBottomColor: "#ccc",
   },
-  headerTitle: {
+  backButton: {
+    fontSize: 18,
+  },
+  contactName: {
     fontSize: 18,
     fontWeight: "bold",
   },
-  messagesList: {
-    padding: 10,
-    flex: 1,
+  detailsButton: {
+    color: "#007bff",
   },
-  messageItem: {
+  messageBubble: {
+    margin: 10,
     padding: 10,
-    marginVertical: 5,
-    borderRadius: 8,
-    maxWidth: "75%",
+    borderRadius: 10,
   },
-  myMessage: {
-    backgroundColor: "#DCF8C6",
+  sentMessage: {
     alignSelf: "flex-end",
+    backgroundColor: "#daf8cb",
   },
-  otherMessage: {
-    backgroundColor: "#fff",
+  receivedMessage: {
     alignSelf: "flex-start",
+    backgroundColor: "#f1f0f0",
   },
   messageText: {
     fontSize: 16,
   },
   timestamp: {
     fontSize: 12,
-    color: "#999",
-    marginTop: 5,
+    color: "#888",
     alignSelf: "flex-end",
   },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
     padding: 10,
-    backgroundColor: "#fff",
     borderTopWidth: 1,
-    borderColor: "#ddd",
+    borderTopColor: "#ccc",
   },
-  textInput: {
+  input: {
     flex: 1,
     padding: 10,
-    backgroundColor: "#f4f4f4",
-    borderRadius: 8,
-    fontSize: 16,
+    borderRadius: 20,
+    backgroundColor: "#f1f1f1",
     marginRight: 10,
-  },
-  sendButton: {
-    backgroundColor: "#007AFF",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-  },
-  sendButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
   },
 });

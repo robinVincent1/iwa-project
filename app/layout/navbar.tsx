@@ -15,6 +15,9 @@ export default function Navbar() {
   const navigation = useNavigation();
   const isLoggedIn = useSelector((state: any) => state.profil.isLoggedIn); // Assurez-vous que l'état est correct
   const profil_notifications = useSelector((state: any) => state.profil.profil_notifications);
+  const messaging_notifications = useSelector(
+    (state: any) => state.messages.messaging_notifications
+  );
 
   return (
     <Tab.Navigator>
@@ -56,9 +59,13 @@ export default function Navbar() {
         component={MessagesStackNavigator}
         options={{
           tabBarLabel: "",
-          tabBarBadge: profil_notifications,
+          tabBarBadge: messaging_notifications,
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="chatbubble-ellipses-outline" color={color} size={size} />
+            <Ionicons
+              name="chatbubble-ellipses-outline"
+              color={color}
+              size={size}
+            />
           ),
           headerShown: false,
         }}
