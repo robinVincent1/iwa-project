@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
 const articles = [
     {
@@ -44,6 +45,9 @@ export default function HomepageArticles() {
         navigation.navigate('ArticlesPage', { articlesData: articles });
     };
 
+    const handleAddPress = () => {
+        navigation.navigate('AddArticle');
+    };
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Articles & Blogs</Text>
@@ -58,6 +62,12 @@ export default function HomepageArticles() {
                     <Ionicons name="arrow-down" size={30} color="black" />
                 </View>
                 <Text style={styles.arrowText}>Consulter tous les articles</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.seeAllButton} onPress={handleAddPress}>
+                <View style={styles.arrowCircle}>
+                <FontAwesome6 name="add" size={24} color="black" />
+                </View>
+                <Text style={styles.arrowText}>Ajouter un article</Text>
             </TouchableOpacity>
         </View>
     );

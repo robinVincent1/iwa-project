@@ -20,6 +20,7 @@ import EmplacementReservationDetails from '../views/profil/profil_emplacement_de
 import MessagingView from '../views/messaging/messaging_view';
 import MessagesDetail from '../views/messaging/messaging_detail';
 import ContactDetail from '../views/messaging/contact_detail';
+import AddArticleView from '../views/add_article_view';
 
 const Stack = createStackNavigator();
 const EmplacementDetailsStack = createStackNavigator();
@@ -99,6 +100,7 @@ export function HomeStackNavigator() {
             <Stack.Screen name="ArticleDetails" component={ArticleDetails} options={{ headerShown: false }}/>
             <Stack.Screen name="FavoritesPage" component={FavoritesPage} options={{ headerShown: false }} />
             <Stack.Screen name="ArticlesPage" component={ArticlesPage} options={{ headerShown: false }} />
+            <Stack.Screen name="AddArticle" component={AddArticleView} options={{ headerShown: false }} />
         </Stack.Navigator>
     );
 }
