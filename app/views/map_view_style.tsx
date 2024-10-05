@@ -106,6 +106,48 @@ const map_view_styles = StyleSheet.create({
         width: '100%',
         height: 40,
     },
+    bubble: {
+        backgroundColor: "#fff",
+        padding: 6,
+        borderRadius: 20,
+        alignItems: "center",
+        justifyContent: "center",
+        borderWidth: 1,
+        borderColor: "#ccc",
+    },
+    priceText: {
+        fontWeight: "bold",
+        color: "#2b8a3e",
+    },
+    calloutTitle: {
+        fontWeight: "bold",
+        fontSize: 16,
+        color: "#333",
+    },
+    image: {
+        width: 100,
+        height: 100,
+        borderRadius: 8,
+    },
+    calloutDescription: {
+        fontSize: 14,
+        color: "#666",
+        marginBottom: 0,
+    },
+    ratingContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        marginTop: 5,
+    },
+    ratingText: {
+        marginRight: 5,
+        fontWeight: "bold",
+    },
+    reviewCount: {
+        marginLeft: 5,
+        color: "#666",
+        fontSize: 12,
+    },
 });
 
 export default map_view_styles;
