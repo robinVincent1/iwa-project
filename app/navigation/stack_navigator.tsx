@@ -17,7 +17,9 @@ import { useSelector } from 'react-redux';
 import AddEmplacement from '../views/profil/add_emplacement_view';
 import AllEmplacementReservation from '../views/profil/profil_emplacement_details/all_emplacement_reservations_view';
 import EmplacementReservationDetails from '../views/profil/profil_emplacement_details/emplacement_reservation_details_view';
-
+import MessagingView from '../views/messaging/messaging_view';
+import MessagesDetail from '../views/messaging/messaging_detail';
+import ContactDetail from '../views/messaging/contact_detail';
 
 const Stack = createStackNavigator();
 const EmplacementDetailsStack = createStackNavigator();
@@ -54,6 +56,40 @@ export function ProfileStackNavigator() {
             <Stack.Screen name="Settings" component={SettingsView} options={{ headerShown: false }} />
         </Stack.Navigator>
     );
+}
+
+export function MessagesStackNavigator() {
+  const isLoggedIn = useSelector((state: any) => state.profil.isLoggedIn);
+
+  return (
+    <Stack.Navigator initialRouteName={isLoggedIn ? "Messages" : "Login"}>
+      <Stack.Screen
+        name="Messages"
+        component={MessagingView}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="MessagesDetail"
+        component={MessagesDetail}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ContactDetail"
+        component={ContactDetail}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Login"
+        component={Login}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Register"
+        component={Register}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
+  );
 }
 
 export function HomeStackNavigator() {

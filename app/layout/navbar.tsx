@@ -5,7 +5,7 @@ import MapView from '../views/map_view';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 
-import {HomeStackNavigator, MapStackNavigator} from '../navigation/stack_navigator';
+import {HomeStackNavigator, MapStackNavigator, MessagesStackNavigator} from '../navigation/stack_navigator';
 import {ProfileStackNavigator} from '../navigation/stack_navigator';
 import { useNavigation } from '@react-navigation/native';
 
@@ -18,36 +18,47 @@ export default function Navbar() {
 
   return (
     <Tab.Navigator>
-      <Tab.Screen 
-        name="Home_Stack" 
+      <Tab.Screen
+        name="Home_Stack"
         component={HomeStackNavigator}
         options={{
-          tabBarLabel: '',
+          tabBarLabel: "",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home" color={color} size={size} />
           ),
           headerShown: false,
         }}
       />
-      <Tab.Screen  
+      <Tab.Screen
         name="Map_Stack"
         component={MapStackNavigator}
         options={{
-          tabBarLabel: '',
+          tabBarLabel: "",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="map" color={color} size={size} />
           ),
           headerShown: false,
         }}
       />
-      <Tab.Screen 
+      <Tab.Screen
         name="Profile_Stack"
         component={ProfileStackNavigator}
         options={{
-          tabBarLabel: '',
-          tabBarBadge: profil_notifications,
+          tabBarLabel: "",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person" color={color} size={size} />
+          ),
+          headerShown: false,
+        }}
+      />
+      <Tab.Screen
+        name="Messaging_Stack"
+        component={MessagesStackNavigator}
+        options={{
+          tabBarLabel: "",
+          tabBarBadge: profil_notifications,
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="chatbubble-ellipses-outline" color={color} size={size} />
           ),
           headerShown: false,
         }}
