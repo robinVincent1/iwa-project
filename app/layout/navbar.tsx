@@ -43,18 +43,7 @@ export default function Navbar() {
           headerShown: false,
         }}
       />
-      <Tab.Screen
-        name="Profile_Stack"
-        component={ProfileStackNavigator}
-        options={{
-          tabBarLabel: "",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person" color={color} size={size} />
-          ),
-          headerShown: false,
-        }}
-      />
-      <Tab.Screen
+            <Tab.Screen
         name="Messaging_Stack"
         component={MessagesStackNavigator}
         options={{
@@ -62,10 +51,21 @@ export default function Navbar() {
           tabBarBadge: messaging_notifications,
           tabBarIcon: ({ color, size }) => (
             <Ionicons
-              name="chatbubble-ellipses-outline"
+              name="chatbubble-ellipses"
               color={color}
               size={size}
             />
+          ),
+          headerShown: false,
+        }}
+      />
+      <Tab.Screen
+        name="Profile_Stack"
+        component={ProfileStackNavigator}
+        options={{
+          tabBarLabel: "",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="person" color={color} size={size} />
           ),
           headerShown: false,
         }}
