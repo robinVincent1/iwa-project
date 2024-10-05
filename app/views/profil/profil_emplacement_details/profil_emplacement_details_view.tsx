@@ -6,7 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import EmplacementReservationCell from '../../../components/reservation/emplacement_reservation_cell';
 
-import { couleur } from "../../color";
+import { couleur } from "../../../color";
 
 
 export default function ProfilEmplacementDetails({ route }) {
