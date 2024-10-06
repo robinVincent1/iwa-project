@@ -5,8 +5,8 @@ import MapView from '../views/map_view';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 
-import {HomeStackNavigator, MapStackNavigator, MessagesStackNavigator} from '../navigation/stack_navigator';
-import {ProfileStackNavigator} from '../navigation/stack_navigator';
+import { HomeStackNavigator, MapStackNavigator, MessagesStackNavigator } from '../navigation/stack_navigator';
+import { ProfileStackNavigator } from '../navigation/stack_navigator';
 import { useNavigation } from '@react-navigation/native';
 
 const Tab = createBottomTabNavigator();
@@ -20,7 +20,12 @@ export default function Navbar() {
   );
 
   return (
-    <Tab.Navigator>
+    <Tab.Navigator
+      screenOptions={{
+        tabBarActiveTintColor: '#00796B', // Couleur de l'icône sélectionnée
+        tabBarInactiveTintColor: '#8E8E93', // Couleur de l'icône non sélectionnée
+      }}
+    >
       <Tab.Screen
         name="Home_Stack"
         component={HomeStackNavigator}
@@ -43,7 +48,7 @@ export default function Navbar() {
           headerShown: false,
         }}
       />
-            <Tab.Screen
+      <Tab.Screen
         name="Messaging_Stack"
         component={MessagesStackNavigator}
         options={{

@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Image,
 } from "react-native";
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons } from "@expo/vector-icons";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { sendMessage } from "../../store/messagesSlice";
@@ -52,10 +52,7 @@ export default function MessagesDetail({ route }: any) {
               })
             }
           >
-            <Image
-              source={conversation.contactAvatar}
-              style={styles.avatar}
-            />
+            <Image source={conversation.contactAvatar} style={styles.avatar} />
             <Text style={styles.contactName}>
               {`${conversation.contactFirstName} ${conversation.contactName}`}
             </Text>
@@ -92,7 +89,7 @@ export default function MessagesDetail({ route }: any) {
           onChangeText={setMessage}
         />
         <TouchableOpacity onPress={handleSendMessage} style={styles.sendButton}>
-          <Ionicons name="send" size={24} color="black" />
+          <Ionicons name="send" size={24} color="#00796B" />
         </TouchableOpacity>
       </View>
     </View>
@@ -102,16 +99,18 @@ export default function MessagesDetail({ route }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#f9f9f9", // Arrière-plan doux
     justifyContent: "space-between",
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: 10,
-    backgroundColor: "#f9f9f9",
+    padding: 15,
+    backgroundColor: "#fff", // Fond blanc pour le header
     borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
+    borderBottomColor: "#e0e0e0",
+    elevation: 2, // Ombre pour le header
   },
   leftHeader: {
     flexDirection: "row",
@@ -123,34 +122,37 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 45,
+    height: 45,
+    borderRadius: 22.5,
     marginRight: 10,
   },
   contactName: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: "600", // Poids de police légèrement plus léger
+    color: "#333", // Couleur sombre pour le texte
   },
   messageBubble: {
     margin: 10,
-    padding: 10,
-    borderRadius: 10,
+    padding: 15,
+    borderRadius: 15, // Coins arrondis
+    elevation: 1, // Ombre pour les bulles de message
   },
   sentMessage: {
     alignSelf: "flex-end",
-    backgroundColor: "#daf8cb",
+    backgroundColor: "#d4f5d4", // Couleur douce pour les messages envoyés
   },
   receivedMessage: {
     alignSelf: "flex-start",
-    backgroundColor: "#f1f0f0",
+    backgroundColor: "#e7e7e7", // Couleur douce pour les messages reçus
   },
   messageText: {
     fontSize: 16,
+    color: "#333", // Couleur sombre pour le texte du message
   },
   timestamp: {
     fontSize: 12,
-    color: "#888",
+    color: "#888", // Couleur du timestamp
     alignSelf: "flex-end",
   },
   inputContainer: {
@@ -158,14 +160,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 10,
     borderTopWidth: 1,
-    borderTopColor: "#ccc",
+    borderTopColor: "#e0e0e0",
+    backgroundColor: "#fff", // Fond blanc pour la barre d'entrée
   },
   input: {
     flex: 1,
     padding: 10,
     borderRadius: 20,
-    backgroundColor: "#f1f1f1",
+    backgroundColor: "#f1f1f1", // Fond légèrement gris pour l'entrée
     marginRight: 10,
+    borderColor: "#ccc",
+    borderWidth: 1, // Bordure autour de l'entrée
   },
   sendButton: {
     padding: 10,

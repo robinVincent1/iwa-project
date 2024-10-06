@@ -13,8 +13,9 @@ import EmplacementDetailsImages from "../../components/emplacement_details/empla
 import EmplacementDetailsRatings from "../../components/emplacement_details/emplacement_details_ratings";
 import EmplacementDetailsDescription from "../../components/emplacement_details/emplacement_details_description";
 import EmplacementReservation from "../emplacement_reservation_view"; // Import du composant de réservation
-import Reservation from "react-native-calendars/src/agenda/reservation-list/reservation";
+
 import { couleur } from "../../color";
+import { Reservation } from "../profil/profile_view";
 
 export type Avis = {
   id_avis: string;

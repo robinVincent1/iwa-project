@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
   articleTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#333333",
+    color: "#00796B",
   },
   articleExcerpt: {
     fontSize: 14,

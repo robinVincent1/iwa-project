@@ -48,7 +48,7 @@ export default function HomepageFavorites() {
                         {item === 'arrow' ? (
                             <TouchableOpacity onPress={handleArrowPress} style={styles.arrowContainer} activeOpacity={1}>
                                 <View style={styles.arrowCircle}>
-                                    <Ionicons name="arrow-forward" size={30} color="black" />
+                                    <Ionicons name="arrow-forward" size={30} color="white" />
                                 </View>
                                 <Text style={styles.arrowText}>Consulter tous mes favoris</Text>
                             </TouchableOpacity>
@@ -109,15 +109,16 @@ const styles = StyleSheet.create({
   arrowCircle: {
     width: 60,
     height: 60,
-    borderRadius: 30, // Faire un cercle
-    backgroundColor: '#ccc',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 10, // Espace entre le cercle et le texte
+    borderRadius: 30,
+    backgroundColor: "#00796B", // Couleur élégante et naturelle pour le bouton
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
   },
   arrowText: {
-    fontSize: 14,
-    color: '#666',
+    fontSize: 16,
+    color: "#333333", // Texte sobre
+    padding: 5,
   },
   itemText: {
     fontSize: 20,
@@ -150,5 +151,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold', // Met le texte en gras
     alignSelf: 'flex-start', // Aligne le texte à gauche
     marginLeft: 10, // Ajoute une marge à gauche pour coller le titre sur la gauche
+    color: "#00796B",
   },
 });

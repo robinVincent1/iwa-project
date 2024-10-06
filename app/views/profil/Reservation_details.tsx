@@ -53,7 +53,7 @@ export default function Reservation_details({ route, navigation }) {
         <View style={styles.container}>
           <View style={styles.header}>
             <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-              <Ionicons name="arrow-back" size={24} color="black" />
+              <Ionicons name="arrow-back" size={24} color="#37474F" />
             </TouchableOpacity>
             <Text style={styles.title}>Détails de la Réservation</Text>
           </View>
@@ -74,20 +74,17 @@ export default function Reservation_details({ route, navigation }) {
           </View>
 
           {endDate < currentDate ? (
-            // Si la date de fin est passée, afficher le bouton pour donner un avis
             <TouchableOpacity style={[styles.button, styles.reviewButton]} onPress={handleGiveReview}>
               <Text style={styles.buttonText}>Donner un avis</Text>
               <Ionicons name="star" size={20} color="#fff" />
             </TouchableOpacity>
           ) : (
-            // Sinon, afficher le bouton pour annuler la réservation
             <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={handleCancel}>
               <Text style={styles.buttonText}>Annuler</Text>
               <Ionicons name="close-circle" size={20} color="#fff" />
             </TouchableOpacity>
           )}
 
-          {/* Afficher le formulaire d'avis si l'utilisateur a cliqué sur "Donner un avis" */}
           {showReviewForm && (
             <View style={styles.reviewForm}>
               <Text style={styles.formTitle}>Donner un avis</Text>
@@ -103,7 +100,6 @@ export default function Reservation_details({ route, navigation }) {
                 returnKeyType="done"
                 onSubmitEditing={Keyboard.dismiss}
               />
-
               <TouchableOpacity style={[styles.button, styles.submitButton]} onPress={handleSubmitReview}>
                 <Text style={styles.buttonText}>Soumettre</Text>
                 <Ionicons name="send" size={20} color="#fff" />
@@ -122,11 +118,9 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flexGrow: 1,
-    justifyContent: 'center',
     padding: 20,
   },
   container: {
-    backgroundColor: '#f0f0f5',
     borderRadius: 8,
     elevation: 3,
   },
@@ -134,23 +128,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
-    paddingTop: 40, // Ajustez cette valeur pour rapprocher l'en-tête du haut de la page
+    paddingTop: 40,
   },
   backButton: {
     marginRight: 10,
   },
   title: {
-    fontSize: 26,
-    fontWeight: 'bold',
+    fontSize: 24,
+    fontWeight: '600',
     textAlign: 'center',
-    color: '#333',
+    color: '#37474F',
     flex: 1,
   },
   detailRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     backgroundColor: '#fff',
-    padding: 10,
+    padding: 15,
     marginBottom: 15,
     borderRadius: 8,
     elevation: 1,
@@ -158,7 +152,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#6200EE',
+    color: '#00796B',
   },
   detailText: {
     fontSize: 16,
@@ -177,10 +171,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#f44336',
   },
   reviewButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#00796B',
   },
   submitButton: {
-    backgroundColor: '#6200EE',
+    backgroundColor: '#00796B',
   },
   buttonText: {
     color: '#fff',
@@ -205,9 +199,11 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: '#B0BEC5',
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 8,
     marginBottom: 15,
+    backgroundColor: '#F9F9F9',
+    fontSize: 16,
   },
 });
