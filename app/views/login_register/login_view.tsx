@@ -16,10 +16,8 @@ export default function Login({ navigation }) {
 
   const handleForgotPassword = () => {
     Alert.alert('Mot de passe oublié', 'Redirection vers la page de réinitialisation...');
-    // Logique pour réinitialiser le mot de passe
   };
 
-  // Fonction pour rediriger vers la page d'inscription
   const handleRegister = () => {
     navigation.navigate('Register');
   };
@@ -34,6 +32,7 @@ export default function Login({ navigation }) {
         keyboardType="email-address"
         value={email}
         onChangeText={setEmail}
+        placeholderTextColor="#B0BEC5"
         autoCapitalize="none"
       />
 
@@ -43,6 +42,7 @@ export default function Login({ navigation }) {
         secureTextEntry
         value={password}
         onChangeText={setPassword}
+        placeholderTextColor="#B0BEC5"
         autoCapitalize="none"
       />
 
@@ -55,7 +55,6 @@ export default function Login({ navigation }) {
         <Text style={styles.forgotPasswordText}>Mot de passe oublié ?</Text>
       </TouchableOpacity>
 
-      {/* Nouveau bouton pour l'inscription */}
       <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
         <Text style={styles.registerText}>Pas encore de compte ? Inscrivez-vous</Text>
       </TouchableOpacity>
@@ -68,20 +67,24 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: '#f0f0f5',
-    borderRadius: 8,
+    backgroundColor: '#f9f9f9', // Fond plus sobre
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
     elevation: 3,
   },
   title: {
-    fontSize: 26,
+    fontSize: 28,
     fontWeight: 'bold',
     textAlign: 'center',
     color: '#333',
-    marginBottom: 30,
+    marginBottom: 25,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#B0BEC5', // Couleur de bordure sobre
     borderRadius: 8,
     padding: 15,
     marginBottom: 20,
@@ -89,7 +92,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   button: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#00796B', // Couleur naturelle (vert sombre)
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',
@@ -106,7 +109,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   forgotPasswordText: {
-    color: '#007bff',
+    color: '#00796B', // Même vert que le bouton
     fontWeight: 'bold',
     fontSize: 16,
   },
@@ -115,7 +118,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   registerText: {
-    color: '#007bff',
+    color: '#00796B', // Uniformité des couleurs
     fontWeight: 'bold',
     fontSize: 16,
   },

@@ -1,42 +1,39 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
 
-export default function Register() {
+export default function Register({ navigation }) {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const navigation = useNavigation();
-
   const handleRegister = () => {
-    if (password !== confirmPassword) {
-      Alert.alert('Erreur', 'Les mots de passe ne correspondent pas');
-      return;
+    if (firstName === '' || lastName === '' || email === '' || password === '' || confirmPassword === '') {
+      Alert.alert('Erreur', 'Veuillez remplir tous les champs.');
+    } else if (password !== confirmPassword) {
+      Alert.alert('Erreur', 'Les mots de passe ne correspondent pas.');
+    } else {
+      Alert.alert('Inscription réussie', `Bienvenue ${firstName}`);
+      navigation.navigate('Login'); // Redirige vers la page de connexion après succès
     }
-    // Logique pour enregistrer un nouvel utilisateur
-    Alert.alert('Succès', 'Inscription réussie');
+  };
+
+  const handleLoginRedirect = () => {
     navigation.navigate('Login');
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color="black" />
-        </TouchableOpacity>
-        <Text style={styles.title}>Créer un compte</Text>
-      </View>
+    <View style={styles.container}>
+      <Text style={styles.title}>Créer un compte</Text>
 
       <TextInput
         style={styles.input}
         placeholder="Prénom"
         value={firstName}
         onChangeText={setFirstName}
+        placeholderTextColor="#B0BEC5"
       />
 
       <TextInput
@@ -44,38 +41,37 @@ export default function Register() {
         placeholder="Nom"
         value={lastName}
         onChangeText={setLastName}
+        placeholderTextColor="#B0BEC5"
       />
 
       <TextInput
         style={styles.input}
         placeholder="Email"
+        keyboardType="email-address"
         value={email}
         onChangeText={setEmail}
-        keyboardType="email-address"
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Téléphone"
-        value={phone}
-        onChangeText={setPhone}
-        keyboardType="phone-pad"
+        placeholderTextColor="#B0BEC5"
+        autoCapitalize="none"
       />
 
       <TextInput
         style={styles.input}
         placeholder="Mot de passe"
+        secureTextEntry
         value={password}
         onChangeText={setPassword}
-        secureTextEntry
+        placeholderTextColor="#B0BEC5"
+        autoCapitalize="none"
       />
 
       <TextInput
         style={styles.input}
         placeholder="Confirmer le mot de passe"
+        secureTextEntry
         value={confirmPassword}
         onChangeText={setConfirmPassword}
-        secureTextEntry
+        placeholderTextColor="#B0BEC5"
+        autoCapitalize="none"
       />
 
       <TouchableOpacity style={styles.button} onPress={handleRegister}>
@@ -83,76 +79,62 @@ export default function Register() {
         <Ionicons name="checkmark-circle" size={20} color="#fff" />
       </TouchableOpacity>
 
-      <View style={styles.loginRedirect}>
-        <Text style={styles.redirectText}>Déjà un compte ?</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-          <Text style={styles.redirectLink}>Connectez-vous</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+      <TouchableOpacity style={styles.loginRedirect} onPress={handleLoginRedirect}>
+        <Text style={styles.redirectText}>Déjà un compte ? Connectez-vous</Text>
+      </TouchableOpacity>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
-    backgroundColor: '#f0f0f5',
-    borderRadius: 8,
-    elevation: 3,
-    flexGrow: 1,
+    flex: 1,
     justifyContent: 'center',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  backButton: {
-    marginRight: 10,
+    padding: 20,
+    backgroundColor: '#f9f9f9', // Fond sobre
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   title: {
-    fontSize: 26,
+    fontSize: 28,
     fontWeight: 'bold',
     textAlign: 'center',
     color: '#333',
-    flex: 1,
+    marginBottom: 25,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#B0BEC5', // Bordure avec un ton sobre
     borderRadius: 8,
     padding: 15,
-    marginBottom: 15,
-    backgroundColor: '#fff',
+    marginBottom: 20,
+    backgroundColor: '#fff', // Fond blanc pour les champs de texte
     fontSize: 16,
   },
   button: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#00796B', // Couleur verte naturelle et sobre
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 10,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
+    fontWeight: 'bold',
     marginRight: 10,
   },
   loginRedirect: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 20,
+    marginTop: 30,
+    alignItems: 'center',
   },
   redirectText: {
-    fontSize: 16,
-    color: '#333',
-  },
-  redirectLink: {
-    fontSize: 16,
-    color: '#6200EE',
-    marginLeft: 5,
+    color: '#00796B', // Même vert naturel pour le lien
     fontWeight: 'bold',
+    fontSize: 16,
   },
 });
