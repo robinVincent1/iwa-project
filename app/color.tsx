@@ -1,1 +1,1 @@
-export const couleur = "#92B474"
+export const couleur = "white"
