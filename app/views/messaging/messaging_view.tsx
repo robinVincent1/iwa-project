@@ -7,14 +7,22 @@ import {
   Image,
   StyleSheet,
 } from "react-native";
-import { useSelector } from "react-redux";
+
 import { useNavigation } from "@react-navigation/native";
+import useMessagesStateViewModel from "../../viewModels/messageState_viewModel";
 
 export default function MessagesView() {
-  const conversations = useSelector(
-    (state: any) => state.messages.conversations
-  );
+  const { messagesState, loading, error } = useMessagesStateViewModel();
   const navigation = useNavigation();
+
+  // Gérer le chargement et les erreurs
+  if (loading) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (error) {
+    return <Text>Error: {error}</Text>;
+  }
 
   const renderConversation = ({ item }: any) => {
     const lastMessage = item.messages[item.messages.length - 1];
@@ -22,7 +30,7 @@ export default function MessagesView() {
     return (
       <TouchableOpacity
         onPress={() =>
-          navigation.navigate("MessagesDetail", { conversationId: item.id })
+          navigation.navigate("MessagesDetail", { conversationId: item.id_conversation })
         }
         style={styles.conversationContainer}
       >
@@ -33,7 +41,7 @@ export default function MessagesView() {
           />
           <View style={styles.textContainer}>
             <Text style={styles.contactName}>
-              {`${item.contactFirstName} ${item.contactName}`}
+              {`${item.id_sender}`} {/* Vous devez récupérer le nom du contact approprié */}
             </Text>
             <Text style={styles.lastMessage}>{lastMessage.text}</Text>
           </View>
@@ -45,8 +53,8 @@ export default function MessagesView() {
   return (
     <View style={styles.container}>
       <FlatList
-        data={conversations}
-        keyExtractor={(item) => item.id}
+        data={messagesState.conversations}
+        keyExtractor={(item) => item.id_conversation}
         renderItem={renderConversation}
       />
     </View>
@@ -58,16 +66,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
   },
-
   conversationItem: {
     flexDirection: "row",
     padding: 15,
     alignItems: "center",
-    backgroundColor: "white", // Fond blanc pour chaque conversation
-    borderRadius: 10, // Coins arrondis
-    margin: 10, // Marge autour des éléments
-    elevation: 1, // Ombre pour l'élévation sur Android
-    shadowColor: "#000", // Ombre pour iOS
+    backgroundColor: "white",
+    borderRadius: 10,
+    margin: 10,
+    elevation: 1,
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 1,
@@ -79,19 +86,19 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    borderWidth: 2, // Bordure autour de l'avatar
-    borderColor: "#ccc", // Couleur de bordure
+    borderWidth: 2,
+    borderColor: "#ccc",
   },
   textContainer: {
-    marginLeft: 15, // Espace plus important à gauche
+    marginLeft: 15,
   },
   contactName: {
     fontSize: 18,
-    fontWeight: "600", // Poids de police plus léger
-    color: "#00796B", // Couleur du texte
+    fontWeight: "600",
+    color: "#00796B",
   },
   lastMessage: {
     fontSize: 14,
-    color: "#666", // Couleur du texte plus douce
+    color: "#666",
   },
 });

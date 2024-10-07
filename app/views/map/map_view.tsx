@@ -5,12 +5,13 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import { useNavigation } from '@react-navigation/native';
-import { renderRating } from '../utils/renderRating';
+
 import { useDispatch } from 'react-redux';
 import Slider from '@react-native-community/slider';
 import map_view_styles from './map_view_style';
+import { renderRating } from '../../utils/renderRating';
 
-const cities = require('../assets/cities.json');
+const cities = require('../../assets/cities.json');
 
 export type Emplacement = {
   id_emplacement: string;

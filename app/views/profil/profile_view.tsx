@@ -1,230 +1,45 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect } from "react";
-import { MaterialIcons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import {
   StyleSheet,
   Text,
   View,
-  TextInput,
-  ScrollView,
-  Alert,
   Image,
   TouchableOpacity,
+  ScrollView,
+  Alert,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { renderRating } from "../../utils/renderRating";
 import { couleur } from "../../color";
+import { renderRating } from "../../utils/renderRating";
 
-// Définition des types User, Emplacement et Réservation
-export type User = {
-  id_user: string;
-  prenom: string;
-  nom: string;
-  email: string;
-  telephone: string;
-  mot_de_passe: string;
-  role: string;
-  photo?: string;
-};
-
-export type Emplacement = {
-  id_emplacement: string;
-  localisation: string;
-  caracteristique: string;
-  equipement: string[];
-  tarif: number;
-  disponible: boolean;
-  moyenneAvis: number;
-  photos: string[]; // Liste d'URLs de photos
-  coordonnees: {
-    latitude: number;
-    longitude: number;
-    latitudeDelta: number;
-    longitudeDelta: number;
-    name: string;
-    rating: number;
-  };
-};
-
-export type Reservation = {
-  id_reservation: string;
-  id_user: string;
-  date_debut: string;
-  date_fin: string;
-  statut: string;
-  message_voyageur: string;
-  emplacement: Emplacement;
-};
-
-export type Avis = {
-  id_avis: string;
-  id_emplacement: string;
-  note: number;
-  commentaire: string;
-  date_avis: string;
-};
+import { User } from "../../models/user.model";
+import { useUserViewModel } from "../../viewModels/user_viewModel";
+import { Emplacement } from "../../models/emplacement_model";
+import { Reservation } from "../../models/reservation.model";
+import useEmplacementViewModel from "../../viewModels/emplacement_viewModel";
+import { TextInput } from "react-native-gesture-handler";
 
 export default function ProfilView() {
   const navigation = useNavigation();
+  const profilViewModel = useUserViewModel();
 
-  const fakeUser: User = {
-    id_user: "1",
-    prenom: "Robin",
-    nom: "Vincent",
-    email: "robin@gmail.com",
-    telephone: "02896278678",
-    mot_de_passe: "lkjqscjd",
-    role: "voyageur",
-    photo: "",
-  };
-
-  const [userInfo, setUserInfo] = useState<User>(fakeUser);
   const [isEditing, setIsEditing] = useState(false);
+
+  // Récupération du premier utilisateur (simulateur d'utilisateur connecté)
+  const userInfo = profilViewModel.users[0] || null; // Utiliser le premier user
   const [emplacements, setEmplacements] = useState<Emplacement[]>([]);
   const [reservations, setReservations] = useState<Reservation[]>([]);
 
   useEffect(() => {
-    loadUser();
-    loadEmplacements();
-  }, []);
-
-  useEffect(() => {
-    if (emplacements.length > 0) {
-      loadReservations(emplacements);
+    if (userInfo) {
+      setEmplacements(userInfo.emplacements || []);
+      setReservations(userInfo.reservations || []);
     }
-  }, [emplacements]);
-
-  const loadUser = async () => {
-    setUserInfo(fakeUser);
-  };
-
-  const loadEmplacements = async () => {
-    const fakeEmplacements: Emplacement[] = [
-      {
-        id_emplacement: "1",
-        localisation: "Montpellier",
-        caracteristique: "Proche du centre-ville",
-        equipement: ["Wi-Fi", "Piscine"],
-        tarif: 50,
-        disponible: true,
-        moyenneAvis: 4.7,
-        photos: [
-          "https://example.com/photo1.jpg",
-          "https://example.com/photo2.jpg",
-        ],
-        coordonnees: {
-          latitude: 43.6,
-          longitude: 3.8833,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-          name: "Montpellier Centre",
-          rating: 4.7,
-        },
-      },
-      {
-        id_emplacement: "2",
-        localisation: "Montpellier",
-        caracteristique: "Proche des plages",
-        equipement: ["Parking", "Animaux acceptés"],
-        tarif: 80,
-        disponible: false,
-        moyenneAvis: 3.8,
-        photos: [
-          "https://example.com/photo3.jpg",
-          "https://example.com/photo4.jpg",
-        ],
-        coordonnees: {
-          latitude: 43.58,
-          longitude: 3.9,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-          name: "Montpellier Plages",
-          rating: 3.8,
-        },
-      }]
-
-    const fakeAvis: Avis[] = [
-      {
-        id_avis: "1",
-        id_emplacement: "1",
-        note: 4,
-        commentaire: "Super séjour!",
-        date_avis: "2024-09-01",
-      },
-      {
-        id_avis: "2",
-        id_emplacement: "1",
-        note: 5,
-        commentaire: "Incroyable!",
-        date_avis: "2024-09-02",
-      },
-      {
-        id_avis: "3",
-        id_emplacement: "2",
-        note: 3,
-        commentaire: "Pas mal.",
-        date_avis: "2024-09-03",
-      },
-    ];
-
-    setEmplacements(fakeEmplacements);
-
-    // Calculer la moyenne des avis
-    const emplacementsAvecMoyenne = fakeEmplacements.map((emplacement) => {
-      const avisPourEmplacement = fakeAvis.filter(
-        (avis) => avis.id_emplacement === emplacement.id_emplacement
-      );
-      const moyenne =
-        avisPourEmplacement.reduce((sum, avis) => sum + avis.note, 0) /
-        (avisPourEmplacement.length || 1);
-      return { ...emplacement, moyenneAvis: moyenne };
-    });
-
-    setEmplacements(emplacementsAvecMoyenne);
-  };
-
-  const loadReservations = async (loadedEmplacements: Emplacement[]) => {
-    const fakeReservations: Reservation[] = [
-      {
-        id_reservation: "1",
-        date_debut: "2024-09-01",
-        date_fin: "2024-09-05",
-        statut: "Confirmée",
-        message_voyageur: "Excité pour le séjour!",
-        emplacement: loadedEmplacements[0],
-      },
-      {
-        id_reservation: "2",
-        date_debut: "2024-09-10",
-        date_fin: "2024-09-15",
-        statut: "En attente",
-        message_voyageur: "Vivement ce séjour!",
-        emplacement: loadedEmplacements[1],
-      },
-    ];
-    setReservations(fakeReservations);
-  };
-
-  const handleAddEmplacement = () => {
-    navigation.navigate("Add_emplacement");
-    // Logique pour ajouter un emplacement
-  }
-
-  const saveUser = async () => {
-    Alert.alert("Succès", "Informations sauvegardées avec succès.");
-    setIsEditing(false);
-  };
-
-  const handleChange = (field: keyof User, value: string) => {
-    setUserInfo({ ...userInfo, [field]: value });
-  };
-
-  const handleSave = () => {
-    saveUser();
-  };
+  }, [userInfo]);
 
   const pickImage = async () => {
     const permissionResult =
@@ -245,17 +60,28 @@ export default function ProfilView() {
     });
 
     if (!result.canceled) {
-      setUserInfo({ ...userInfo, photo: result.assets[0].uri });
+      // Mise à jour via le ViewModel pour le premier user
+      profilViewModel.updateUser(userInfo.id_user, {
+        photo: result.assets[0].uri,
+      });
     }
   };
 
+  const handleChange = (field: keyof User, value: string) => {
+    profilViewModel.updateUser(userInfo.id_user, { [field]: value });
+  };
+
+  const handleSave = () => {
+    setIsEditing(false);
+  };
+
   const renderProfileImage = () => {
-    if (userInfo.photo) {
+    if (userInfo?.photo) {
       return (
         <Image source={{ uri: userInfo.photo }} style={styles.profileImage} />
       );
     } else {
-      const initials = `${userInfo.prenom.charAt(0)}${userInfo.nom.charAt(
+      const initials = `${userInfo?.prenom?.charAt(0)}${userInfo?.nom?.charAt(
         0
       )}`.toUpperCase();
       return (
@@ -266,30 +92,8 @@ export default function ProfilView() {
     }
   };
 
-  const addEmplacement = () => {
-    // Logique pour ajouter un emplacement
-    Alert.alert("Ajouter Emplacement", "Fonctionnalité non implémentée.");
-  };
-
-  const deleteEmplacement = (id: string) => {
-    // Logique pour supprimer un emplacement
-    Alert.alert(
-      "Supprimer Emplacement",
-      `Êtes-vous sûr de vouloir supprimer l'emplacement ${id}?`
-    );
-  };
-
-  const addReservation = () => {
-    // Logique pour ajouter une réservation
-    Alert.alert("Ajouter Réservation", "Fonctionnalité non implémentée.");
-  };
-
-  const deleteReservation = (id: string) => {
-    // Logique pour supprimer une réservation
-    Alert.alert(
-      "Supprimer Réservation",
-      `Êtes-vous sûr de vouloir supprimer la réservation ${id}?`
-    );
+  const navigateToSettings = () => {
+    navigation.navigate("Settings" as never); // Navigation vers la page des réglages
   };
 
   const navigateToEmplacementDetails = (emplacement: Emplacement) => {
@@ -300,8 +104,8 @@ export default function ProfilView() {
     navigation.navigate("Reservation_detail", { reservation });
   };
 
-  const navigateToSettings = () => {
-    navigation.navigate("Register");
+  const handleAddEmplacement = () => {
+    navigation.navigate("Add_emplacement" as never);
   };
 
   return (
@@ -353,33 +157,33 @@ export default function ProfilView() {
               <TextInput
                 style={styles.input}
                 placeholder="Prénom"
-                value={userInfo.prenom}
+                value={userInfo?.prenom || ""}
                 onChangeText={(value) => handleChange("prenom", value)}
               />
               <TextInput
                 style={styles.input}
                 placeholder="Nom"
-                value={userInfo.nom}
+                value={userInfo?.nom || ""}
                 onChangeText={(value) => handleChange("nom", value)}
               />
               <TextInput
                 style={styles.input}
                 placeholder="Email"
-                value={userInfo.email}
+                value={userInfo?.email || ""}
                 onChangeText={(value) => handleChange("email", value)}
                 keyboardType="email-address"
               />
               <TextInput
                 style={styles.input}
                 placeholder="Téléphone"
-                value={userInfo.telephone}
+                value={userInfo?.telephone || ""}
                 onChangeText={(value) => handleChange("telephone", value)}
                 keyboardType="phone-pad"
               />
               <TextInput
                 style={styles.input}
                 placeholder="Mot de passe"
-                value={userInfo.mot_de_passe}
+                value={userInfo?.mot_de_passe || ""}
                 onChangeText={(value) => handleChange("mot_de_passe", value)}
                 secureTextEntry
               />
@@ -390,20 +194,34 @@ export default function ProfilView() {
           ) : (
             <>
               <Text style={styles.infoText}>
-                Prénom: <Text style={styles.infoValue}>{userInfo.prenom}</Text>
+                Prénom:{" "}
+                <Text style={styles.infoValue}>
+                  {userInfo?.prenom || "Non défini"}
+                </Text>
               </Text>
               <Text style={styles.infoText}>
-                Nom: <Text style={styles.infoValue}>{userInfo.nom}</Text>
+                Nom:{" "}
+                <Text style={styles.infoValue}>
+                  {userInfo?.nom || "Non défini"}
+                </Text>
               </Text>
               <Text style={styles.infoText}>
-                Email: <Text style={styles.infoValue}>{userInfo.email}</Text>
+                Email:{" "}
+                <Text style={styles.infoValue}>
+                  {userInfo?.email || "Non défini"}
+                </Text>
               </Text>
               <Text style={styles.infoText}>
                 Téléphone:{" "}
-                <Text style={styles.infoValue}>{userInfo.telephone}</Text>
+                <Text style={styles.infoValue}>
+                  {userInfo?.telephone || "Non défini"}
+                </Text>
               </Text>
               <Text style={styles.infoText}>
-                Rôle: <Text style={styles.infoValue}>{userInfo.role}</Text>
+                Rôle:{" "}
+                <Text style={styles.infoValue}>
+                  {userInfo?.role || "Non défini"}
+                </Text>
               </Text>
             </>
           )}
@@ -444,11 +262,13 @@ export default function ProfilView() {
               </View>
             </TouchableOpacity>
           ))}
-          <TouchableOpacity style={styles.addButton} onPress={handleAddEmplacement}>
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={handleAddEmplacement}
+          >
             <Ionicons name="add-circle" size={40} color="#00796B" />
           </TouchableOpacity>
         </View>
-
 
         <View style={styles.reservationContainer}>
           <View style={styles.sectionHeader}>
@@ -467,26 +287,16 @@ export default function ProfilView() {
             >
               <View style={styles.card}>
                 <Text style={styles.cardTitle}>
-                  {reservation.emplacement.localisation}{" "}
-                  {renderRating(reservation.emplacement.moyenneAvis, false)}
+                  Réservation {reservation.id_reservation}
                 </Text>
                 <Text style={styles.cardText}>
-                  {reservation.date_debut} / {reservation.date_fin}
+                  Dates: {reservation.date_debut} - {reservation.date_fin}
                 </Text>
                 <Text style={styles.cardText}>
                   Statut: {reservation.statut}
                 </Text>
                 <Text style={styles.cardText}>
                   Message: {reservation.message_voyageur}
-                </Text>
-                <Text style={styles.cardText}>
-                  Caractéristique: {reservation.emplacement.caracteristique}
-                </Text>
-                <Text style={styles.cardText}>
-                  Équipement: {reservation.emplacement.equipement}
-                </Text>
-                <Text style={styles.cardText}>
-                  Tarif: {reservation.emplacement.tarif} €
                 </Text>
               </View>
             </TouchableOpacity>
@@ -497,6 +307,7 @@ export default function ProfilView() {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -525,13 +336,13 @@ const styles = StyleSheet.create({
     height: 120,
     borderRadius: 60,
     borderWidth: 2,
-    borderColor: "#FF0000",
+    borderColor: "white",
   },
   defaultImageContainer: {
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: "#00796B", 
+    backgroundColor: "#00796B",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -554,7 +365,7 @@ const styles = StyleSheet.create({
     flexDirection: "row", // Ajoute cette ligne pour que les éléments soient en ligne
     justifyContent: "space-between", // Cela maintiendra le texte et le bouton d'édition aux extrémités
     alignItems: "center", // Pour centrer verticalement
-  },  
+  },
   title: {
     fontSize: 26,
     fontWeight: "600",
@@ -611,7 +422,7 @@ const styles = StyleSheet.create({
     color: "#546E7A", // Gris bleuté pour le texte de la carte
   },
   addButton: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 20,
   },
   sectionHeader: {

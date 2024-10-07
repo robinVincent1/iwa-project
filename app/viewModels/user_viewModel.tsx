@@ -2,21 +2,16 @@ import { useState, useEffect } from 'react';
 import { User } from '../models/user.model';
 import { Emplacement } from '../models/emplacement_model';
 
-const useUserViewModel = () => {
+export function useUserViewModel() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Charger les utilisateurs (y compris leurs emplacements)
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        // const response = await fetch('/api/users');
-        // if (!response.ok) {
-        //   throw new Error('Network response was not ok');
-        // }
-        // const data: User[] = await response.json();
-
-        // Example data
+        // Simulation de données d'exemple
         const data: User[] = [
           {
             id_user: '1',
@@ -33,67 +28,22 @@ const useUserViewModel = () => {
                 id_user: '1',
                 localisation: 'Paris',
                 caracteristique: 'Spacieux',
-                equipement: ['WiFi, TV'],
+                equipement: ['WiFi', 'TV'],
                 tarif: 100,
                 disponible: true,
                 photos: ['https://via.placeholder.com/150'],
                 moyenneAvis: 4.5,
                 coordonnees: {
-                    latitude: 48.8566,
-                    longitude: 2.3522,
-                    latitudeDelta: 0.0922,
-                    longitudeDelta: 0.0421,
-                    },
+                  latitude: 48.8566,
+                  longitude: 2.3522,
+                  latitudeDelta: 0.0922,
+                  longitudeDelta: 0.0421,
+                },
               },
             ],
-            reservations: [
-              {
-                id_reservation: '1',
-                id_user: '1',
-                date_debut: '2023-10-01',
-                date_fin: '2023-10-10',
-                statut: 'Confirmée',
-                message_voyageur: 'Hâte de séjourner chez vous!',
-                emplacement: {
-                    id_emplacement: '2',
-                    id_user: '2',
-                    localisation: 'Lyon',
-                    caracteristique: 'Confortable',
-                    equipement: ['WiFi, TV'],
-                    tarif: 80,
-                    disponible: false,
-                    moyenneAvis: 4.0,
-                    photos: ['https://via.placeholder.com/150'],
-                    coordonnees: {
-                      latitude: 45.7640,
-                      longitude: 4.8357,
-                      latitudeDelta: 0.0922,
-                      longitudeDelta: 0.0421,
-                  },
-              },
-            }
-            ],
-            emplacementsFavoris: [
-              {
-                id_emplacement: '3',
-                id_user: '1',
-                localisation: 'Marseille',
-                caracteristique: 'Luxueux',
-                equipement: ['WiFi, TV, Piscine'],
-                tarif: 150,
-                disponible: true,
-                moyenneAvis: 4.8,
-                photos: ['https://via.placeholder.com/150'],
-                coordonnees: {
-                    latitude: 43.2965,
-                    longitude: 5.3698,
-                    latitudeDelta: 0.0922,
-                    longitudeDelta: 0.0421,
-                    },
-              },
-            ],
+            reservations: [],
+            emplacementsFavoris: [],
           },
-          
           {
             id_user: '2',
             prenom: 'Jane',
@@ -120,6 +70,7 @@ const useUserViewModel = () => {
     fetchUsers();
   }, []);
 
+  // Gérer les utilisateurs
   const addUser = (newUser: User) => {
     setUsers([...users, newUser]);
   };
@@ -138,6 +89,44 @@ const useUserViewModel = () => {
     return users.find(user => user.id_user === id_user) || null;
   };
 
+  // Gérer les emplacements
+  const addEmplacement = (id_user: string, newEmplacement: Emplacement) => {
+    setUsers(users.map(user => 
+      user.id_user === id_user
+        ? { ...user, emplacements: [...user.emplacements, newEmplacement] }
+        : user
+    ));
+  };
+
+  const updateEmplacement = (id_user: string, id_emplacement: string, updatedEmplacement: Partial<Emplacement>) => {
+    setUsers(users.map(user => 
+      user.id_user === id_user
+        ? {
+          ...user,
+          emplacements: user.emplacements.map(emplacement =>
+            emplacement.id_emplacement === id_emplacement
+              ? { ...emplacement, ...updatedEmplacement }
+              : emplacement
+          ),
+        }
+        : user
+    ));
+  };
+
+  const deleteEmplacement = (id_user: string, id_emplacement: string) => {
+    setUsers(users.map(user => 
+      user.id_user === id_user
+        ? { ...user, emplacements: user.emplacements.filter(e => e.id_emplacement !== id_emplacement) }
+        : user
+    ));
+  };
+
+  const getEmplacementsByUser = (id_user: string) => {
+    const user = getUserById(id_user);
+    return user?.emplacements || [];
+  };
+
+  // Gérer les emplacements favoris
   const addFavoriteEmplacement = (id_user: string, newEmplacement: Emplacement) => {
     setUsers(users.map(user => 
       user.id_user === id_user 
@@ -162,9 +151,11 @@ const useUserViewModel = () => {
     updateUser,
     deleteUser,
     getUserById,
+    addEmplacement,
+    updateEmplacement,
+    deleteEmplacement,
+    getEmplacementsByUser,
     addFavoriteEmplacement,
     removeFavoriteEmplacement,
   };
-};
-
-export default useUserViewModel;
+}
