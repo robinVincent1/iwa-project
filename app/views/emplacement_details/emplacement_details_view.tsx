@@ -28,7 +28,8 @@ export type Avis = {
 };
 
 export default function EmplacementDetails({ route }) {
-  const { emplacement } = route.params; // Passer l'emplacement au lieu du marqueur
+  const { marker } = route.params; // Passer l'emplacement au lieu du marqueur
+  console.log("details " , route);
 
   const avis: Avis[] = [
     {
@@ -59,7 +60,7 @@ export default function EmplacementDetails({ route }) {
       date_fin: '2024-10-15',
       statut: 'confirmée',
       message_voyageur: "jfhd",
-      emplacement: emplacement,
+      emplacement: marker,
     },
     {
       id_reservation: '2',
@@ -68,11 +69,11 @@ export default function EmplacementDetails({ route }) {
       date_fin: '2024-10-25',
       statut: 'confirmée',
       message_voyageur: "jfhd",
-      emplacement: emplacement,
+      emplacement: marker,
     },
   ]; // Exemple de réservations existantes
 
-  if (!emplacement) {
+  if (!marker) {
     console.log("Emplacement non trouvé");
     return <Text>Erreur : Emplacement non trouvé</Text>; // Pour voir s'il est vraiment passé
   }
@@ -84,22 +85,22 @@ export default function EmplacementDetails({ route }) {
   return (
     <ScrollView contentContainerStyle={styles.contentContainer}>
       {/* Section des images */}
-      <EmplacementDetailsImages photos={emplacement.photos} />
+      <EmplacementDetailsImages photos={marker.photos} />
 
       {/* Description de l'emplacement */}
-      <EmplacementDetailsDescription emplacement={emplacement} />
+      <EmplacementDetailsDescription emplacement={marker} />
 
 
       {/* Équipements */}
       <View style={styles.facilitiesContainer}>
         <Text style={styles.sectionTitle}>Équipements</Text>
-        <EmplacementDetailsFacilities equipment={emplacement.equipement} />
+        <EmplacementDetailsFacilities equipment={marker.equipement} />
       </View>
 
       {/* Évaluations */}
       <View style={styles.ratingsContainer}>
       <Text style={styles.sectionTitle2}>Évaluations</Text>
-        <EmplacementDetailsRatings avis={avis} rating={emplacement.moyenneAvis} />
+        <EmplacementDetailsRatings avis={avis} rating={marker.moyenneAvis} />
       </View>
 
       {/* Calendrier de réservation */}
