@@ -3,154 +3,147 @@ import { Text, View, StyleSheet, Dimensions, TouchableOpacity, ImageBackground }
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import useEmplacementViewModel from '../../viewModels/emplacement_viewModel';
 
 export default function HomepageFavorites() {
-    const data = [...new Array(6).keys(), 'arrow']; // Ajouter un élément 'arrow' à la fin
+    const { emplacements, loading, error } = useEmplacementViewModel(); // Utiliser le ViewModel
     const width = Dimensions.get("window").width;
     const carouselRef = React.useRef<ICarouselInstance>(null);
     const navigation = useNavigation();
-    const [favorites, setFavorites] = useState(data.slice(0, -1).map(() => true)); // Initialiser tous les éléments comme favoris
+
+    // Simuler des données favorites (à adapter selon vos besoins)
+    const [favorites, setFavorites] = useState<string[]>(['1', '3']); // IDs des emplacements favoris
 
     const handleArrowPress = () => {
-      const favoriteItems = data.slice(0, -1); // Exclure l'élément 'arrow'
-      navigation.navigate('FavoritesPage', { favoritesData: favoriteItems });
-  };
-  
-
-    const toggleFavorite = (index) => {
-        setFavorites((prevFavorites) => {
-            const newFavorites = [...prevFavorites];
-            newFavorites[index] = !newFavorites[index];
-            return newFavorites;
-        });
+        navigation.navigate('FavoritesPage', { favoritesData: favorites });
     };
 
-    const handleItemPress = (index) => {
-        console.log(`Item ${index} cliqué`);
-        // Ajoutez ici la logique de navigation ou d'action lorsque l'élément est cliqué
+    const handleItemPress = (index: number) => {
+        const selectedEmplacement = emplacements[index];
+        console.log(`Emplacement ${selectedEmplacement?.localisation} cliqué`); // Log pour tester l'item cliqué
+        // Ajoutez ici la logique de navigation ou d'action lorsque l'emplacement est cliqué
     };
+
+    if (loading) return <Text>Chargement...</Text>;
+    if (error) return <Text>Erreur: {error}</Text>;
+
+    // Filtrer les emplacements favoris
+    const favoriteEmplacements = emplacements.filter(emplacement => favorites.includes(emplacement.id_emplacement));
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Vos emplacements favoris</Text>
-            <Carousel
-                ref={carouselRef}
-                width={width}
-                height={width / 2}
-                data={data}
-                loop={false}
-                renderItem={({ index, item }) => (
-                    <TouchableOpacity
-                        style={item === 'arrow' ? styles.arrowItem : styles.carouselItem}
-                        onPress={() => handleItemPress(index)}
-                        activeOpacity={1} // Désactiver l'effet de flash blanc
-                    >
-                        {item === 'arrow' ? (
-                            <TouchableOpacity onPress={handleArrowPress} style={styles.arrowContainer} activeOpacity={1}>
-                                <View style={styles.arrowCircle}>
-                                    <Ionicons name="arrow-forward" size={30} color="white" />
-                                </View>
-                                <Text style={styles.arrowText}>Consulter tous mes favoris</Text>
-                            </TouchableOpacity>
-                        ) : (
+            <View style={styles.carouselContainer}>
+                <Carousel
+                    ref={carouselRef}
+                    width={width}
+                    height={width / 2}
+                    data={favoriteEmplacements}
+                    loop={false}
+                    renderItem={({ index, item }) => (
+                        <TouchableOpacity
+                            style={styles.carouselItem}
+                            onPress={() => handleItemPress(index)}
+                            activeOpacity={1} // Désactiver l'effet de flash blanc
+                        >
                             <ImageBackground
-                                source={{ uri: 'https://via.placeholder.com/300' }} // Remplacez par l'URL de votre image
+                                source={{ uri: item.photos[0] }} // Utiliser l'URL de la première photo de l'emplacement
                                 style={styles.imageBackground}
                             >
-                                <TouchableOpacity
-                                    style={styles.heartIcon}
-                                    onPress={() => toggleFavorite(index)}
-                                    activeOpacity={1} // Désactiver l'effet de flash blanc
-                                >
-                                    <Ionicons
-                                        name={favorites[index] ? "heart" : "heart-outline"}
-                                        size={32}
-                                        color="red"
-                                    />
-                                </TouchableOpacity>
+                                <View style={styles.heartIcon}>
+                                    <Ionicons name="heart" size={32} color="red" />
+                                </View>
                                 <View style={styles.textContainer}>
-                                    <Text style={styles.itemText}>Description</Text>
+                                    <Text style={styles.itemText}>{item.localisation}</Text>
+                                    <Text style={styles.itemText}>{item.caracteristique}</Text>
                                 </View>
                             </ImageBackground>
-                        )}
-                    </TouchableOpacity>
-                )}
-            />
+                        </TouchableOpacity>
+                    )}
+                />
+                <TouchableOpacity onPress={handleArrowPress} style={styles.arrowContainer} activeOpacity={1}>
+                    <View style={styles.arrowCircle}>
+                        <Ionicons name="arrow-forward" size={30} color="white" />
+                    </View>
+                    <Text style={styles.arrowText}>Voir tous les favoris</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  carouselItem: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 15, // Arrondir les coins
-    margin: 10, // Ajouter du margin entre les éléments
-    overflow: 'hidden', // Assurer que le contenu reste à l'intérieur des bords arrondis
-  },
-  arrowItem: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: 10, // Ajouter du margin pour aligner avec les autres éléments
-  },
-  arrowContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  arrowCircle: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: "#00796B", // Couleur élégante et naturelle pour le bouton
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  arrowText: {
-    fontSize: 16,
-    color: "#333333", // Texte sobre
-    padding: 5,
-  },
-  itemText: {
-    fontSize: 20,
-    color: 'white', // Couleur du texte pour qu'il soit visible sur l'image
-    padding: 10,
-    borderRadius: 5,
-    textShadowColor: 'black', // Couleur de l'ombre (contour)
-    textShadowOffset: { width: -1, height: 1 }, // Décalage de l'ombre
-    textShadowRadius: 10, // Rayon de l'ombre
-  },
-  heartIcon: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-  },
-  imageBackground: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    height: '100%',
-  },
-  textContainer: {
-    position: 'absolute',
-    bottom: 10,
-    left: 10,
-  },
-  title: {
-    fontSize: 24, // Augmente la taille du texte
-    fontWeight: 'bold', // Met le texte en gras
-    alignSelf: 'flex-start', // Aligne le texte à gauche
-    marginLeft: 10, // Ajoute une marge à gauche pour coller le titre sur la gauche
-    color: "#00796B",
-  },
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'flex-start', // Aligner en haut
+        paddingBottom: 20,
+    },
+    carouselContainer: {
+        flexDirection: 'row', // Aligne le carrousel et le bouton horizontalement
+        alignItems: 'center', // Centre le contenu verticalement
+        marginTop: 20, // Ajoute un espacement au-dessus si nécessaire
+    },
+    carouselItem: {
+        flex: 1,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 15,
+        margin: 10,
+        overflow: 'hidden',
+    },
+    arrowContainer: {
+        flexDirection: 'column', // Aligne le bouton et le texte verticalement
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginLeft: 10, // Espace entre le carrousel et le bouton
+    },
+    arrowCircle: {
+        width: 60,
+        height: 60,
+        borderRadius: 30,
+        backgroundColor: "#00796B",
+        justifyContent: "center",
+        alignItems: "center",
+        marginBottom: 5, // Espace entre le cercle et le texte
+    },
+    arrowText: {
+        fontSize: 16,
+        color: "#333333",
+        padding: 5,
+    },
+    itemText: {
+        fontSize: 20,
+        color: 'white',
+        padding: 10,
+        borderRadius: 5,
+        textShadowColor: 'black',
+        textShadowOffset: { width: -1, height: 1 },
+        textShadowRadius: 10,
+    },
+    heartIcon: {
+        position: 'absolute',
+        top: 10,
+        right: 10,
+    },
+    imageBackground: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        height: '100%',
+    },
+    textContainer: {
+        position: 'absolute',
+        bottom: 10,
+        left: 10,
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        alignSelf: 'flex-start',
+        marginLeft: 10,
+        color: "#00796B",
+    },
 });
