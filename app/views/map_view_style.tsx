@@ -83,7 +83,7 @@ const map_view_styles = StyleSheet.create({
         position: 'absolute',
         bottom: 20,
         left: 20,
-        backgroundColor: '#007AFF',
+        backgroundColor: '#00796B',
         borderRadius: 50,
         width: 50,
         height: 50,
@@ -95,7 +95,7 @@ const map_view_styles = StyleSheet.create({
         position: 'absolute',
         bottom: 80, // Positionné au-dessus du bouton de localisation
         left: 20,
-        backgroundColor: '#007AFF',
+        backgroundColor: '#00796B',
         borderRadius: 50,
         width: 50,
         height: 50,
