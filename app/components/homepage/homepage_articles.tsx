@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -6,35 +6,21 @@ import {
   StyleSheet,
   TouchableOpacity,
   FlatList,
+  ActivityIndicator,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import useArticleViewModel from "../../viewModels/article_viewModel";
 
-const articles = [
-  {
-    id_article: "1",
-    titre: "Article 1",
-    extrait_description: "Ceci est un extrait de l'article 1.",
-    description:
-      "Voici la description complète de l'article 1. Il parle de divers sujets intéressants.",
-    date: "28/09/2024",
-    image: "https://via.placeholder.com/150",
-  },
-  {
-    id_article: "2",
-    titre: "Article 2",
-    extrait_description: "Ceci est un extrait de l'article 2.",
-    description:
-      "La description complète de l'article 2 contient des informations détaillées.",
-    date: "29/09/2024",
-    image: "https://via.placeholder.com/150",
-  },
-  // Ajoutez plus d'articles ici
-];
 
 export default function HomepageArticles() {
   const navigation = useNavigation();
+  const { articles, loading, error, addArticle } = useArticleViewModel();
+
+  useEffect(() => {
+    // Logique si nécessaire après récupération des articles
+  }, [articles]);
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
@@ -58,8 +44,25 @@ export default function HomepageArticles() {
   };
 
   const handleAddPress = () => {
-    navigation.navigate("AddArticle");
+    navigation.navigate("AddArticle", { addArticle });
   };
+
+  if (loading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color="#00796B" />
+        <Text>Chargement des articles...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.centered}>
+        <Text style={styles.errorText}>Erreur : {error}</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -103,7 +106,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row', // Aligne les boutons horizontalement
     justifyContent: 'center',
     marginTop: 20,
-},
+  },
   articleContainer: {
     flexDirection: "row",
     marginBottom: 20,
@@ -162,5 +165,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#333333", // Texte sobre
     padding: 5,
+  },
+  centered: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorText: {
+    fontSize: 16,
+    color: "red",
   },
 });

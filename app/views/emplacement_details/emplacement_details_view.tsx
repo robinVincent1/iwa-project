@@ -12,10 +12,11 @@ import EmplacementDetailsFacilities from "../../components/emplacement_details/e
 import EmplacementDetailsImages from "../../components/emplacement_details/emplacement_details_images";
 import EmplacementDetailsRatings from "../../components/emplacement_details/emplacement_details_ratings";
 import EmplacementDetailsDescription from "../../components/emplacement_details/emplacement_details_description";
-import EmplacementReservation from "../emplacement_reservation_view"; // Import du composant de réservation
+
 
 import { couleur } from "../../color";
 import { Reservation } from "../profil/profile_view";
+import EmplacementReservation from "../map/emplacement_reservation_view";
 
 export type Avis = {
   id_avis: string;

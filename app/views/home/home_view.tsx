@@ -1,10 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
 import { Text, View, StyleSheet, FlatList } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import HomepageBanner from '../components/homepage/homepage_banner';
-import HomepageFavorites from '../components/homepage/homepage_favorites';
-import HomepageSearch from '../components/homepage/homepage_search';
-import HomepageArticles from '../components/homepage/homepage_articles';
+import HomepageBanner from '../../components/homepage/homepage_banner';
+import HomepageSearch from '../../components/homepage/homepage_search';
+import HomepageFavorites from '../../components/homepage/homepage_favorites';
+import HomepageArticles from '../../components/homepage/homepage_articles';
+
 
 const components = [
     { id: '1', component: <HomepageBanner /> },

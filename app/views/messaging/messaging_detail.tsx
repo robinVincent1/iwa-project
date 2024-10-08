@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,33 +7,54 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  ActivityIndicator, // Importer ActivityIndicator
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useSelector, useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
-import { sendMessage } from "../../store/messagesSlice";
+import useConversationViewModel from "../../viewModels/conversation_viewModel";
 
 export default function MessagesDetail({ route }: any) {
   const { conversationId } = route.params;
-  const conversation = useSelector((state: any) =>
-    state.messages.conversations.find((conv: any) => conv.id === conversationId)
-  );
-  const dispatch = useDispatch();
+  const {
+    conversations,
+    addMessageToConversation,
+    getConversationById,
+  } = useConversationViewModel();
   const navigation = useNavigation();
   const [message, setMessage] = useState("");
 
+  // Récupérer la conversation en utilisant le hook
+  const conversation = getConversationById(conversationId);
+
   const handleSendMessage = () => {
-    if (message.trim()) {
-      dispatch(
-        sendMessage({
-          conversationId,
-          text: message,
-          timestamp: new Date().toISOString(),
-        })
-      );
+    if (message.trim() && conversation) {
+      const newMessage = {
+        id_message: String(Date.now()), // Générer un ID unique pour le nouveau message
+        id_conversation: conversationId,
+        id_sender: conversation.id_sender, // Utiliser l'ID de l'utilisateur
+        id_receiver:
+          conversation.id_sender === conversation.id_sender
+            ? conversation.id_receiver
+            : conversation.id_sender,
+        text: message,
+        timestamp: new Date().toISOString(),
+        isSentByUser: true,
+      };
+
+      addMessageToConversation(conversationId, newMessage);
       setMessage("");
     }
   };
+
+  // Vérifiez si la conversation est chargée
+  if (!conversation) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#00796B" />
+        <Text>Chargement de la conversation...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -46,23 +67,25 @@ export default function MessagesDetail({ route }: any) {
             style={styles.contactInfo}
             onPress={() =>
               navigation.navigate("ContactDetail", {
-                name: conversation.contactName,
-                firstName: conversation.contactFirstName,
-                avatar: conversation.contactAvatar,
+                name:
+                  conversation.id_receiver === conversation.id_sender
+                    ? conversation.id_sender
+                    : conversation.id_receiver,
+                avatar: conversation?.contactAvatar,
               })
             }
           >
             <Image source={conversation.contactAvatar} style={styles.avatar} />
             <Text style={styles.contactName}>
-              {`${conversation.contactFirstName} ${conversation.contactName}`}
+              {`${conversation.id_receiver === conversation.id_sender ? conversation.id_sender : conversation.id_receiver}`}
             </Text>
           </TouchableOpacity>
         </View>
       </View>
 
       <FlatList
-        data={conversation.messages}
-        keyExtractor={(item) => item.id}
+        data={conversation?.messages}
+        keyExtractor={(item) => item.id_message}
         renderItem={({ item }) => (
           <View
             style={[
@@ -99,7 +122,7 @@ export default function MessagesDetail({ route }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f9f9f9", // Arrière-plan doux
+    backgroundColor: "#f9f9f9",
     justifyContent: "space-between",
   },
   header: {
@@ -107,10 +130,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     padding: 15,
-    backgroundColor: "#fff", // Fond blanc pour le header
+    backgroundColor: "#fff",
     borderBottomWidth: 1,
     borderBottomColor: "#e0e0e0",
-    elevation: 2, // Ombre pour le header
+    elevation: 2,
   },
   leftHeader: {
     flexDirection: "row",
@@ -129,30 +152,30 @@ const styles = StyleSheet.create({
   },
   contactName: {
     fontSize: 18,
-    fontWeight: "600", // Poids de police légèrement plus léger
-    color: "#333", // Couleur sombre pour le texte
+    fontWeight: "600",
+    color: "#333",
   },
   messageBubble: {
     margin: 10,
     padding: 15,
-    borderRadius: 15, // Coins arrondis
-    elevation: 1, // Ombre pour les bulles de message
+    borderRadius: 15,
+    elevation: 1,
   },
   sentMessage: {
     alignSelf: "flex-end",
-    backgroundColor: "#d4f5d4", // Couleur douce pour les messages envoyés
+    backgroundColor: "#d4f5d4",
   },
   receivedMessage: {
     alignSelf: "flex-start",
-    backgroundColor: "#e7e7e7", // Couleur douce pour les messages reçus
+    backgroundColor: "#e7e7e7",
   },
   messageText: {
     fontSize: 16,
-    color: "#333", // Couleur sombre pour le texte du message
+    color: "#333",
   },
   timestamp: {
     fontSize: 12,
-    color: "#888", // Couleur du timestamp
+    color: "#888",
     alignSelf: "flex-end",
   },
   inputContainer: {
@@ -161,18 +184,23 @@ const styles = StyleSheet.create({
     padding: 10,
     borderTopWidth: 1,
     borderTopColor: "#e0e0e0",
-    backgroundColor: "#fff", // Fond blanc pour la barre d'entrée
+    backgroundColor: "#fff",
   },
   input: {
     flex: 1,
     padding: 10,
     borderRadius: 20,
-    backgroundColor: "#f1f1f1", // Fond légèrement gris pour l'entrée
+    backgroundColor: "#f1f1f1",
     marginRight: 10,
     borderColor: "#ccc",
-    borderWidth: 1, // Bordure autour de l'entrée
+    borderWidth: 1,
   },
   sendButton: {
     padding: 10,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
