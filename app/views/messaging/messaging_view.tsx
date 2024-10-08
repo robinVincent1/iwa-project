@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -18,6 +18,27 @@ export default function MessagesView() {
   );
   const navigation = useNavigation();
   const [searchText, setSearchText] = useState("");
+  const [notifications, setNotifications] = useState<{ [key: string]: number }>({});
+
+  useEffect(() => {
+    checkForNotifications();
+  }, [conversations]);
+
+  const checkForNotifications = () => {
+    const newNotifications: { [key: string]: number } = {};
+    conversations.forEach((conversation: any) => {
+      let count = 0;
+      conversation.messages.forEach((message: any) => {
+        if (!message.isSentByUser && message.status === "remis") {
+          count++;
+        }
+      });
+      if (count > 0) {
+        newNotifications[conversation.id] = count;
+      }
+    });
+    setNotifications(newNotifications);
+  };
 
   const filteredConversations = conversations.filter((conversation: any) =>
     `${conversation.contactFirstName} ${conversation.contactName}`
@@ -27,6 +48,11 @@ export default function MessagesView() {
 
   const renderConversation = ({ item }: any) => {
     const lastMessage = item.messages[item.messages.length - 1];
+    const notificationCount = notifications[item.id] || 0;
+    const lastMessageTime = new Date(lastMessage.timestamp).toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
 
     return (
       <TouchableWithoutFeedback
@@ -48,6 +74,16 @@ export default function MessagesView() {
               >
                 {lastMessage.text}
               </Text>
+            </View>
+            <View style={styles.rightContainer}>
+              <Text style={[styles.lastMessageTime, notificationCount > 0 && styles.lastMessageTimeWithNotif]}>
+                {lastMessageTime}
+              </Text>
+              {notificationCount > 0 && (
+                <View style={styles.notificationBadge}>
+                  <Text style={styles.notificationText}>{notificationCount}</Text>
+                </View>
+              )}
             </View>
           </View>
         </View>
@@ -139,6 +175,30 @@ const styles = StyleSheet.create({
   lastMessage: {
     fontSize: 14,
     color: "#666", // Couleur du texte plus douce
+  },
+  rightContainer: {
+    alignItems: "flex-end",
+  },
+  lastMessageTime: {
+    fontSize: 12,
+    color: "#888",
+  },
+  lastMessageTimeWithNotif: {
+    color: "#00796B",
+  },
+  notificationBadge: {
+    backgroundColor: "#00796B",
+    borderRadius: 10,
+    width: 16,
+    height: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 5,
+  },
+  notificationText: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 10,
   },
   noResultsContainer: {
     flex: 1,

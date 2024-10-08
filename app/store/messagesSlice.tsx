@@ -94,14 +94,14 @@ const initialState: MessagesState = {
           text: "Oui, c'est fait ! Nous avons accès au terrain depuis vendredi.",
           timestamp: "2023-10-02 14:01",
           isSentByUser: false,
-          status: MessageStatus.Vu,
+          status: MessageStatus.Remis,
         },
         {
           id: "m3",
           text: "Super ! On peut y aller dès que possible alors.",
           timestamp: "2023-10-02 14:02",
           isSentByUser: true,
-          status: MessageStatus.Vu,
+          status: MessageStatus.Remis,
         },
         {
           id: "m4",
@@ -130,7 +130,7 @@ const initialState: MessagesState = {
           text: "Salut ! Tout est presque prêt. J'ai même acheté de nouveaux équipements.",
           timestamp: "2023-10-03 10:01",
           isSentByUser: false,
-          status: MessageStatus.Vu,
+          status: MessageStatus.Remis,
         },
         {
           id: "m3",
@@ -144,7 +144,7 @@ const initialState: MessagesState = {
           text: "Bien sûr, je le ferai !",
           timestamp: "2023-10-03 10:03",
           isSentByUser: false,
-          status: MessageStatus.Vu,
+          status: MessageStatus.Remis,
         },
         {
           id: "m5",
@@ -193,8 +193,21 @@ const messagesSlice = createSlice({
         });
       }
     },
+    markMessagesAsSeen: (state, action: PayloadAction<string>) => {
+      const conversationId = action.payload;
+      const conversation = state.conversations.find(
+        (conv) => conv.id === conversationId
+      );
+      if (conversation) {
+        conversation.messages.forEach((message) => {
+          if (!message.isSentByUser && message.status !== MessageStatus.Vu) {
+            message.status = MessageStatus.Vu;
+          }
+        });
+      }
+    },
   },
 });
 
-export const { sendMessage } = messagesSlice.actions;
+export const { sendMessage,markMessagesAsSeen } = messagesSlice.actions;
 export default messagesSlice.reducer;

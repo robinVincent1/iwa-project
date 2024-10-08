@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -11,7 +11,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
-import { sendMessage } from "../../store/messagesSlice";
+import { sendMessage, markMessagesAsSeen } from "../../store/messagesSlice";
 import { MessageStatus } from "../../store/messagesSlice"; // Import de l'énumération
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
@@ -23,6 +23,10 @@ export default function MessagesDetail({ route }: any) {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    dispatch(markMessagesAsSeen(conversationId));
+  }, [dispatch, conversationId]);
 
   const handleSendMessage = () => {
     if (message.trim()) {
