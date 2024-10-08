@@ -2,7 +2,7 @@ import React from "react";
 import {
   View,
   Text,
-  TouchableOpacity,
+  TouchableWithoutFeedback,
   FlatList,
   Image,
   StyleSheet,
@@ -20,25 +20,32 @@ export default function MessagesView() {
     const lastMessage = item.messages[item.messages.length - 1];
 
     return (
-      <TouchableOpacity
+      <TouchableWithoutFeedback
         onPress={() =>
           navigation.navigate("MessagesDetail", { conversationId: item.id })
         }
-        style={styles.conversationContainer}
       >
-        <View style={styles.conversationItem}>
-          <Image
-            source={item.contactAvatar}
-            style={styles.avatar}
-          />
-          <View style={styles.textContainer}>
-            <Text style={styles.contactName}>
-              {`${item.contactFirstName} ${item.contactName}`}
-            </Text>
-            <Text style={styles.lastMessage}>{lastMessage.text}</Text>
+        <View style={styles.conversationContainer}>
+          <View style={styles.conversationItem}>
+            <Image
+              source={item.contactAvatar}
+              style={styles.avatar}
+            />
+            <View style={styles.textContainer}>
+              <Text style={styles.contactName}>
+                {`${item.contactFirstName} ${item.contactName}`}
+              </Text>
+              <Text
+                style={styles.lastMessage}
+                numberOfLines={1} // Limite le texte à une seule ligne
+                ellipsizeMode="tail" // Ajoute des points de suspension à la fin si le texte est trop long
+              >
+                {lastMessage.text}
+              </Text>
+            </View>
           </View>
         </View>
-      </TouchableOpacity>
+      </TouchableWithoutFeedback>
     );
   };
 
@@ -58,14 +65,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
   },
-
+  conversationContainer: {
+    margin: 10, // Marge autour des éléments
+  },
   conversationItem: {
     flexDirection: "row",
     padding: 15,
     alignItems: "center",
     backgroundColor: "white", // Fond blanc pour chaque conversation
     borderRadius: 10, // Coins arrondis
-    margin: 10, // Marge autour des éléments
     elevation: 1, // Ombre pour l'élévation sur Android
     shadowColor: "#000", // Ombre pour iOS
     shadowOffset: {
@@ -84,6 +92,7 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     marginLeft: 15, // Espace plus important à gauche
+    flex: 1, // Permet au conteneur de texte de prendre tout l'espace disponible
   },
   contactName: {
     fontSize: 18,

@@ -12,6 +12,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { sendMessage } from "../../store/messagesSlice";
+import { MessageStatus } from "../../store/messagesSlice"; // Import de l'énumération
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 export default function MessagesDetail({ route }: any) {
   const { conversationId } = route.params;
@@ -29,9 +31,23 @@ export default function MessagesDetail({ route }: any) {
           conversationId,
           text: message,
           timestamp: new Date().toISOString(),
+          status: MessageStatus.Envoye, // Utilisation de l'énumération
         })
       );
       setMessage("");
+    }
+  };
+
+  const renderStatusIcon = (status: MessageStatus) => {
+    switch (status) {
+      case MessageStatus.Envoye:
+        return <MaterialCommunityIcons name="send-clock-outline" size={16} color="#00796B" />;
+      case MessageStatus.Remis:
+        return <MaterialCommunityIcons name="send-check-outline" size={16} color="#00796B" />;
+      case MessageStatus.Vu:
+        return <Ionicons name="eye" size={16} color="#00796B" />;
+      default:
+        return null;
     }
   };
 
@@ -71,12 +87,15 @@ export default function MessagesDetail({ route }: any) {
             ]}
           >
             <Text style={styles.messageText}>{item.text}</Text>
-            <Text style={styles.timestamp}>
-              {new Date(item.timestamp).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </Text>
+            <View style={styles.messageMeta}>
+              <Text style={styles.timestamp}>
+                {new Date(item.timestamp).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </Text>
+              {item.isSentByUser && renderStatusIcon(item.status)}
+            </View>
           </View>
         )}
       />
@@ -150,10 +169,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#333", // Couleur sombre pour le texte du message
   },
+  messageMeta: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 5,
+  },
   timestamp: {
     fontSize: 12,
     color: "#888", // Couleur du timestamp
-    alignSelf: "flex-end",
   },
   inputContainer: {
     flexDirection: "row",
