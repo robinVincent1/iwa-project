@@ -1,35 +1,57 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, ImageBackground, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import useEmplacementViewModel from '../../viewModels/emplacement_viewModel';
 
-export default function FavoritesPage({ route }) {
-    const { favoritesData } = route.params; // Récupérer les favoris passés en paramètre
+export default function FavoritesPage() {
+    const { emplacements } = useEmplacementViewModel(); // Utiliser le ViewModel pour récupérer les emplacements
+    const [favoritesData, setFavoritesData] = useState([]);
     const navigation = useNavigation();
 
+    useEffect(() => {
+        const favoritesIds = ['1', '3']; // Remplacer par les IDs réels de vos favoris
+        const favoriteEmplacements = emplacements.filter(emplacement => favoritesIds.includes(emplacement.id_emplacement));
+        setFavoritesData(favoriteEmplacements);
+    }, [emplacements]);
+
+    const handleItemPress = (item) => {
+        navigation.navigate('EmplacementDetail', { emplacementId: item.id_emplacement }); // Navigation vers la page de détails
+    };
+
     const renderItem = ({ item }) => (
-        <View style={styles.favoriteItem}>
+        <TouchableOpacity 
+            style={styles.favoriteItem} 
+            onPress={() => handleItemPress(item)} // Gérer le clic sur l'élément
+        >
             <ImageBackground
-                source={{ uri: 'https://via.placeholder.com/300' }} // Image fictive à remplacer par l'URL réelle
+                source={{ uri: item.photos[0] }} // Utiliser l'URL de la première photo de l'emplacement
                 style={styles.imageBackground}
             >
-                <Text style={styles.itemText}>Description</Text>
+                <View style={styles.textContainer}>
+                    <Text style={styles.itemText}>{item.localisation}</Text>
+                    <Text style={styles.itemText}>{item.caracteristique}</Text>
+                </View>
+                <View style={styles.heartIcon}>
+                    <Ionicons name="heart" size={32} color="red" />
+                </View>
             </ImageBackground>
-        </View>
+        </TouchableOpacity>
     );
 
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.goBackButton}>
                     <Ionicons name="arrow-back" size={24} color="black" />
                 </TouchableOpacity>
-                <Text style={styles.title}>Tous mes favoris</Text>
+                <Text style={styles.title}>Vos emplacements favoris</Text>
             </View>
             <FlatList
                 data={favoritesData}
                 renderItem={renderItem}
-                keyExtractor={(item, index) => index.toString()}
+                keyExtractor={(item) => item.id_emplacement} // Utiliser l'ID de l'emplacement comme clé
+                contentContainerStyle={styles.flatListContent} // Style pour que les éléments remplissent presque toute la largeur
             />
         </View>
     );
@@ -38,41 +60,61 @@ export default function FavoritesPage({ route }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 20,
-        paddingTop: 40, // Réduire le padding en haut pour rapprocher l'en-tête du haut de la page
+        backgroundColor: '#fff',
+        paddingBottom: 20,
+        paddingTop: 40,
     },
     header: {
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 20,
+
     },
-    backButton: {
+    goBackButton: {
         marginRight: 10,
-    },
-    favoriteItem: {
-        marginBottom: 20,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 10,
-        overflow: 'hidden',
-    },
-    imageBackground: {
-        width: '100%',
-        height: 150,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    itemText: {
-        fontSize: 18,
-        color: 'white',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Ajouter un fond sombre pour la lisibilité du texte
-        padding: 5,
-        borderRadius: 5,
+        color: "black",
+        borderRadius: 20,
+        padding: 10,
     },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
-        textAlign: 'center',
-        flex: 1,
+        color: "black",
+    },
+    favoriteItem: {
+        marginBottom: 20,
+        borderRadius: 15,
+        overflow: 'hidden',
+        borderWidth: 1,
+        borderColor: '#ccc',
+        backgroundColor: 'white', // Fond blanc
+        width: '95%', // Prendre presque toute la largeur
+        alignSelf: 'center', // Centrer horizontalement
+    },
+    imageBackground: {
+        width: '100%',
+        height: 150,
+        justifyContent: 'flex-end', // Placer le texte en bas
+        alignItems: 'flex-start',
+    },
+    textContainer: {
+        padding: 10,
+    },
+    itemText: {
+        fontSize: 20,
+        color: 'white',
+        textShadowColor: 'black',
+        textShadowOffset: { width: -1, height: 1 },
+        textShadowRadius: 10,
+        paddingRight: 90,
+        paddingLeft: 30,
+    },
+    heartIcon: {
+        position: 'absolute',
+        top: 10,
+        right: 10,
+    },
+    flatListContent: {
+        alignItems: 'center', // Centrer les éléments
     },
 });

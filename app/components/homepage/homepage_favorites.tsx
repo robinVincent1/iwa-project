@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Text, View, StyleSheet, Dimensions, TouchableOpacity, ImageBackground } from 'react-native';
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
@@ -61,13 +62,14 @@ export default function HomepageFavorites() {
                         </TouchableOpacity>
                     )}
                 />
-                <TouchableOpacity onPress={handleArrowPress} style={styles.arrowContainer} activeOpacity={1}>
+
+            </View>
+            <TouchableOpacity onPress={handleArrowPress} style={styles.arrowContainer} activeOpacity={1}>
                     <View style={styles.arrowCircle}>
                         <Ionicons name="arrow-forward" size={30} color="white" />
                     </View>
                     <Text style={styles.arrowText}>Voir tous les favoris</Text>
                 </TouchableOpacity>
-            </View>
         </View>
     );
 }
