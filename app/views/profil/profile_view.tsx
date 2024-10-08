@@ -301,7 +301,7 @@ export default function ProfilView() {
   };
 
   const navigateToSettings = () => {
-    navigation.navigate("Register");
+    navigation.navigate("Settings");
   };
 
   return (
