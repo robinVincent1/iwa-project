@@ -287,7 +287,7 @@ export default function LocationMapView() {
                       >
                           <PriceBubble price={emplacement.tarif} />
                           <Callout onPress={() => onCalloutSelected(emplacement)}>
-                              <View >
+                              <View style={map_view_styles.calloutContainer}>
                                   <Text style={map_view_styles.calloutTitle}>
                                       {emplacement.localisation}
                                   </Text>
