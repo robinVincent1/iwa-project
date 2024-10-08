@@ -318,6 +318,7 @@ export default function ProfilView() {
         </View>
         <View style={styles.profileImageContainer}>
           {renderProfileImage()}
+          {renderRating(4.5, false)}
           {isEditing && (
             <TouchableOpacity style={styles.button} onPress={pickImage}>
               <Text style={styles.buttonText}>Choisir une photo</Text>

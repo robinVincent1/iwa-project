@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
+  TextInput,
   TouchableWithoutFeedback,
   FlatList,
   Image,
   StyleSheet,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 
@@ -15,6 +17,13 @@ export default function MessagesView() {
     (state: any) => state.messages.conversations
   );
   const navigation = useNavigation();
+  const [searchText, setSearchText] = useState("");
+
+  const filteredConversations = conversations.filter((conversation: any) =>
+    `${conversation.contactFirstName} ${conversation.contactName}`
+      .toLowerCase()
+      .startsWith(searchText.toLowerCase())
+  );
 
   const renderConversation = ({ item }: any) => {
     const lastMessage = item.messages[item.messages.length - 1];
@@ -27,10 +36,7 @@ export default function MessagesView() {
       >
         <View style={styles.conversationContainer}>
           <View style={styles.conversationItem}>
-            <Image
-              source={item.contactAvatar}
-              style={styles.avatar}
-            />
+            <Image source={item.contactAvatar} style={styles.avatar} />
             <View style={styles.textContainer}>
               <Text style={styles.contactName}>
                 {`${item.contactFirstName} ${item.contactName}`}
@@ -51,11 +57,26 @@ export default function MessagesView() {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={conversations}
-        keyExtractor={(item) => item.id}
-        renderItem={renderConversation}
-      />
+      <View style={styles.searchContainer}>
+        <Ionicons name="search" size={20} color="#888" style={styles.searchIcon} />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Rechercher..."
+          value={searchText}
+          onChangeText={setSearchText}
+        />
+      </View>
+      {filteredConversations.length > 0 ? (
+        <FlatList
+          data={filteredConversations}
+          keyExtractor={(item) => item.id}
+          renderItem={renderConversation}
+        />
+      ) : (
+        <View style={styles.noResultsContainer}>
+          <Text style={styles.noResultsText}>Aucune conversation trouvée</Text>
+        </View>
+      )}
     </View>
   );
 }
@@ -64,6 +85,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
+  },
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 10,
+    margin: 10,
+    borderRadius: 10,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    backgroundColor: "#f9f9f9",
+  },
+  searchIcon: {
+    marginRight: 10,
+  },
+  searchInput: {
+    flex: 1,
   },
   conversationContainer: {
     margin: 10, // Marge autour des éléments
@@ -102,5 +139,14 @@ const styles = StyleSheet.create({
   lastMessage: {
     fontSize: 14,
     color: "#666", // Couleur du texte plus douce
+  },
+  noResultsContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  noResultsText: {
+    fontSize: 18,
+    color: "#888",
   },
 });
