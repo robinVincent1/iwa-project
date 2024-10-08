@@ -88,13 +88,19 @@ export default function MessagesDetail({ route }: any) {
           >
             <Text style={styles.messageText}>{item.text}</Text>
             <View style={styles.messageMeta}>
-              <Text style={styles.timestamp}>
-                {new Date(item.timestamp).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </Text>
-              {item.isSentByUser && renderStatusIcon(item.status)}
+              {item.isSentByUser && (
+                <View style={styles.statusContainer}>
+                  <Text style={styles.timestamp}>
+                    {new Date(item.timestamp).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </Text>
+                  <View style={styles.iconSpacing}>
+                    {renderStatusIcon(item.status)}
+                  </View>
+                </View>
+              )}
             </View>
           </View>
         )}
@@ -171,13 +177,20 @@ const styles = StyleSheet.create({
   },
   messageMeta: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "flex-end", // Aligner à droite
     alignItems: "center",
     marginTop: 5,
   },
   timestamp: {
     fontSize: 12,
     color: "#888", // Couleur du timestamp
+  },
+  statusContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  iconSpacing: {
+    padding: 5, // Distance entre l'heure et l'icône
   },
   inputContainer: {
     flexDirection: "row",
