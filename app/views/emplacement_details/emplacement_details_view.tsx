@@ -30,7 +30,6 @@ export type Avis = {
 
 export default function EmplacementDetails({ route }) {
   const { marker } = route.params; // Passer l'emplacement au lieu du marqueur
-  console.log("details " , route);
 
   const avis: Avis[] = [
     {

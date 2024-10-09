@@ -5,18 +5,23 @@ import { useNavigation } from '@react-navigation/native';
 import useEmplacementViewModel from '../../viewModels/emplacement_viewModel';
 
 export default function FavoritesPage() {
-    const { emplacements } = useEmplacementViewModel(); // Utiliser le ViewModel pour récupérer les emplacements
+    const { emplacements, loading, error, getEmplacementById } = useEmplacementViewModel(); // Utiliser le ViewModel pour récupérer les emplacements
     const [favoritesData, setFavoritesData] = useState([]);
     const navigation = useNavigation();
 
     useEffect(() => {
-        const favoritesIds = ['1', '3']; // Remplacer par les IDs réels de vos favoris
-        const favoriteEmplacements = emplacements.filter(emplacement => favoritesIds.includes(emplacement.id_emplacement));
-        setFavoritesData(favoriteEmplacements);
-    }, [emplacements]);
+        if (!loading && !error) {
+            const favoritesIds = ['1', '3']; // Remplacer par les IDs réels de vos favoris
+            const favoriteEmplacements = emplacements.filter(emplacement => favoritesIds.includes(emplacement.id_emplacement));
+            setFavoritesData(favoriteEmplacements);
+        }
+    }, [emplacements, loading, error]);
 
     const handleItemPress = (item) => {
-        navigation.navigate('EmplacementDetail', { emplacementId: item.id_emplacement }); // Navigation vers la page de détails
+        const emplacement = getEmplacementById(item.id_emplacement);
+        if (emplacement) {
+            navigation.navigate('EmplacementDetails', { marker: emplacement }); // Navigation vers la page de détails avec l'emplacement
+        }
     };
 
     const renderItem = ({ item }) => (
@@ -38,6 +43,14 @@ export default function FavoritesPage() {
             </ImageBackground>
         </TouchableOpacity>
     );
+
+    if (loading) {
+        return <Text>Chargement...</Text>;
+    }
+
+    if (error) {
+        return <Text>Erreur: {error}</Text>;
+    }
 
     return (
         <View style={styles.container}>
@@ -68,7 +81,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 20,
-
     },
     goBackButton: {
         marginRight: 10,

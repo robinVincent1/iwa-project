@@ -6,7 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import useEmplacementViewModel from '../../viewModels/emplacement_viewModel';
 
 export default function HomepageFavorites() {
-    const { emplacements, loading, error } = useEmplacementViewModel(); // Utiliser le ViewModel
+    const { emplacements, loading, error,getEmplacementById } = useEmplacementViewModel(); // Utiliser le ViewModel
     const width = Dimensions.get("window").width;
     const carouselRef = React.useRef<ICarouselInstance>(null);
     const navigation = useNavigation();
@@ -20,7 +20,7 @@ export default function HomepageFavorites() {
 
     const handleItemPress = (index: number) => {
         const selectedEmplacement = emplacements[index];
-        console.log(`Emplacement ${selectedEmplacement?.localisation} cliqué`); // Log pour tester l'item cliqué
+        navigation.navigate('EmplacementDetails', { marker: selectedEmplacement }) // Log pour tester l'item cliqué
         // Ajoutez ici la logique de navigation ou d'action lorsque l'emplacement est cliqué
     };
 

@@ -171,6 +171,11 @@ export function HomeStackNavigator() {
         component={AddArticleView}
         options={{ headerShown: false }}
       />
+        <Stack.Screen
+        name="EmplacementDetails"
+        component={EmplacementDetailsStackNavigator}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 }
