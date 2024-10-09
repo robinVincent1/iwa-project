@@ -9,7 +9,7 @@ import Login from "../views/login_register/login_view";
 import Register from "../views/login_register/register_view";
 import Reservation_details from "../views/profil/Reservation_details";
 import ProfilEmplacementDetails from "../views/profil/profil_emplacement_details/profil_emplacement_details_view";
-import SettingsView from "../views/profil/settings_view";
+import SettingsView from "../views/profil/settings/settings_view";
 import ProfileView from "../views/profil/profile_view";
 import EmplacementDetailsAllRatings from "../views/emplacement_details/emplacement_details_all_ratings";
 
@@ -26,6 +26,7 @@ import ArticleDetails from "../views/home/article_details_view";
 import FavoritesPage from "../views/home/all_favorite_view";
 import ArticlesPage from "../views/home/all_article_view";
 import AddArticleView from "../views/home/add_article_view";
+import TranslationView from "../views/profil/settings/translation_view";
 
 const Stack = createStackNavigator();
 const EmplacementDetailsStack = createStackNavigator();
@@ -101,8 +102,25 @@ export function ProfileStackNavigator() {
         options={{ headerShown: false }}
       />
       <Stack.Screen
+        name="SettingsStack"
+        component={SettingsStackNavigator}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
+  );
+}
+
+export function SettingsStackNavigator() {
+  return (
+    <Stack.Navigator initialRouteName="Settings">
+      <Stack.Screen
         name="Settings"
         component={SettingsView}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Translation"
+        component={TranslationView}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

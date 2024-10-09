@@ -93,7 +93,7 @@ export default function ProfilView() {
   };
 
   const navigateToSettings = () => {
-    navigation.navigate("Settings" as never); // Navigation vers la page des réglages
+    navigation.navigate("SettingsStack" as never); // Navigation vers la page des réglages
   };
 
   const navigateToEmplacementDetails = (emplacement: Emplacement) => {

@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { logout } from '../../store/profilSlice';
+import { logout } from '../../../store/profilSlice';
 import { useNavigation } from '@react-navigation/native';
-import { couleur } from '../../color';
+import { couleur } from '../../../color';
 
 const SettingsView = () => {
   const dispatch = useDispatch();
@@ -30,7 +30,7 @@ const SettingsView = () => {
   };
 
   const changeLanguage = () => {
-    Alert.alert('Langue', 'Fonctionnalité non implémentée.');
+    navigation.navigate('Translation' as never);
   };
 
   const handleLogout = () => {
