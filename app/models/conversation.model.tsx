@@ -1,10 +1,11 @@
 import { Message } from "./message.model";
 
-export type Conversation = {
-  contactAvatar: never;
+export type Conversation ={
   id_conversation: string;
-  id_messageState: string;
-  id_sender: string;
-  id_receiver: string;
+  id_user1: string;
+  id_user2: string;
+  contactName: string;
+  contactFirstName: string;
+  contactAvatar: string;
   messages: Message[];
-};
+}

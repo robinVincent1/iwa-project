@@ -11,21 +11,21 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
-import useMessagesStateViewModel from "../../viewModels/messageState_viewModel";
+import useMessagesViewModel from "../../viewModels/message.viewModel";
 
 export default function MessagesView() {
-  const { messagesState, loading, error } = useMessagesStateViewModel();
+  const { conversations, loading, error } = useMessagesViewModel();
   const navigation = useNavigation();
   const [searchText, setSearchText] = useState("");
   const [notifications, setNotifications] = useState<{ [key: string]: number }>({});
 
   useEffect(() => {
     checkForNotifications();
-  }, [messagesState]);
+  }, [conversations]);
 
   const checkForNotifications = () => {
     const newNotifications: { [key: string]: number } = {};
-    messagesState.conversations.forEach((conversation: any) => {
+    conversations.forEach((conversation: any) => {
       let count = 0;
       conversation.messages.forEach((message: any) => {
         if (!message.isSentByUser && message.status === "remis") {
@@ -39,7 +39,7 @@ export default function MessagesView() {
     setNotifications(newNotifications);
   };
 
-  const filteredConversations = messagesState.conversations.filter((conversation: any) =>
+  const filteredConversations = conversations.filter((conversation: any) =>
     `${conversation.contactFirstName} ${conversation.contactName}`
       .toLowerCase()
       .startsWith(searchText.toLowerCase())

@@ -7,51 +7,51 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
-  ActivityIndicator, // Importer ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import useConversationViewModel from "../../viewModels/conversation_viewModel";
+import useMessageViewModel from "../../viewModels/message.viewModel";
 import { sendMessage, markMessagesAsSeen } from "../../store/messagesSlice";
-import { MessageStatus } from "../../store/messagesSlice"; // Import de l'énumération
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useDispatch } from "react-redux";
+import { Message, MessageState } from "../../models/message.model";
+import { Conversation } from "../../models/conversation.model";
 
 export default function MessagesDetail({ route }: any) {
   const { conversationId } = route.params;
   const {
     conversations,
-    addMessageToConversation,
+    addMessage,
     getConversationById,
-  } = useConversationViewModel();
+  } = useMessageViewModel();
   const navigation = useNavigation();
   const [message, setMessage] = useState("");
   const dispatch = useDispatch();
 
   // Récupérer la conversation en utilisant le hook
-  const conversation = getConversationById(conversationId);
+  const conversation: Conversation | null = getConversationById(conversationId);
 
   const handleSendMessage = () => {
     if (message.trim() && conversation) {
-      const newMessage = {
+      const newMessage: Message = {
         id_message: String(Date.now()), // Générer un ID unique pour le nouveau message
         id_conversation: conversationId,
-        id_sender: conversation.id_sender, // Utiliser l'ID de l'utilisateur
-        id_receiver:
-          conversation.id_sender === conversation.id_sender
-            ? conversation.id_receiver
-            : conversation.id_sender,
+        id_sender: conversation.id_user1, // Utiliser l'ID de l'utilisateur
         text: message,
         timestamp: new Date().toISOString(),
         isSentByUser: true,
-        status: MessageStatus.Envoye,
+        state: MessageState.Envoye,
       };
 
-      addMessageToConversation(conversationId, newMessage);
+      addMessage(conversationId, newMessage);
+      setMessage(""); // Réinitialiser le champ de saisie après l'envoi du message
+    }
+  };
+
   useEffect(() => {
     dispatch(markMessagesAsSeen(conversationId));
   }, [dispatch, conversationId]);
-
 
   // Vérifiez si la conversation est chargée
   if (!conversation) {
@@ -62,13 +62,14 @@ export default function MessagesDetail({ route }: any) {
       </View>
     );
   }
-  const renderStatusIcon = (status: MessageStatus) => {
+
+  const renderStatusIcon = (status: MessageState) => {
     switch (status) {
-      case MessageStatus.Envoye:
+      case MessageState.Envoye:
         return <MaterialCommunityIcons name="send-clock-outline" size={16} color="#00796B" />;
-      case MessageStatus.Remis:
+      case MessageState.Remis:
         return <MaterialCommunityIcons name="send-check-outline" size={16} color="#00796B" />;
-      case MessageStatus.Vu:
+      case MessageState.Vu:
         return <Ionicons name="eye" size={16} color="#00796B" />;
       default:
         return null;
@@ -86,24 +87,21 @@ export default function MessagesDetail({ route }: any) {
             style={styles.contactInfo}
             onPress={() =>
               navigation.navigate("ContactDetail", {
-                name:
-                  conversation.id_receiver === conversation.id_sender
-                    ? conversation.id_sender
-                    : conversation.id_receiver,
-                avatar: conversation?.contactAvatar,
+                name: conversation.contactName,
+                avatar: conversation.contactAvatar,
               })
             }
           >
-            <Image source={conversation.contactAvatar} style={styles.avatar} />
+            <Image source={{ uri: conversation.contactAvatar }} style={styles.avatar} />
             <Text style={styles.contactName}>
-              {`${conversation.id_receiver === conversation.id_sender ? conversation.id_sender : conversation.id_receiver}`}
+              {`${conversation.contactFirstName} ${conversation.contactName}`}
             </Text>
           </TouchableOpacity>
         </View>
       </View>
 
-      <FlatList
-        data={conversation?.messages}
+      <FlatList<Message>
+        data={conversation.messages}
         keyExtractor={(item) => item.id_message}
         renderItem={({ item }) => (
           <View
@@ -123,7 +121,7 @@ export default function MessagesDetail({ route }: any) {
                     })}
                   </Text>
                   <View style={styles.iconSpacing}>
-                    {renderStatusIcon(item.status)}
+                    {renderStatusIcon(item.state)}
                   </View>
                 </View>
               )}
@@ -146,8 +144,6 @@ export default function MessagesDetail({ route }: any) {
     </View>
   );
 }
-  }
-
 
 const styles = StyleSheet.create({
   container: {
@@ -205,21 +201,21 @@ const styles = StyleSheet.create({
   },
   messageMeta: {
     flexDirection: "row",
-    justifyContent: "flex-end", // Aligner à droite
+    justifyContent: "flex-end",
     alignItems: "center",
     marginTop: 5,
   },
   timestamp: {
     fontSize: 12,
     alignSelf: "flex-end",
-    color: "#888", // Couleur du timestamp
+    color: "#888",
   },
   statusContainer: {
     flexDirection: "row",
     alignItems: "center",
   },
   iconSpacing: {
-    padding: 5, // Distance entre l'heure et l'icône
+    padding: 5,
   },
   inputContainer: {
     flexDirection: "row",
@@ -247,4 +243,3 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
-  }
