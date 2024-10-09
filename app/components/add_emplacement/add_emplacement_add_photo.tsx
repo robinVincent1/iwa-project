@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 import { Button } from 'react-native-paper'; // Utilisation de Button de react-native-paper pour la cohérence
+import { useSelector, useDispatch } from 'react-redux';
+import { setPhotos } from '../../store/addEmplacementSlice'; // Assurez-vous que le chemin est correct
+import { selectPhotos } from '../../store/selectors'; // Importer le sélecteur mémorisé
 
 export default function AddEmplacementAddPhoto() {
-    const [images, setImages] = useState([]);
+    const dispatch = useDispatch();
+    const images = useSelector(selectPhotos) || [];
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -15,12 +19,14 @@ export default function AddEmplacementAddPhoto() {
         });
 
         if (!result.canceled) {
-            setImages([...images, ...result.assets.slice(0, 10 - images.length)]);
+            const newImages = result.assets.slice(0, 10 - images.length).map(asset => asset.uri);
+            dispatch(setPhotos([...images, ...newImages]));
         }
     };
 
     const removeImage = (index) => {
-        setImages(images.filter((_, i) => i !== index));
+        const updatedImages = images.filter((_, i) => i !== index);
+        dispatch(setPhotos(updatedImages));
     };
 
     return (
@@ -35,9 +41,9 @@ export default function AddEmplacementAddPhoto() {
                 Ajouter des photos
             </Button>
             <View style={styles.imageContainer}>
-                {images.map((image, index) => (
+                {images.map((uri, index) => (
                     <View key={index} style={styles.imageWrapper}>
-                        <Image source={{ uri: image.uri }} style={styles.image} />
+                        <Image source={{ uri }} style={styles.image} />
                         <TouchableOpacity style={styles.removeButton} onPress={() => removeImage(index)}>
                             <Ionicons name="close-circle" size={24} color="white" />
                         </TouchableOpacity>

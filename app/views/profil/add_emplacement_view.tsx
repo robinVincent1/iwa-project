@@ -14,15 +14,34 @@ import AddEmplacementPrice from "../../components/add_emplacement/add_emplacemen
 import AddEmplacementAddPhoto from "../../components/add_emplacement/add_emplacement_add_photo";
 import { couleur } from "../../color";
 import Toast from 'react-native-toast-message'; // Importer Toast
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../../store'; // Assurez-vous que le chemin est correct
+import { resetEmplacement } from '../../store/addEmplacementSlice'; // Importer resetEmplacement
 
 export default function AddEmplacement({ navigation }) {
+  const dispatch = useDispatch();
+  const emplacement = useSelector((state: RootState) => state.emplacement);
 
   const handleAddEmplacement = () => {
+    // Vérifier si certains attributs sont nuls
+    if (!emplacement.coordonnees || !emplacement.caracteristique || !emplacement.tarif || emplacement.photos.length === 0) {
+      Toast.show({
+        type: 'error',
+        text1: 'Erreur',
+        text2: 'Veuillez remplir tous les champs obligatoires.',
+      });
+      return;
+    }
+
     // Logique pour ajouter l'emplacement
     Toast.show({
       type: 'success',
       text1: 'Emplacement ajouté avec succès !',
     });
+
+    // Réinitialiser l'emplacement dans le store
+    dispatch(resetEmplacement());
+
     navigation.navigate("Profile"); // Rediriger vers le profil après l'ajout
   };
 

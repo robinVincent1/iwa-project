@@ -1,16 +1,21 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
+import { setTarif } from '../../store/addEmplacementSlice'; // Assurez-vous que le chemin est correct
+import { selectTarif } from '../../store/selectors'; // Importer le sélecteur mémorisé
 
 export default function AddEmplacementPrice() {
-    const [price, setPrice] = useState('');
+    const dispatch = useDispatch();
+    const price = useSelector(selectTarif);
+    const maxLength = 4;
 
-    const handlePriceChange = (value) => {
+    const handlePriceChange = (value: string) => {
         const numericValue = value.replace(/[^0-9]/g, '');
         if (numericValue === '') {
-            setPrice('');
+            dispatch(setTarif(null));
         } else {
             const numericPrice = Math.max(1, Math.min(1000, parseInt(numericValue, 10)));
-            setPrice(numericPrice.toString());
+            dispatch(setTarif(numericPrice));
         }
     };
 
@@ -22,8 +27,9 @@ export default function AddEmplacementPrice() {
                 keyboardType="numeric"
                 placeholder="Entrez le prix en euros"
                 placeholderTextColor="gray"
-                value={price}
+                value={price !== null ? price.toString() : ''}
                 onChangeText={handlePriceChange}
+                maxLength={maxLength}
             />
             <Text style={styles.instructions}>Le prix doit être compris entre 1 et 1000 euros.</Text>
         </View>

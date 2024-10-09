@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { RadioButton, List } from 'react-native-paper';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useSelector, useDispatch } from 'react-redux';
+import { setEquipement } from '../../store/addEmplacementSlice'; // Assurez-vous que le chemin est correct
+import { selectEquipement } from '../../store/selectors'; // Importer le sélecteur mémorisé
 
 const iconMap = {
     "Wi-Fi": "wifi",
@@ -17,13 +20,14 @@ const iconMap = {
 };
 
 export default function AddEmplacementFacilities() {
-    const [selectedFacilities, setSelectedFacilities] = useState({});
+    const dispatch = useDispatch();
+    const selectedFacilities = useSelector(selectEquipement);
 
     const handleSelection = (facility, value) => {
-        setSelectedFacilities({
-            ...selectedFacilities,
-            [facility]: value,
-        });
+        const updatedFacilities = selectedFacilities.includes(facility)
+            ? selectedFacilities.filter(item => item !== facility)
+            : [...selectedFacilities, facility];
+        dispatch(setEquipement(updatedFacilities));
     };
 
     return (
@@ -44,7 +48,7 @@ export default function AddEmplacementFacilities() {
                             <Ionicons name="checkmark" size={24} color="green" style={styles.checkIcon} />
                             <RadioButton
                                 value="oui"
-                                status={selectedFacilities[facility] === 'oui' ? 'checked' : 'unchecked'}
+                                status={selectedFacilities.includes(facility) ? 'checked' : 'unchecked'}
                                 onPress={() => handleSelection(facility, 'oui')}
                                 color="#007BFF"
                             />
@@ -52,7 +56,7 @@ export default function AddEmplacementFacilities() {
                         <View style={styles.radioItem}>
                             <RadioButton
                                 value="non"
-                                status={selectedFacilities[facility] === 'non' ? 'checked' : 'unchecked'}
+                                status={!selectedFacilities.includes(facility) ? 'checked' : 'unchecked'}
                                 onPress={() => handleSelection(facility, 'non')}
                                 color="#007BFF"
                             />

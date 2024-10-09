@@ -3,14 +3,18 @@ import React, { useRef, useEffect, useState } from 'react';
 import MapView, { Marker } from "react-native-maps";
 import * as Location from 'expo-location';
 import { Ionicons } from '@expo/vector-icons';
+import { useSelector, useDispatch } from 'react-redux';
+import { setCoordonnees } from '../../store/addEmplacementSlice'; // Assurez-vous que le chemin est correct
+import { selectCoordonnees } from '../../store/selectors'; // Importer le sélecteur mémorisé
 
 export default function AddEmplacementMap() {
     const mapRef = useRef(null);
+    const dispatch = useDispatch();
+    const coordonnees = useSelector(selectCoordonnees);
     const [markerPosition, setMarkerPosition] = useState({
-        latitude: 48.8566, // Coordonnées par défaut pour Paris, France
-        longitude: 2.3522,
+        latitude: coordonnees?.latitude || 48.8566, // Coordonnées par défaut pour Paris, France
+        longitude: coordonnees?.longitude || 2.3522,
     });
-    const [fixedPosition, setFixedPosition] = useState(null);
     const [isPositionFixed, setIsPositionFixed] = useState(false);
 
     useEffect(() => {
@@ -44,7 +48,12 @@ export default function AddEmplacementMap() {
         if (isPositionFixed) {
             setIsPositionFixed(false);
         } else {
-            setFixedPosition(markerPosition);
+            dispatch(setCoordonnees({
+                latitude: markerPosition.latitude,
+                longitude: markerPosition.longitude,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+            }));
             setIsPositionFixed(true);
             console.log("Coordonnées fixées :", markerPosition);
         }

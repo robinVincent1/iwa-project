@@ -1,9 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
+import { setCaracteristique } from '../../store/addEmplacementSlice'; // Assurez-vous que le chemin est correct
+import { selectCaracteristique } from '../../store/selectors'; // Importer le sélecteur mémorisé
 
 export default function AddEmplacementDescription() {
-    const [description, setDescription] = useState('');
+    const dispatch = useDispatch();
+    const description = useSelector(selectCaracteristique);
     const maxLength = 400;
+
+    const handleDescriptionChange = (text: string) => {
+        dispatch(setCaracteristique(text));
+    };
 
     return (
         <View style={styles.container}>
@@ -15,10 +23,10 @@ export default function AddEmplacementDescription() {
                 maxLength={maxLength}
                 placeholder="Entrez la description ici..."
                 placeholderTextColor="#B0BEC5" // Couleur du texte de l'espace réservé
-                value={description}
-                onChangeText={setDescription}
+                value={description || ''}
+                onChangeText={handleDescriptionChange}
             />
-            <Text style={styles.charCount}>{description.length}/{maxLength} caractères</Text>
+            <Text style={styles.charCount}>{(description || '').length}/{maxLength} caractères</Text>
         </View>
     );
 }
