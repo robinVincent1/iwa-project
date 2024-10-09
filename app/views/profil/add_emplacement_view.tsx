@@ -13,8 +13,19 @@ import AddEmplacementDescription from "../../components/add_emplacement/add_empl
 import AddEmplacementPrice from "../../components/add_emplacement/add_emplacement_price";
 import AddEmplacementAddPhoto from "../../components/add_emplacement/add_emplacement_add_photo";
 import { couleur } from "../../color";
+import Toast from 'react-native-toast-message'; // Importer Toast
 
 export default function AddEmplacement({ navigation }) {
+
+  const handleAddEmplacement = () => {
+    // Logique pour ajouter l'emplacement
+    Toast.show({
+      type: 'success',
+      text1: 'Emplacement ajouté avec succès !',
+    });
+    navigation.navigate("Profile"); // Rediriger vers le profil après l'ajout
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -35,9 +46,7 @@ export default function AddEmplacement({ navigation }) {
         <AddEmplacementPrice />
         <TouchableOpacity
           style={styles.addButton}
-          onPress={() => {
-            /* Ajouter la logique pour ajouter l'emplacement */
-          }}
+          onPress={handleAddEmplacement} // Appeler handleAddEmplacement
         >
           <Text style={styles.addButtonText}>Ajouter l'emplacement</Text>
         </TouchableOpacity>
@@ -47,9 +56,9 @@ export default function AddEmplacement({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: couleur,
-    },
+  container: {
+    backgroundColor: couleur,
+  },
   scrollContainer: {
     padding: 20,
     backgroundColor: "#F0F4F8", // Couleur de fond douce pour une meilleure lisibilité
