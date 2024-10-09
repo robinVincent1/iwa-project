@@ -5,12 +5,13 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Alert,
+  ScrollView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { Rating } from '@kolking/react-native-rating';
 import { Button } from 'react-native-paper'; // Utilisation de Button de react-native-paper
+import Toast from 'react-native-toast-message'; // Importer Toast
 
 type ReservationParams = {
   reservation: {
@@ -22,22 +23,31 @@ type ReservationParams = {
 
 export default function EmplacementReservationDetails() {
   const navigation = useNavigation();
-  const route = useRoute<RouteProp<{ params: ReservationParams }, 'params'>>();
+  const route = useRoute<RouteProp<{ params: ReservationParams }, 'params'>>(); 
   const { reservation } = route.params;
 
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
+  const maxLength = 600;
 
   const handleSubmit = () => {
     if (rating === 0) {
-      Alert.alert('Erreur', 'Veuillez sélectionner une note.');
+      Toast.show({
+        type: 'error',
+        text1: 'Erreur',
+        text2: 'Veuillez sélectionner une note.',
+      });
     } else {
-      Alert.alert('Soumission réussie', `Votre avis a été soumis avec la note de ${rating} étoiles.`);
+      Toast.show({
+        type: 'success',
+        text1: 'Soumission réussie',
+        text2: `Votre avis a été soumis avec la note de ${rating} étoiles.`,
+      });
     }
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color="#37474F" />
@@ -62,19 +72,26 @@ export default function EmplacementReservationDetails() {
 
       <View style={styles.reviewContainer}>
         <Text style={styles.reviewTitle}>Laisser un avis</Text>
-        <Rating rating={rating} onChange={setRating} max={5} iconWidth={30} iconHeight={30} />
+        <View style={styles.ratingContainer}>
+          <Rating rating={rating} onChange={setRating} max={5} iconWidth={30} iconHeight={30} />
+        </View>
         <TextInput
           style={styles.commentInput}
-          placeholder="Votre commentaire"
+          placeholder="Votre commentaire (facultatif)"
           value={comment}
-          onChangeText={setComment}
+          onChangeText={(text) => setComment(text.slice(0, maxLength))} // Limiter à 600 caractères
           placeholderTextColor="#B0BEC5"
+          maxLength={maxLength} // Limite de 600 caractères
+          multiline
         />
+        <Text style={styles.charCount}>
+          {comment.length}/{maxLength} caractères
+        </Text>
         <Button mode="contained" onPress={handleSubmit} style={styles.submitButton}>
           Soumettre
         </Button>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -127,6 +144,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 8,
     elevation: 3,
+    paddingBottom: 30, // Ajouter du padding en bas
   },
   reviewTitle: {
     fontSize: 20,
@@ -134,15 +152,26 @@ const styles = StyleSheet.create({
     color: '#333',
     marginBottom: 10,
   },
+  ratingContainer: {
+    alignItems: 'flex-start', // Aligner le composant de notation à gauche
+    marginBottom: 15,
+  },
   commentInput: {
-    height: 60,
+    height: 100, // Augmenter la hauteur pour permettre de visualiser tout le texte
     borderColor: '#B0BEC5',
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 10,
-    marginBottom: 15,
+    marginBottom: 5,
     backgroundColor: '#F9F9F9',
     fontSize: 16,
+    textAlignVertical: 'top', // Permettre de visualiser tout le texte
+  },
+  charCount: {
+    fontSize: 12,
+    color: '#757575',
+    textAlign: 'right',
+    marginBottom: 15,
   },
   submitButton: {
     backgroundColor: '#00796B',

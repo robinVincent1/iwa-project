@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Pressable, Alert } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { Calendar } from 'react-native-calendars'; 
 import moment from 'moment'; 
 import { Reservation } from './profil/profile_view';
+import Toast from 'react-native-toast-message'; // Importer Toast
+import { useNavigation } from '@react-navigation/native'; // Importer useNavigation
 
 interface EmplacementReservationProps {
   reservations: Reservation[];
@@ -11,6 +13,7 @@ interface EmplacementReservationProps {
 export default function EmplacementReservation({ reservations }: EmplacementReservationProps) {
   const [markedDates, setMarkedDates] = useState({});
   const [selectedRange, setSelectedRange] = useState<{ startDate: string | null, endDate: string | null }>({ startDate: null, endDate: null });
+  const navigation = useNavigation(); // Utiliser useNavigation
 
   useEffect(() => {
     const disabledDates = {};
@@ -51,7 +54,11 @@ export default function EmplacementReservation({ reservations }: EmplacementRese
       const endDate = moment(dateString);
 
       if (endDate.isBefore(startDate)) {
-        Alert.alert('Erreur', 'La date de fin ne peut pas être avant la date de début');
+        Toast.show({
+          type: 'error',
+          text1: 'Erreur',
+          text2: 'La date de fin ne peut pas être avant la date de début',
+        });
       } else {
         const newMarkedDates = { ...markedDates };
         let current = startDate;
@@ -98,9 +105,24 @@ export default function EmplacementReservation({ reservations }: EmplacementRese
   const handleReservationConfirmation = () => {
     const { startDate, endDate } = selectedRange;
     if (startDate && endDate) {
-      Alert.alert('Réservation confirmée', `Vous avez réservé du ${startDate} au ${endDate}.`);
+      Toast.show({
+        type: 'success',
+        text1: 'Réservation confirmée',
+        text2: `Vous avez réservé du ${startDate} au ${endDate}.`,
+      });
+
+      // Réinitialiser les dates sélectionnées
+      setSelectedRange({ startDate: null, endDate: null });
+      setMarkedDates({});
+
+      // Rediriger vers la page d'accueil
+      navigation.navigate('Map');
     } else {
-      Alert.alert('Erreur', 'Veuillez sélectionner une plage de dates.');
+      Toast.show({
+        type: 'error',
+        text1: 'Erreur',
+        text2: 'Veuillez sélectionner une plage de dates.',
+      });
     }
   };
 
