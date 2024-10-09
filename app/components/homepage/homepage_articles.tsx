@@ -16,7 +16,7 @@ import useArticleViewModel from "../../viewModels/article_viewModel";
 
 export default function HomepageArticles() {
   const navigation = useNavigation();
-  const { articles, loading, error, addArticle } = useArticleViewModel();
+  const { articles, loading, error } = useArticleViewModel();
 
   useEffect(() => {
     // Logique si nécessaire après récupération des articles
@@ -44,7 +44,7 @@ export default function HomepageArticles() {
   };
 
   const handleAddPress = () => {
-    navigation.navigate("AddArticle", { addArticle });
+    navigation.navigate("AddArticle");
   };
 
   if (loading) {

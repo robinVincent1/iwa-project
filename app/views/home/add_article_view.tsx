@@ -11,17 +11,11 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { Button } from "react-native-paper"; // Utilisation de Button de react-native-paper pour un style cohérent
 import { Ionicons } from "@expo/vector-icons";
-
-export type Article = {
-  id_article: string;
-  titre: string;
-  extrait_description: string;
-  description: string;
-  date: string;
-  images: string[];
-};
+import useArticleViewModel from "../../viewModels/article_viewModel";
+import { Article } from "../../models/article.model";
 
 export default function AddArticleView({ navigation }) {
+  const {addArticle} = useArticleViewModel();
   const [title, setTitle] = useState("");
   const [excerpt, setExcerpt] = useState("");
   const [description, setDescription] = useState("");
@@ -52,10 +46,9 @@ export default function AddArticleView({ navigation }) {
       extrait_description: excerpt,
       description: description,
       date: date,
-      images: images.map((image) => image.uri), // Récupère les URI des images sélectionnées
+      image: "test", // Récupère les URI des images sélectionnées
     };
-    console.log(newArticle);
-    // Logique pour gérer l'envoi de l'article
+    addArticle(newArticle);
   };
 
   return (

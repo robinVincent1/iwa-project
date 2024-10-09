@@ -92,7 +92,7 @@ export default function MessagesDetail({ route }: any) {
               })
             }
           >
-            <Image source={{ uri: conversation.contactAvatar }} style={styles.avatar} />
+            <Image source={ conversation.contactAvatar } style={styles.avatar} />
             <Text style={styles.contactName}>
               {`${conversation.contactFirstName} ${conversation.contactName}`}
             </Text>
