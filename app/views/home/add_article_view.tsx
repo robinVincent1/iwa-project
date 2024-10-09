@@ -11,15 +11,15 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { Button } from "react-native-paper"; // Utilisation de Button de react-native-paper pour un style cohérent
 import { Ionicons } from "@expo/vector-icons";
+import uuid from 'react-native-uuid'; // Importer react-native-uuid
 import useArticleViewModel from "../../viewModels/article_viewModel";
 import { Article } from "../../models/article.model";
+import Toast from 'react-native-toast-message';
 
 export default function AddArticleView({ navigation }) {
-  const {addArticle} = useArticleViewModel();
+  const { addArticle } = useArticleViewModel();
   const [title, setTitle] = useState("");
-  const [excerpt, setExcerpt] = useState("");
   const [description, setDescription] = useState("");
-  const [date, setDate] = useState("");
   const [images, setImages] = useState([]);
   const maxLength = 400;
 
@@ -40,15 +40,28 @@ export default function AddArticleView({ navigation }) {
   };
 
   const handleSubmit = () => {
+    if (!title || !description) {
+      Toast.show({
+        type: 'error',
+        text1: 'Veuillez remplir les champs obligatoires',
+        text2: 'Le titre et la description sont obligatoires.',
+      });
+      return;
+    }
+
     const newArticle: Article = {
-      id_article: Date.now().toString(),
+      id_article: uuid.v4().toString(), // Utiliser react-native-uuid pour générer un identifiant unique
       titre: title,
-      extrait_description: excerpt,
       description: description,
-      date: date,
+      date: new Date().toISOString(),
       image: "test", // Récupère les URI des images sélectionnées
     };
     addArticle(newArticle);
+    Toast.show({
+      type: 'success',
+      text1: 'Article bien ajouté !',
+    });
+    navigation.navigate('Home');
   };
 
   return (
@@ -66,13 +79,6 @@ export default function AddArticleView({ navigation }) {
         value={title}
         onChangeText={setTitle}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Extrait de description"
-        placeholderTextColor="#B0BEC5"
-        value={excerpt}
-        onChangeText={setExcerpt}
-      />
       <Text style={styles.sectionTitle}>Description</Text>
       <Text style={styles.instructions}>Décrivez brièvement votre article</Text>
       <TextInput
@@ -87,13 +93,6 @@ export default function AddArticleView({ navigation }) {
       <Text style={styles.charCount}>
         {description.length}/{maxLength} caractères
       </Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Date"
-        placeholderTextColor="#B0BEC5"
-        value={date}
-        onChangeText={setDate}
-      />
 
       <Button mode="contained" onPress={pickImage} style={styles.button}>
         Ajouter des Images

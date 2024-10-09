@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import Navbar from './layout/navbar';
 import { createStackNavigator } from '@react-navigation/stack';
 import Header from './layout/header';
+import Toast from 'react-native-toast-message';
 
 const Stack = createStackNavigator();
 
@@ -16,6 +17,7 @@ export default function App() {
       <NavigationContainer>
         <Header/>
         <Navbar />
+        <Toast />
       </NavigationContainer>
     </Provider>
   );
