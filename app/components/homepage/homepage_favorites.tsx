@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Text, View, StyleSheet, Dimensions, TouchableOpacity, ImageBackground } from 'react-native';
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
@@ -31,6 +30,9 @@ export default function HomepageFavorites() {
     // Filtrer les emplacements favoris
     const favoriteEmplacements = emplacements.filter(emplacement => favorites.includes(emplacement.id_emplacement));
 
+    // Ajouter un élément pour le bouton "Voir tous les favoris"
+    const dataWithButton = [...favoriteEmplacements, { id_emplacement: 'button' }];
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Vos emplacements favoris</Text>
@@ -39,37 +41,39 @@ export default function HomepageFavorites() {
                     ref={carouselRef}
                     width={width}
                     height={width / 2}
-                    data={favoriteEmplacements}
+                    data={dataWithButton}
                     loop={false}
                     renderItem={({ index, item }) => (
-                        <TouchableOpacity
-                            style={styles.carouselItem}
-                            onPress={() => handleItemPress(index)}
-                            activeOpacity={1} // Désactiver l'effet de flash blanc
-                        >
-                            <ImageBackground
-                                source={{ uri: item.photos[0] }} // Utiliser l'URL de la première photo de l'emplacement
-                                style={styles.imageBackground}
+                        item.id_emplacement === 'button' ? (
+                            <TouchableOpacity onPress={handleArrowPress} style={styles.arrowContainer} activeOpacity={1}>
+                                <View style={styles.arrowCircle}>
+                                    <Ionicons name="arrow-forward" size={30} color="white" />
+                                </View>
+                                <Text style={styles.arrowText}>Voir tous les favoris</Text>
+                            </TouchableOpacity>
+                        ) : (
+                            <TouchableOpacity
+                                style={styles.carouselItem}
+                                onPress={() => handleItemPress(index)}
+                                activeOpacity={1} // Désactiver l'effet de flash blanc
                             >
-                                <View style={styles.heartIcon}>
-                                    <Ionicons name="heart" size={32} color="red" />
-                                </View>
-                                <View style={styles.textContainer}>
-                                    <Text style={styles.itemText}>{item.localisation}</Text>
-                                    <Text style={styles.itemText}>{item.caracteristique}</Text>
-                                </View>
-                            </ImageBackground>
-                        </TouchableOpacity>
+                                <ImageBackground
+                                    source={{ uri: item.photos[0] }} // Utiliser l'URL de la première photo de l'emplacement
+                                    style={styles.imageBackground}
+                                >
+                                    <View style={styles.heartIcon}>
+                                        <Ionicons name="heart" size={32} color="red" />
+                                    </View>
+                                    <View style={styles.textContainer}>
+                                        <Text style={styles.itemText}>{item.localisation}</Text>
+                                        <Text style={styles.itemText}>{item.caracteristique}</Text>
+                                    </View>
+                                </ImageBackground>
+                            </TouchableOpacity>
+                        )
                     )}
                 />
-
             </View>
-            <TouchableOpacity onPress={handleArrowPress} style={styles.arrowContainer} activeOpacity={1}>
-                    <View style={styles.arrowCircle}>
-                        <Ionicons name="arrow-forward" size={30} color="white" />
-                    </View>
-                    <Text style={styles.arrowText}>Voir tous les favoris</Text>
-                </TouchableOpacity>
         </View>
     );
 }
@@ -96,10 +100,10 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
     },
     arrowContainer: {
+        flex: 1, // Prendre tout l'espace disponible pour centrer verticalement
         flexDirection: 'column', // Aligne le bouton et le texte verticalement
         justifyContent: 'center',
         alignItems: 'center',
-        marginLeft: 10, // Espace entre le carrousel et le bouton
     },
     arrowCircle: {
         width: 60,
