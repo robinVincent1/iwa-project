@@ -12,6 +12,10 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import useConversationViewModel from "../../viewModels/conversation_viewModel";
+import { sendMessage, markMessagesAsSeen } from "../../store/messagesSlice";
+import { MessageStatus } from "../../store/messagesSlice"; // Import de l'énumération
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { useDispatch } from "react-redux";
 
 export default function MessagesDetail({ route }: any) {
   const { conversationId } = route.params;
@@ -22,6 +26,7 @@ export default function MessagesDetail({ route }: any) {
   } = useConversationViewModel();
   const navigation = useNavigation();
   const [message, setMessage] = useState("");
+  const dispatch = useDispatch();
 
   // Récupérer la conversation en utilisant le hook
   const conversation = getConversationById(conversationId);
@@ -39,12 +44,14 @@ export default function MessagesDetail({ route }: any) {
         text: message,
         timestamp: new Date().toISOString(),
         isSentByUser: true,
+        status: MessageStatus.Envoye,
       };
 
       addMessageToConversation(conversationId, newMessage);
-      setMessage("");
-    }
-  };
+  useEffect(() => {
+    dispatch(markMessagesAsSeen(conversationId));
+  }, [dispatch, conversationId]);
+
 
   // Vérifiez si la conversation est chargée
   if (!conversation) {
@@ -55,6 +62,18 @@ export default function MessagesDetail({ route }: any) {
       </View>
     );
   }
+  const renderStatusIcon = (status: MessageStatus) => {
+    switch (status) {
+      case MessageStatus.Envoye:
+        return <MaterialCommunityIcons name="send-clock-outline" size={16} color="#00796B" />;
+      case MessageStatus.Remis:
+        return <MaterialCommunityIcons name="send-check-outline" size={16} color="#00796B" />;
+      case MessageStatus.Vu:
+        return <Ionicons name="eye" size={16} color="#00796B" />;
+      default:
+        return null;
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -94,12 +113,21 @@ export default function MessagesDetail({ route }: any) {
             ]}
           >
             <Text style={styles.messageText}>{item.text}</Text>
-            <Text style={styles.timestamp}>
-              {new Date(item.timestamp).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </Text>
+            <View style={styles.messageMeta}>
+              {item.isSentByUser && (
+                <View style={styles.statusContainer}>
+                  <Text style={styles.timestamp}>
+                    {new Date(item.timestamp).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </Text>
+                  <View style={styles.iconSpacing}>
+                    {renderStatusIcon(item.status)}
+                  </View>
+                </View>
+              )}
+            </View>
           </View>
         )}
       />
@@ -118,6 +146,8 @@ export default function MessagesDetail({ route }: any) {
     </View>
   );
 }
+  }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -173,10 +203,23 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#333",
   },
+  messageMeta: {
+    flexDirection: "row",
+    justifyContent: "flex-end", // Aligner à droite
+    alignItems: "center",
+    marginTop: 5,
+  },
   timestamp: {
     fontSize: 12,
-    color: "#888",
     alignSelf: "flex-end",
+    color: "#888", // Couleur du timestamp
+  },
+  statusContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  iconSpacing: {
+    padding: 5, // Distance entre l'heure et l'icône
   },
   inputContainer: {
     flexDirection: "row",
@@ -204,3 +247,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
+  }

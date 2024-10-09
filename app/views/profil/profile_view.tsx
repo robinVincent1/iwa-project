@@ -106,7 +106,9 @@ export default function ProfilView() {
 
   const handleAddEmplacement = () => {
     navigation.navigate("Add_emplacement" as never);
-  };
+  }
+
+
 
   return (
     <View style={styles.container}>
@@ -122,6 +124,7 @@ export default function ProfilView() {
         </View>
         <View style={styles.profileImageContainer}>
           {renderProfileImage()}
+          {renderRating(4.5, false)}
           {isEditing && (
             <TouchableOpacity style={styles.button} onPress={pickImage}>
               <Text style={styles.buttonText}>Choisir une photo</Text>
