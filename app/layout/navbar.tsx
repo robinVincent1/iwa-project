@@ -1,7 +1,7 @@
 import { Provider, useSelector } from 'react-redux';
 import HomeView from '../views/home_view';
 import ProfileView from '../views/profil/profile_view';
-import MapView from '../views/map_view';
+import MapView from '../views/map/map_view';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 

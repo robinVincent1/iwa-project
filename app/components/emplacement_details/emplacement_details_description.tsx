@@ -1,7 +1,7 @@
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { Emplacement } from '../../views/map_view';
+import { Emplacement } from '../../views/map/map_view';
 
 interface EmplacementDetailsDescriptionProps {
     emplacement: Emplacement;
