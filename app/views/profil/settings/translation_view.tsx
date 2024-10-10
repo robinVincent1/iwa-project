@@ -1,23 +1,39 @@
+// translation_view.tsx
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
+
+interface Language {
+  code: string;
+  label: string;
+}
 
 export default function TranslationView() {
-  const [selectedLanguage, setSelectedLanguage] = useState('Français');
+  const { t, i18n } = useTranslation();
+  const [selectedLanguage, setSelectedLanguage] = useState<string>('fr');
 
-  const languages = ['Français', 'Anglais'];
+  const languages: Language[] = [
+    { code: 'fr', label: 'Français' },
+    { code: 'en', label: 'Anglais' }
+  ];
+
+  const changeLanguage = (code: string) => {
+    setSelectedLanguage(code);
+    i18n.changeLanguage(code);
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Choisissez une langue</Text>
+      <Text style={styles.title}>{t('choose_language')}</Text>
       {languages.map((language) => (
         <TouchableOpacity
-          key={language}
+          key={language.code}
           style={styles.languageOption}
-          onPress={() => setSelectedLanguage(language)}
+          onPress={() => changeLanguage(language.code)}
         >
-          <Text style={styles.languageText}>{language}</Text>
-          {selectedLanguage === language && (
+          <Text style={styles.languageText}>{language.label}</Text>
+          {selectedLanguage === language.code && (
             <Ionicons name="checkmark" size={24} color="green" />
           )}
         </TouchableOpacity>
