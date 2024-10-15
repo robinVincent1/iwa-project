@@ -5,18 +5,20 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../../store/profilSlice';
 import { useNavigation } from '@react-navigation/native';
 import { couleur } from '../../../color';
+import { useTranslation } from 'react-i18next';
 
 const SettingsView = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const isLoggedIn = useSelector(state => state.profil.isLoggedIn);
   const [isDeletePending, setIsDeletePending] = useState(false);
   const navigation = useNavigation();
 
   const handleDeleteProfile = () => {
-    Alert.alert('Confirmation', 'Êtes-vous sûr de vouloir supprimer votre profil ?', [
-      { text: 'Annuler', style: 'cancel' },
+    Alert.alert(t('Confirmation'), t('Are you sure you want to delete your profile?'), [
+      { text: t('Cancel'), style: 'cancel' },
       {
-        text: 'Supprimer',
+        text: t('Delete'),
         onPress: () => {
           setIsDeletePending(true);
         },
@@ -26,7 +28,7 @@ const SettingsView = () => {
 
   const handleCancelDelete = () => {
     setIsDeletePending(false);
-    Alert.alert('Annulation', 'Votre demande de suppression a été annulée.');
+    Alert.alert(t('Cancellation'), t('Your delete request has been cancelled.'));
   };
 
   const changeLanguage = () => {
@@ -34,10 +36,10 @@ const SettingsView = () => {
   };
 
   const handleLogout = () => {
-    Alert.alert('Déconnexion', 'Êtes-vous sûr de vouloir vous déconnecter ?', [
-      { text: 'Annuler', style: 'cancel' },
+    Alert.alert(t('Logout'), t('Are you sure you want to logout?'), [
+      { text: t('Cancel'), style: 'cancel' },
       {
-        text: 'Déconnexion',
+        text: t('Logout'),
         onPress: () => {
           dispatch(logout());
         },
@@ -51,30 +53,30 @@ const SettingsView = () => {
         <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={24} color="#333" />
         </TouchableOpacity>
-        <Text style={styles.title}>Réglages</Text>
+        <Text style={styles.title}>{t('Settings')}</Text>
       </View>
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={changeLanguage}>
-          <Text style={styles.buttonText}>Modifier la langue</Text>
+          <Text style={styles.buttonText}>{t('Change Language')}</Text>
           <Ionicons name="language" size={20} color="#fff" />
         </TouchableOpacity>
 
         {isDeletePending ? (
           <TouchableOpacity style={[styles.button, styles.deleteButton]} onPress={handleCancelDelete}>
-            <Text style={styles.buttonText}>Annuler la demande de suppression</Text>
+            <Text style={styles.buttonText}>{t('Cancel Delete Request')}</Text>
             <Ionicons name="close" size={20} color="#fff" />
           </TouchableOpacity>
         ) : (
           <TouchableOpacity style={[styles.button, styles.deleteButton]} onPress={handleDeleteProfile}>
-            <Text style={styles.buttonText}>Supprimer mon profil</Text>
+            <Text style={styles.buttonText}>{t('Delete Profile')}</Text>
             <Ionicons name="trash" size={20} color="#fff" />
           </TouchableOpacity>
         )}
 
         {isLoggedIn && (
           <TouchableOpacity style={[styles.button, styles.logoutButton]} onPress={handleLogout}>
-            <Text style={styles.buttonText}>Se déconnecter</Text>
+            <Text style={styles.buttonText}>{t('Logout')}</Text>
             <Ionicons name="log-out" size={20} color="#fff" />
           </TouchableOpacity>
         )}

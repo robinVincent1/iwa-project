@@ -1,5 +1,5 @@
 // translation_view.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +11,11 @@ interface Language {
 
 export default function TranslationView() {
   const { t, i18n } = useTranslation();
-  const [selectedLanguage, setSelectedLanguage] = useState<string>('fr');
+  const [selectedLanguage, setSelectedLanguage] = useState<string>(i18n.language);
+
+  useEffect(() => {
+    setSelectedLanguage(i18n.language);
+  }, [i18n.language]);
 
   const languages: Language[] = [
     { code: 'fr', label: 'Français' },
