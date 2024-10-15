@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
+import { useNavigation } from '@react-navigation/native';
 
 interface Language {
   code: string;
@@ -11,6 +12,7 @@ interface Language {
 
 export default function TranslationView() {
   const { t, i18n } = useTranslation();
+  const navigation = useNavigation();
   const [selectedLanguage, setSelectedLanguage] = useState<string>(i18n.language);
 
   useEffect(() => {
@@ -29,7 +31,12 @@ export default function TranslationView() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{t('choose_language')}</Text>
+      <View style={styles.header}>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <Ionicons name="arrow-back" size={24} color="#333" />
+        </TouchableOpacity>
+        <Text style={styles.title}>{t('choose_language')}</Text>
+      </View>
       {languages.map((language) => (
         <TouchableOpacity
           key={language.code}
@@ -52,11 +59,18 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#FFFFFF',
   },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  backButton: {
+    marginRight: 10,
+  },
   title: {
     fontSize: 24,
     fontWeight: '600',
     color: '#37474F',
-    marginBottom: 20,
   },
   languageOption: {
     flexDirection: 'row',
