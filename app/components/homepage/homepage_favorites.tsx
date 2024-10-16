@@ -4,12 +4,16 @@ import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import useEmplacementViewModel from '../../viewModels/emplacement_viewModel';
+import useEmplacementFavoriteViewModel from '../../viewModels/emplacement_favorite_viewModel';
+import { Emplacement } from '../../models/emplacement_model';
 
 export default function HomepageFavorites() {
-    const { emplacements, loading, error,getEmplacementById } = useEmplacementViewModel(); // Utiliser le ViewModel
+    const { emplacements, loading, error, getEmplacementById } = useEmplacementViewModel(); // Utiliser le ViewModel
+    const { addEmplacementFavorite, removeEmplacementFavorite, isEmplacementFavorite } = useEmplacementFavoriteViewModel();
     const width = Dimensions.get("window").width;
     const carouselRef = React.useRef<ICarouselInstance>(null);
     const navigation = useNavigation();
+    const userId = "user123"; // Remplacer par l'ID utilisateur réel
 
     // Simuler des données favorites (à adapter selon vos besoins)
     const [favorites, setFavorites] = useState<string[]>(['1', '3']); // IDs des emplacements favoris
@@ -22,6 +26,16 @@ export default function HomepageFavorites() {
         const selectedEmplacement = emplacements[index];
         navigation.navigate('EmplacementDetails', { marker: selectedEmplacement }) // Log pour tester l'item cliqué
         // Ajoutez ici la logique de navigation ou d'action lorsque l'emplacement est cliqué
+    };
+
+    const toggleFavorite = (emplacement: Emplacement) => {
+        if (isEmplacementFavorite(emplacement, userId)) {
+            removeEmplacementFavorite(emplacement, userId);
+            setFavorites(prevFavorites => prevFavorites.filter(favId => favId !== emplacement.id_emplacement));
+        } else {
+            addEmplacementFavorite(emplacement, userId);
+            setFavorites(prevFavorites => [...prevFavorites, emplacement.id_emplacement]);
+        }
     };
 
     if (loading) return <Text>Chargement...</Text>;
@@ -43,7 +57,7 @@ export default function HomepageFavorites() {
                     height={width / 2}
                     data={dataWithButton}
                     loop={false}
-                    renderItem={({ index, item }) => (
+                    renderItem={({ index, item  }) => (
                         item.id_emplacement === 'button' ? (
                             <TouchableOpacity onPress={handleArrowPress} style={styles.arrowContainer} activeOpacity={1}>
                                 <View style={styles.arrowCircle}>
@@ -61,9 +75,16 @@ export default function HomepageFavorites() {
                                     source={{ uri: item.photos[0] }} // Utiliser l'URL de la première photo de l'emplacement
                                     style={styles.imageBackground}
                                 >
-                                    <View style={styles.heartIcon}>
-                                        <Ionicons name="heart" size={32} color="red" />
-                                    </View>
+                                    <TouchableOpacity
+                                        style={styles.heartIcon}
+                                        onPress={() => item.id_emplacement !== 'button' && toggleFavorite(item as Emplacement)}
+                                    >
+                                        <Ionicons
+                                            name={favorites.includes(item.id_emplacement) ? "heart" : "heart-outline"}
+                                            size={32}
+                                            color="red"
+                                        />
+                                    </TouchableOpacity>
                                     <View style={styles.textContainer}>
                                         <Text style={styles.itemText}>{item.localisation}</Text>
                                         <Text style={styles.itemText}>{item.caracteristique}</Text>
