@@ -95,6 +95,10 @@ const useEmplacementViewModel = () => {
         setEmplacements(emplacements.filter(emplacement => emplacement.id_emplacement !== id_emplacement));
     };
 
+    const addEmplacement = (newEmplacement: Emplacement) => {
+        setEmplacements([...emplacements, newEmplacement]);
+    };
+
     const updateEmplacement = (id_emplacement: string, updatedEmplacement: Partial<Emplacement>) => {
         setEmplacements(emplacements.map(emplacement => 
             emplacement.id_emplacement === id_emplacement ? { ...emplacement, ...updatedEmplacement } : emplacement
@@ -112,7 +116,8 @@ const useEmplacementViewModel = () => {
         getEmplacementById,
         getEmplacementsByUserId,
         deleteEmplacement,
-        updateEmplacement
+        updateEmplacement,
+        addEmplacement
     };
 };
 

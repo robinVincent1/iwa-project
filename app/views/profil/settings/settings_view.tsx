@@ -6,13 +6,16 @@ import { logout } from '../../../store/profilSlice';
 import { useNavigation } from '@react-navigation/native';
 import { couleur } from '../../../color';
 import { useTranslation } from 'react-i18next';
+import { useUserViewModel } from '../../../viewModels/user_viewModel'; // Importer le hook
 
 const SettingsView = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const isLoggedIn = useSelector(state => state.profil.isLoggedIn);
+  const userId = useSelector(state => state.profil.userId); // Assurez-vous que l'ID utilisateur est disponible dans le state
   const [isDeletePending, setIsDeletePending] = useState(false);
   const navigation = useNavigation();
+  const { deleteUser } = useUserViewModel(); // Utiliser le hook
 
   const handleDeleteProfile = () => {
     Alert.alert(t('Confirmation'), t('Are you sure you want to delete your profile?'), [
@@ -20,6 +23,8 @@ const SettingsView = () => {
       {
         text: t('Delete'),
         onPress: () => {
+          deleteUser(userId); // Supprimer l'utilisateur
+          dispatch(logout()); // Déconnecter l'utilisateur après suppression
           setIsDeletePending(true);
         },
       },

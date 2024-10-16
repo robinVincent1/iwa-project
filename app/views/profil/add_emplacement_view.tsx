@@ -17,9 +17,11 @@ import Toast from 'react-native-toast-message'; // Importer Toast
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../store'; // Assurez-vous que le chemin est correct
 import { resetEmplacement } from '../../store/addEmplacementSlice'; // Importer resetEmplacement
+import useEmplacementViewModel from '../../viewModels/emplacement_viewModel'; // Importer le hook
 
 export default function AddEmplacement({ navigation }) {
   const dispatch = useDispatch();
+  const { addEmplacement } = useEmplacementViewModel();
   const emplacement = useSelector((state: RootState) => state.emplacement);
 
   const handleAddEmplacement = () => {
@@ -32,6 +34,11 @@ export default function AddEmplacement({ navigation }) {
       });
       return;
     }
+
+    addEmplacement({
+      ...emplacement,
+      id_user: '1', // A changer
+    });
 
     // Logique pour ajouter l'emplacement
     Toast.show({

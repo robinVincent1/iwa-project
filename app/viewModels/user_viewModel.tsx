@@ -83,6 +83,7 @@ export function useUserViewModel() {
 
   const deleteUser = (id_user: string) => {
     setUsers(users.filter(user => user.id_user !== id_user));
+    console.log('User deleted:', id_user);
   };
 
   const getUserById = (id_user: string) => {
