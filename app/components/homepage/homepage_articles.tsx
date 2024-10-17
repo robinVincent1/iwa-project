@@ -17,6 +17,7 @@ import { fetchArticlesStart, fetchArticlesSuccess, fetchArticlesFailure } from "
 import Toast from 'react-native-toast-message';
 import SkeletonArticle from './skeleton_article'; // Assurez-vous d'importer le composant SkeletonArticle
 
+export default function HomepageArticles() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const articles = useSelector((state: RootState) => state.article.articles);
@@ -36,10 +37,10 @@ import SkeletonArticle from './skeleton_article'; // Assurez-vous d'importer le 
       dispatch(fetchArticlesSuccess(data));
     } catch (error) {
       dispatch(fetchArticlesFailure((error as Error).message));
-      Toast.show({
-        type: 'error',
-        text1: 'Échec de la récupération des articles',
-      });
+        Toast.show({
+          type: 'error',
+          text1: 'Échec de la récupération des articles',
+        });
     }
   };
 
