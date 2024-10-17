@@ -6,30 +6,19 @@ import { Ionicons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import { useNavigation } from '@react-navigation/native';
 import { renderRating } from '../../utils/renderRating';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Slider from '@react-native-community/slider';
+import Toast from 'react-native-toast-message';
 import map_view_styles from './map_view_style';
+import { RootState } from '../../store';
+import {
+  fetchEmplacementsStart,
+  fetchEmplacementsSuccess,
+  fetchEmplacementsFailure,
+} from '../../store/emplacementSlice';
+import { Emplacement } from '../../models/emplacement_model';
 
 const cities = require('../../assets/cities.json');
-
-export type Emplacement = {
-  id_emplacement: string;
-  localisation: string;
-  caracteristique: string;
-  equipement: string[];
-  tarif: number;
-  disponible: boolean;
-  moyenneAvis: number;
-  photos: string[]; // Liste d'URLs de photos
-  coordonnees: {
-    latitude: number;
-    longitude: number;
-    latitudeDelta: number;
-    longitudeDelta: number;
-    name: string;
-    rating: number;
-  };
-};
 
 export default function LocationMapView() {
 
@@ -44,6 +33,9 @@ export default function LocationMapView() {
     const [isZoomedIn, setIsZoomedIn] = useState(false); // État pour contrôler le niveau de zoom
     const navigation = useNavigation();
     const dispatch = useDispatch();
+    const emplacements = useSelector((state: RootState) => state.emplacement.emplacements);
+    const loading = useSelector((state: RootState) => state.emplacement.loading);
+    const error = useSelector((state: RootState) => state.emplacement.error);
 
     const INITIAL_REGION = {
         latitude: 43.6,
@@ -57,50 +49,45 @@ export default function LocationMapView() {
         longitudeDelta: 0.3,
     };
 
-    const emplacements: Emplacement[] = [
-      {
-        id_emplacement: "2",
-        localisation: "Montpellier",
-        caracteristique: "Proche des plages",
-        equipement: ["Parking", "Animaux acceptés"],
-        tarif: 80,
-        disponible: false,
-        moyenneAvis: 3.8,
-        photos: [
-          "https://example.com/photo3.jpg",
-          "https://example.com/photo4.jpg",
-        ],
-        coordonnees: {
-          latitude: 43.58,
-          longitude: 3.9,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-          name: "Montpellier Plages",
-          rating: 3.8,
-        },
-      },
-      {
-        id_emplacement: "3",
-        localisation: "Montpellier",
-        caracteristique: "Quartier calme",
-        equipement: ["Terrasse", "Barbecue"],
-        tarif: 60,
-        disponible: true,
-        moyenneAvis: 4.2,
-        photos: [
-          "https://example.com/photo5.jpg",
-          "https://example.com/photo6.jpg",
-        ],
-        coordonnees: {
-          latitude: 43.61,
-          longitude: 3.88,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-          name: "Montpellier Quartier Calme",
-          rating: 4.2,
-        },
-      },
-    ];
+    useEffect(() => {
+        const fetchEmplacements = async () => {
+            dispatch(fetchEmplacementsStart());
+            try {
+                const response = await fetch(`${process.env.REACT_APP_EMPLACEMENT_API_BASE_URL}/emplacements`);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data: Emplacement[] = await response.json();
+                dispatch(fetchEmplacementsSuccess(data));
+            } catch (error) {
+                dispatch(fetchEmplacementsFailure((error as Error).message));
+            }
+        };
+
+        fetchEmplacements();
+    }, [dispatch]);
+
+    useEffect(() => {
+        if (loading) {
+            Toast.show({
+                type: 'info',
+                text1: 'Chargement des emplacements...',
+                position: 'bottom',
+                bottomOffset: 630,
+            });
+        }
+    }, [loading]);
+
+    useEffect(() => {
+        if (error) {
+            Toast.show({
+                type: 'error',
+                text1: 'Erreur de chargement',
+                position: 'bottom',
+                bottomOffset: 630,
+            });
+        }
+    }, [error]);
 
     useEffect(() => {
         (async () => {
@@ -248,97 +235,99 @@ export default function LocationMapView() {
     );
 
     return (
-      <TouchableWithoutFeedback onPress={handleOutsidePress}>
-          <View style={map_view_styles.container}>
-              <View style={map_view_styles.autocompleteWrapper}>
-                  <Ionicons name="search" size={20} color="black" style={map_view_styles.searchIcon} />
-                  <TextInput
-                      style={map_view_styles.textInput}
-                      value={query}
-                      onChangeText={handleSearch}
-                      placeholder="Entrez le nom d’une ville"
-                      onFocus={handleFocus}
-                  />
-              </View>
-              {showSlider && (
-                  <View style={map_view_styles.sliderContainer}>
-                      <Text>Rayon: {radius} km</Text>
-                      <Slider
-                          style={map_view_styles.slider}
-                          minimumValue={1}
-                          maximumValue={500} // À modifier
-                          step={1}
-                          value={radius}
-                          onValueChange={setRadius}
-                      />
-                  </View>
-              )}
-              <MapView
-                  style={map_view_styles.map}
-                  initialRegion={INITIAL_REGION}
-                  ref={mapRef}
-                  showsUserLocation={true}
-                  onRegionChangeComplete={onRegionChangeComplete}
-              >
-                  {emplacements.map((emplacement) => (
-                      <Marker
-                          key={emplacement.id_emplacement}
-                          coordinate={emplacement.coordonnees}
-                      >
-                          <PriceBubble price={emplacement.tarif} />
-                          <Callout onPress={() => onCalloutSelected(emplacement)}>
-                              <View style={map_view_styles.calloutContainer}>
-                                  <Text style={map_view_styles.calloutTitle}>
-                                      {emplacement.localisation}
-                                  </Text>
-                                  <View >
-                                      <Image
-                                          source={{ uri: emplacement.photos[0] }} // Utilise la première photo
-                                          style={map_view_styles.image}
-                                      />
-                                  </View>
-                                  <Text style={map_view_styles.calloutDescription}>
-                                      {emplacement.caracteristique}
-                                  </Text>
-                                  <Text style={map_view_styles.priceText}>
-                                      {emplacement.tarif}€ / nuit
-                                  </Text>
-                                  <View style={map_view_styles.ratingContainer}>
-                                      <Text style={map_view_styles.ratingText}>
-                                          {emplacement.moyenneAvis} / 5
-                                      </Text>
-                                      {renderRating(emplacement.moyenneAvis)}
-                                  </View>
-                              </View>
-                          </Callout>
-                      </Marker>
-                  ))}
-              </MapView>
-              {filteredCities.length > 0 && (
-                  <View style={map_view_styles.suggestionsContainer}>
-                      <FlatList
-                          data={filteredCities}
-                          renderItem={({ item }) => (
-                              <TouchableOpacity onPress={() => handleSelectCity(item)}>
-                                  <View style={map_view_styles.itemContainer}>
-                                      <Ionicons name="compass" size={20} color="black" />
-                                      <Text style={map_view_styles.autocompleteItemText}>{item.city_code}</Text>
-                                  </View>
-                              </TouchableOpacity>
-                          )}
-                          keyExtractor={(item) => item.city_code}
-                          style={map_view_styles.list}
-                      />
-                  </View>
-              )}
-              <TouchableOpacity style={map_view_styles.locationButton} onPress={centerUserLocation}>
-                  <Ionicons name="locate" size={24} color="white" />
-              </TouchableOpacity>
-              <TouchableOpacity style={map_view_styles.sliderToggleButton} onPress={() => setShowSlider(!showSlider)}>
-                  <Ionicons name="options" size={24} color="white" />
-              </TouchableOpacity>
-          </View>
-      </TouchableWithoutFeedback>
-  );  
+      <View style={{ flex: 1 }}>
+        <TouchableWithoutFeedback onPress={handleOutsidePress}>
+            <View style={map_view_styles.container}>
+                <View style={map_view_styles.autocompleteWrapper}>
+                    <Ionicons name="search" size={20} color="black" style={map_view_styles.searchIcon} />
+                    <TextInput
+                        style={map_view_styles.textInput}
+                        value={query}
+                        onChangeText={handleSearch}
+                        placeholder="Entrez le nom d’une ville"
+                        onFocus={handleFocus}
+                    />
+                </View>
+                {showSlider && (
+                    <View style={map_view_styles.sliderContainer}>
+                        <Text>Rayon: {radius} km</Text>
+                        <Slider
+                            style={map_view_styles.slider}
+                            minimumValue={1}
+                            maximumValue={500} // À modifier
+                            step={1}
+                            value={radius}
+                            onValueChange={setRadius}
+                        />
+                    </View>
+                )}
+                <MapView
+                    style={map_view_styles.map}
+                    initialRegion={INITIAL_REGION}
+                    ref={mapRef}
+                    showsUserLocation={true}
+                    onRegionChangeComplete={onRegionChangeComplete}
+                >
+                    {visibleMarkers.map((emplacement) => (
+                        <Marker
+                            key={emplacement.id_emplacement}
+                            coordinate={emplacement.coordonnees}
+                        >
+                            <PriceBubble price={emplacement.tarif} />
+                            <Callout onPress={() => onCalloutSelected(emplacement)}>
+                                <View style={map_view_styles.calloutContainer}>
+                                    <Text style={map_view_styles.calloutTitle}>
+                                        {emplacement.localisation}
+                                    </Text>
+                                    <View >
+                                        <Image
+                                            source={{ uri: emplacement.photos[0] }} // Utilise la première photo
+                                            style={map_view_styles.image}
+                                        />
+                                    </View>
+                                    <Text style={map_view_styles.calloutDescription}>
+                                        {emplacement.caracteristique}
+                                    </Text>
+                                    <Text style={map_view_styles.priceText}>
+                                        {emplacement.tarif}€ / nuit
+                                    </Text>
+                                    <View style={map_view_styles.ratingContainer}>
+                                        <Text style={map_view_styles.ratingText}>
+                                            {emplacement.moyenneAvis} / 5
+                                        </Text>
+                                        {renderRating(emplacement.moyenneAvis)}
+                                    </View>
+                                </View>
+                            </Callout>
+                        </Marker>
+                    ))}
+                </MapView>
+                {filteredCities.length > 0 && (
+                    <View style={map_view_styles.suggestionsContainer}>
+                        <FlatList
+                            data={filteredCities}
+                            renderItem={({ item }) => (
+                                <TouchableOpacity onPress={() => handleSelectCity(item)}>
+                                    <View style={map_view_styles.itemContainer}>
+                                        <Ionicons name="compass" size={20} color="black" />
+                                        <Text style={map_view_styles.autocompleteItemText}>{item.city_code}</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            )}
+                            keyExtractor={(item) => item.city_code}
+                            style={map_view_styles.list}
+                        />
+                    </View>
+                )}
+                <TouchableOpacity style={map_view_styles.locationButton} onPress={centerUserLocation}>
+                    <Ionicons name="locate" size={24} color="white" />
+                </TouchableOpacity>
+                <TouchableOpacity style={map_view_styles.sliderToggleButton} onPress={() => setShowSlider(!showSlider)}>
+                    <Ionicons name="options" size={24} color="white" />
+                </TouchableOpacity>
+            </View>
+        </TouchableWithoutFeedback>
+        <Toast ref={(ref) => Toast.setRef(ref)} />
+      </View>
+    );  
 }
-

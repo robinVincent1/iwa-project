@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, Dimensions, TouchableOpacity, ImageBackground }
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import SkeletonFavorite from './skeleton_favorite'; // Importer le composant SkeletonFavorite
 import useEmplacementViewModel from '../../viewModels/emplacement_viewModel';
 import useEmplacementFavoriteViewModel from '../../viewModels/emplacement_favorite_viewModel';
 import { Emplacement } from '../../models/emplacement_model';
@@ -38,8 +39,41 @@ export default function HomepageFavorites() {
         }
     };
 
-    if (loading) return <Text>Chargement...</Text>;
-    if (error) return <Text>Erreur: {error}</Text>;
+    const handleReloadPress = () => {
+        // Logique pour recharger les emplacements
+    };
+
+    if (loading) {
+        return (
+            <View style={styles.container}>
+                <Text style={styles.title}>Vos emplacements favoris</Text>
+                <View style={styles.carouselContainer}>
+                    <Carousel
+                        ref={carouselRef}
+                        width={width}
+                        height={width / 2}
+                        data={[...Array(3).keys()]} // Simuler 3 skeletons
+                        loop={false}
+                        renderItem={({ index }) => (
+                            <SkeletonFavorite />
+                        )}
+                    />
+                </View>
+            </View>
+        );
+    }
+
+    if (error) {
+        return (
+            <View style={styles.container}>
+                <Text style={styles.title}>Vos emplacements favoris</Text>
+                <TouchableOpacity style={styles.reloadButton} onPress={handleReloadPress}>
+                    <Ionicons name="reload" size={50} color="#00796B" />
+                    <Text style={styles.reloadText}>Recharger</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    }
 
     // Filtrer les emplacements favoris
     const favoriteEmplacements = emplacements.filter(emplacement => favorites.includes(emplacement.id_emplacement));
@@ -172,5 +206,14 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start',
         marginLeft: 10,
         color: "#00796B",
+    },
+    reloadButton: {
+        alignItems: 'center',
+        marginTop: 20,
+    },
+    reloadText: {
+        fontSize: 16,
+        color: "#00796B",
+        marginTop: 10,
     },
 });

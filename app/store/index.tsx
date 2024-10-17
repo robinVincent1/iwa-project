@@ -2,7 +2,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import profilReducer from './profilSlice';
 import messagesReducer from './messagesSlice'
-import emplacementReducer from './addEmplacementSlice';
+import emplacementReducer from './emplacementSlice';
 import articleReducer from './articleSlice'
 
 export const store = configureStore({
