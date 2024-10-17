@@ -1,9 +1,11 @@
 import React from 'react';
 import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
 
-export default function ArticlesPage({ route, navigation }) {
-    const { articlesData } = route.params; // Récupérer les articles passés en paramètre
+export default function ArticlesPage({ navigation }) {
+    const articles = useSelector((state: RootState) => state.article.articles); // Récupérer les articles depuis le store Redux
 
     const renderItem = ({ item }) => (
         <TouchableOpacity style={styles.articleContainer} onPress={() => handleArticlePress(item)}>
@@ -28,7 +30,7 @@ export default function ArticlesPage({ route, navigation }) {
                 <Text style={styles.title}>Tous les Articles</Text>
             </View>
             <FlatList
-                data={articlesData}
+                data={articles}
                 renderItem={renderItem}
                 keyExtractor={item => item.id_article}
             />

@@ -1,79 +1,140 @@
-
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import Toast from 'react-native-toast-message';
 import { Article } from '../models/article.model';
+import { RootState } from '../store';
+import {
+  fetchArticlesStart,
+  fetchArticlesSuccess,
+  fetchArticlesFailure,
+  addArticleStart,
+  addArticleSuccess,
+  addArticleFailure,
+  updateArticleStart,
+  updateArticleSuccess,
+  updateArticleFailure,
+  deleteArticleStart,
+  deleteArticleSuccess,
+  deleteArticleFailure,
+} from '../store/articleSlice';
 
 const useArticleViewModel = () => {
-    const [articles, setArticles] = useState<Article[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
+  const dispatch = useDispatch();
+  const articles = useSelector((state: RootState) => state.article.articles);
+  const loading = useSelector((state: RootState) => state.article.loading);
+  const adding = useSelector((state: RootState) => state.article.adding);
+  const updating = useSelector((state: RootState) => state.article.updating);
+  const deleting = useSelector((state: RootState) => state.article.deleting);
+  const error = useSelector((state: RootState) => state.article.error);
+  const apiBaseUrl = process.env.REACT_APP_ARTICLE_API_BASE_URL;
 
-    useEffect(() => {
-        const fetchArticles = async () => {
-            try {
-                // const response = await fetch('/api/articles');
-                // if (!response.ok) {
-                //     throw new Error('Network response was not ok');
-                // }
-                // const data: Article[] = await response.json();
-
-                // Données d'exemple
-                const data: Article[] = [
-                    {
-                        id_article: '1',
-                        titre: 'Article 1',
-                        extrait_description: 'Ceci est un extrait de l\'article 1.',
-                        description: 'Voici la description complète de l\'article 1. Il parle de divers sujets intéressants.',
-                        date: '28/09/2024',
-                        image: 'https://via.placeholder.com/150',
-                    },
-                    {
-                        id_article: '2',
-                        titre: 'Article 2',
-                        extrait_description: 'Ceci est un extrait de l\'article 2.',
-                        description: 'La description complète de l\'article 2 contient des informations détaillées.',
-                        date: '29/09/2024',
-                        image: 'https://via.placeholder.com/150',
-                    },
-                ];
-
-                setArticles(data);
-            } catch (error) {
-                setError((error as Error).message);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchArticles();
-    }, []);
-
-    const addArticle = (newArticle: Article) => {
-        setArticles([...articles, newArticle]);
+  useEffect(() => {
+    const fetchArticles = async () => {
+      dispatch(fetchArticlesStart());
+      try {
+        const response = await fetch(`${apiBaseUrl}/articles`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data: Article[] = await response.json();
+        dispatch(fetchArticlesSuccess(data));
+      } catch (error) {
+        dispatch(fetchArticlesFailure((error as Error).message));
+      }
     };
 
-    const updateArticle = (id_article: string, updatedArticle: Partial<Article>) => {
-        setArticles(articles.map(article => 
-            article.id_article === id_article ? { ...article, ...updatedArticle } : article
-        ));
-    };
+    fetchArticles();
+  }, [dispatch, apiBaseUrl]);
 
-    const deleteArticle = (id_article: string) => {
-        setArticles(articles.filter(article => article.id_article !== id_article));
-    };
+  const addNewArticle = async (newArticle: Article) => {
+    dispatch(addArticleStart());
+    try {
+      const response = await fetch(`${apiBaseUrl}/articles`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newArticle),
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const addedArticle = await response.json();
+      dispatch(addArticleSuccess(addedArticle));
+    } catch (error) {
+      console.error('Failed to add article:', error);
+      dispatch(addArticleFailure((error as Error).message));
+      Toast.show({
+        type: 'error',
+        text1: 'Échec de l\'ajout de l\'article',
+        text2: (error as Error).message,
+      });
+    }
+  };
 
-    const getArticleById = (id_article: string) => {
-        return articles.find(article => article.id_article === id_article) || null;
-    };
+  const updateExistingArticle = async (id_article: string, updatedArticle: Partial<Article>) => {
+    dispatch(updateArticleStart());
+    try {
+      const response = await fetch(`${apiBaseUrl}/articles/${id_article}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedArticle),
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const updated = await response.json();
+      dispatch(updateArticleSuccess({ id: id_article, updatedArticle: updated }));
+    } catch (error) {
+      console.error('Failed to update article:', error);
+      dispatch(updateArticleFailure((error as Error).message));
+      Toast.show({
+        type: 'error',
+        text1: 'Échec de la mise à jour de l\'article',
+        text2: (error as Error).message,
+      });
+    }
+  };
 
-    return {
-        articles,
-        loading,
-        error,
-        addArticle,
-        updateArticle,
-        deleteArticle,
-        getArticleById
-    };
+  const deleteExistingArticle = async (id_article: string) => {
+    dispatch(deleteArticleStart());
+    try {
+      const response = await fetch(`${apiBaseUrl}/articles/${id_article}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      dispatch(deleteArticleSuccess(id_article));
+    } catch (error) {
+      console.error('Failed to delete article:', error);
+      dispatch(deleteArticleFailure((error as Error).message));
+      Toast.show({
+        type: 'error',
+        text1: 'Échec de la suppression de l\'article',
+        text2: (error as Error).message,
+      });
+    }
+  };
+
+  const getArticleById = (id_article: string) => {
+    return articles.find(article => article.id_article === id_article) || null;
+  };
+
+  return {
+    articles,
+    loading,
+    adding,
+    updating,
+    deleting,
+    error,
+    addNewArticle,
+    updateExistingArticle,
+    deleteExistingArticle,
+    getArticleById,
+  };
 };
 
 export default useArticleViewModel;

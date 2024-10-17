@@ -6,21 +6,48 @@ import {
   StyleSheet,
   TouchableOpacity,
   FlatList,
-  ActivityIndicator,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import useArticleViewModel from "../../viewModels/article_viewModel";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../../store";
+import { Article } from "../../models/article.model";
+import { fetchArticlesStart, fetchArticlesSuccess, fetchArticlesFailure } from "../../store/articleSlice";
+import Toast from 'react-native-toast-message';
+import SkeletonArticle from './skeleton_article'; // Assurez-vous d'importer le composant SkeletonArticle
 
-
-export default function HomepageArticles() {
   const navigation = useNavigation();
-  const { articles, loading, error } = useArticleViewModel();
+  const dispatch = useDispatch();
+  const articles = useSelector((state: RootState) => state.article.articles);
+  const loading = useSelector((state: RootState) => state.article.loading);
+  const error = useSelector((state: RootState) => state.article.error);
+  const ARTICLE_LIMIT = 3;
+  const apiBaseUrl = process.env.REACT_APP_ARTICLE_API_BASE_URL;
+
+  const fetchArticles = async () => {
+    dispatch(fetchArticlesStart());
+    try {
+      const response = await fetch(`${apiBaseUrl}/articles`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data: Article[] = await response.json();
+      dispatch(fetchArticlesSuccess(data));
+    } catch (error) {
+      dispatch(fetchArticlesFailure((error as Error).message));
+      Toast.show({
+        type: 'error',
+        text1: 'Échec de la récupération des articles',
+      });
+    }
+  };
 
   useEffect(() => {
-    // Logique si nécessaire après récupération des articles
-  }, [articles]);
+    if (articles.length === 0) {
+      fetchArticles();
+    }
+  }, [dispatch, articles.length, apiBaseUrl]);
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
@@ -47,19 +74,29 @@ export default function HomepageArticles() {
     navigation.navigate("AddArticle");
   };
 
+  const handleReloadPress = () => {
+    fetchArticles();
+  };
+
   if (loading) {
     return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#00796B" />
-        <Text>Chargement des articles...</Text>
+      <View style={styles.container}>
+        <Text style={styles.title}>Articles & Blogs</Text>
+        {Array.from({ length: ARTICLE_LIMIT }).map((_, index) => (
+          <SkeletonArticle key={index} />
+        ))}
       </View>
     );
   }
 
   if (error) {
     return (
-      <View style={styles.centered}>
-        <Text style={styles.errorText}>Erreur : {error}</Text>
+      <View style={styles.container}>
+        <Text style={styles.title}>Articles & Blogs</Text>
+        <TouchableOpacity style={styles.reloadButton} onPress={handleReloadPress}>
+          <Ionicons name="reload" size={50} color="#00796B" />
+          <Text style={styles.reloadText}>Recharger</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -68,7 +105,7 @@ export default function HomepageArticles() {
     <View style={styles.container}>
       <Text style={styles.title}>Articles & Blogs</Text>
       <FlatList
-        data={articles.slice(0, 2)} // Affichez seulement les 2 premiers articles ici
+        data={articles.slice(0, ARTICLE_LIMIT)} // Affichez seulement les 2 premiers articles ici
         renderItem={renderItem}
         keyExtractor={(item) => item.id_article}
         contentContainerStyle={styles.flatListContainer}
@@ -97,7 +134,8 @@ export default function HomepageArticles() {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 15,
-    backgroundColor: "#FAFAFA", // Fond doux et neutre
+    backgroundColor: "#FFFFFF", // Fond doux et neutre
+    flex: 1, // Assurez-vous que le conteneur prend toute la hauteur de l'écran
   },
   flatListContainer: {
     paddingBottom: 20,
@@ -174,5 +212,14 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 16,
     color: "red",
+  },
+  reloadButton: {
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  reloadText: {
+    fontSize: 16,
+    color: "#00796B",
+    marginTop: 10,
   },
 });

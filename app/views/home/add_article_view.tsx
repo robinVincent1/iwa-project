@@ -17,7 +17,7 @@ import { Article } from "../../models/article.model";
 import Toast from 'react-native-toast-message';
 
 export default function AddArticleView({ navigation }) {
-  const { addArticle } = useArticleViewModel();
+  const { addNewArticle } = useArticleViewModel();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [images, setImages] = useState([]);
@@ -56,7 +56,7 @@ export default function AddArticleView({ navigation }) {
       date: new Date().toISOString(),
       image: "test", // Récupère les URI des images sélectionnées
     };
-    addArticle(newArticle);
+    addNewArticle(newArticle);
     Toast.show({
       type: 'success',
       text1: 'Article bien ajouté !',
