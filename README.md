@@ -4,7 +4,7 @@ Bienvenue dans le dépôt du frontend de l'application, une application mobile p
 
 C'est est une application mobile qui vise à faciliter la recherche et la réservation d'emplacements pour les amateurs de plein air. L'application est centrée sur une expérience utilisateur élégante et moderne, avec un thème de montagne et des couleurs sobres et naturelles.
 
-Fonctionnalités
+--Fonctionnalités--
 
 Recherche d'emplacements avec détails complets.
 Affichage des évaluations des utilisateurs et des avis pour chaque emplacement.
